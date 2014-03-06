@@ -1,0 +1,8 @@
+PS3_SNC_PPU_Release/main.obj: "d:/PS3 Tutorial Source/GCM Framework/main.cpp"
+PS3_SNC_PPU_Release/main.obj: "d:/PS3 Tutorial Source/GCM Framework/Renderer.h"
+PS3_SNC_PPU_Release/main.obj: "d:/PS3 Tutorial Source/GCM Framework/GCMRenderer.h"
+PS3_SNC_PPU_Release/main.obj: "d:/PS3 Tutorial Source/GCM Framework/SceneNode.h"
+PS3_SNC_PPU_Release/main.obj: "d:/PS3 Tutorial Source/GCM Framework/CameraNode.h"
+PS3_SNC_PPU_Release/main.obj: "d:/PS3 Tutorial Source/GCM Framework/Shader.h"
+PS3_SNC_PPU_Release/main.obj: "d:/PS3 Tutorial Source/GCM Framework/Mesh.h"
+PS3_SNC_PPU_Release/main.obj: "d:/PS3 Tutorial Source/GCM Framework/Input.h"
