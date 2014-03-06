@@ -1,0 +1,35 @@
+struct output {
+	float4 position : POSITION;
+	float4 color    : COLOR;
+	float3 normal	: TEXCOORD1;
+	float2 texCoord : TEXCOORD0;
+};
+	
+output main
+(
+	float4 position	: POSITION,
+	float4 color	: COLOR,
+	float3 normal	: TEXCOORD1,
+	float2 texCoord	: TEXCOORD0,
+
+    uniform float4x4 modelMat,// : C0,
+	uniform float4x4 viewMat,//  : C4,
+	uniform float4x4 projMat//  : C8,
+	
+)
+{	
+	output OUT;
+
+	float4x4 mvp = mul(projMat, mul(viewMat, modelMat));
+	
+	//mvp = projMat * viewMat * modelMat;
+	
+	
+	
+	OUT.position 	 = mul(mvp, position);
+	OUT.color 		 = color;
+	OUT.normal		 = normal;
+	OUT.texCoord	 = texCoord;
+	
+	return OUT;
+}

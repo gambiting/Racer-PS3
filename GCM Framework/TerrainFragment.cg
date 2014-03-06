@@ -1,0 +1,43 @@
+void main
+(
+	float4 color_in      : COLOR,
+	float3 normal		 : TEXCOORD1,
+	float2 texcoord		 : TEXCOORD0,
+	uniform samplerRECT texture,
+	
+	uniform float4x4 modelMat,
+	uniform float3 lightPosition,
+	uniform float4 lightColour,
+	uniform float  lightRadius,
+	uniform float3  cameraPos,
+	
+	out float4 color_out : COLOR
+)
+{
+	float3 worldPos = (mul(modelMat , float4(position.xyz, 1.0)).xyz;
+	
+	float4 diffuse = texRECT(texture, texcoord);
+	
+	float3 incident = normalize(lightPosition - worldPos);
+	float lambert = max(0.0, dot(incident, normal));
+	
+	float dist = length(lightPosition - worldPos);
+	float atten = 1.0 - clamp(dist/lightRadius, 0.0, 1.0);
+	
+	float3 viewDir = normalize(cameraPos - worldPos);
+	float3 halfDir = normalize(incident + viewDir);
+	
+	float rFactor = max(0.0, dot(halfDir, normal));
+	float sFactor = pow(rFactor, 50.0);
+	
+	float3 tempColour = (diffuse.rgb * lightColour.rgb);
+	tempColour += (lightColout * sFactor) * 0.33;
+	
+	tempColour = float4(tempColour * atten * lambert, diffuse.a);
+	tempColour += (diffuse.rgb * lightColour.rgb) * 0.1;
+	
+	color_out = tempColour;
+	
+	 
+	//color_out = float4(1.0,1.0,0.0,1.0);
+}
