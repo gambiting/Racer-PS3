@@ -79,6 +79,9 @@ OBJS=\
 	"PS3_SNC_PPU_Debug/Shader.obj"\
 	"PS3_SNC_PPU_Debug/TextMesh.obj"\
 	"PS3_SNC_PPU_Debug/Timer.obj"\
+	"PS3_SNC_PPU_Debug/GameEntity.obj"\
+	"PS3_SNC_PPU_Debug/PhysicsNode.obj"\
+	"PS3_SNC_PPU_Debug/PhysicsSystem.obj"\
 
 CST_OBJS=\
 
@@ -141,6 +144,18 @@ COMPILE: $(OBJS)
 "PS3_SNC_PPU_Debug/Timer.obj":
 	@echo ProDG Compiling "d:/Team Project/Racer-PS3/GCM Framework/Timer.cpp"
 	$(CXX) $(CXX_FLAGS) "d:/Team Project/Racer-PS3/GCM Framework/Timer.cpp" -o $@
+
+"PS3_SNC_PPU_Debug/GameEntity.obj":
+	@echo ProDG Compiling "d:/Team Project/Racer-PS3/GCM Framework/GameEntity.cpp"
+	$(CXX) $(CXX_FLAGS) "d:/Team Project/Racer-PS3/GCM Framework/GameEntity.cpp" -o $@
+
+"PS3_SNC_PPU_Debug/PhysicsNode.obj":
+	@echo ProDG Compiling "d:/Team Project/Racer-PS3/GCM Framework/PhysicsNode.cpp"
+	$(CXX) $(CXX_FLAGS) "d:/Team Project/Racer-PS3/GCM Framework/PhysicsNode.cpp" -o $@
+
+"PS3_SNC_PPU_Debug/PhysicsSystem.obj":
+	@echo ProDG Compiling "d:/Team Project/Racer-PS3/GCM Framework/PhysicsSystem.cpp"
+	$(CXX) $(CXX_FLAGS) "d:/Team Project/Racer-PS3/GCM Framework/PhysicsSystem.cpp" -o $@
 
 LINK: "PS3_SNC_PPU_Debug/GCM Framework.ppu.self"
 
