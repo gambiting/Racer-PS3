@@ -267,6 +267,7 @@ void VertexShader::SetDefaultAttributes() {
 	CGparameter position_param	= cellGcmCgGetNamedParameter(program, "position");
 	CGparameter colour_param	= cellGcmCgGetNamedParameter(program, "color");
 	CGparameter tex_param		= cellGcmCgGetNamedParameter(program, "texCoord");
+	CGparameter normal_param	= cellGcmCgGetNamedParameter(program, "normal");
 
 	//And now save out the actual resources (the name of the input registers they'll use)
 	attributes[VERTEX_POSITION]	= cellGcmCgGetParameterResource(program, position_param)	- CG_ATTR0;
@@ -277,6 +278,10 @@ void VertexShader::SetDefaultAttributes() {
 
 	if(tex_param) {
 		attributes[VERTEX_TEXCOORD]	= cellGcmCgGetParameterResource(program, tex_param)		- CG_ATTR0;
+	}
+	if(normal_param)
+	{
+		attributes[VERTEX_NORMAL] = cellGcmCgGetParameterResource(program, normal_param);
 	}
 }
 

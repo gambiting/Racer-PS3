@@ -5,13 +5,13 @@ Renderer::Renderer(void)	{
 	You're provided with a very basic vertex / fragment shader, to get you started
 	with Cg, and drawing textured objects. 
 	*/
-	//VertexShader* basicVert		= new VertexShader("/vertex.vpo");
-	//FragmentShader* basicFrag	= new FragmentShader("/fragment.fpo");
+	VertexShader* basicVert		= new VertexShader("/vertex.vpo");
+	FragmentShader* basicFrag	= new FragmentShader("/fragment.fpo");
 
-	VertexShader* lightVert = new VertexShader("/TerrainVertex.cg");
-	FragmentShader* lightFrag = new FragmentShader("/TerrainFragment.cg");
+	//VertexShader* lightVert = new VertexShader("/TerrainVertex.cg");
+	//FragmentShader* lightFrag = new FragmentShader("/TerrainFragment.cg");
 
-	this->SetCurrentShader(*lightVert,*lightFrag);
+	this->SetCurrentShader(*basicVert,*basicFrag);
 
 	//CellGcmTexture*g = LoadGTF("/OutputCube.gtf");
 	testRadius = 25.0f;
@@ -55,9 +55,9 @@ void Renderer::RenderScene() {
 
 	currentVert->UpdateShaderMatrices(modelMatrix, viewMatrix, projMatrix);
 
-	currentFrag->SetParameter("lightPosition", (float*)&camera->GetPosition());//.getX());
-	currentFrag->SetParameter("cameraPos", (float*)&camera->GetPosition());
-	currentFrag->SetParameter("lightRadius", &testRadius);
+	//currentFrag->SetParameter("lightPosition", (float*)&camera->GetPosition());//.getX());
+	//currentFrag->SetParameter("cameraPos", (float*)&camera->GetPosition());
+	//currentFrag->SetParameter("lightRadius", &testRadius);
 	//currentFrag->SetParameter("lightColour", &float{1.0,1.0,1.0});
 
 	if(root) {

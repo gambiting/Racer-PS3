@@ -186,6 +186,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\OBJMesh.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Renderer.cpp"
 				>
 			</File>
@@ -215,6 +219,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ChildMeshInterface.h"
+				>
+			</File>
+			<File
 				RelativePath=".\common.h"
 				>
 			</File>
@@ -232,6 +240,10 @@
 			</File>
 			<File
 				RelativePath=".\Mesh.h"
+				>
+			</File>
+			<File
+				RelativePath=".\OBJMesh.h"
 				>
 			</File>
 			<File

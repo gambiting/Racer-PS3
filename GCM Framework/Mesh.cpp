@@ -126,65 +126,69 @@ This function is mostly as described in the GCM tutorial, except we have
 a branch statement to draw an indexed mesh. It's very similar to how to
 draw an indexed mesh with OpenGL!
 */
-void	Mesh::Draw(VertexShader &vertex, FragmentShader &fragment) {
-	cellGcmSetVertexDataArray(vertex.GetAttributeIndex(VERTEX_POSITION),
-		0, 
-		sizeof(Vertex), 
-		3, 
-		CELL_GCM_VERTEX_F, 
-		CELL_GCM_LOCATION_LOCAL, 
-		(uint32_t)vertexOffsets[VERTEX_POSITION]
-	);
-
-	if(vertexOffsets[VERTEX_COLOUR])	{
-		cellGcmSetVertexDataArray(vertex.GetAttributeIndex(VERTEX_COLOUR),
-			0, 
-			sizeof(Vertex), 
-			4, 
-			CELL_GCM_VERTEX_UB, 
-			CELL_GCM_LOCATION_LOCAL, 
-			(uint32_t)vertexOffsets[VERTEX_COLOUR]
-		);
-	}
-	if(vertexOffsets[VERTEX_NORMAL])	{
-		cellGcmSetVertexDataArray(vertex.GetAttributeIndex(VERTEX_NORMAL),
+void	Mesh::Draw(VertexShader &vertex, FragmentShader &fragment) 
+{
+	if(vertexOffsets[VERTEX_POSITION])
+	{
+		cellGcmSetVertexDataArray(vertex.GetAttributeIndex(VERTEX_POSITION),
 			0, 
 			sizeof(Vertex), 
 			3, 
 			CELL_GCM_VERTEX_F, 
 			CELL_GCM_LOCATION_LOCAL, 
-			(uint32_t)vertexOffsets[VERTEX_NORMAL]
+			(uint32_t)vertexOffsets[VERTEX_POSITION]
 		);
-	}
-	//else{
-	//	cellGcmSetVertexDataArray(vertex.GetAttributeIndex(VERTEX_COLOUR),0,0,0,CELL_GCM_VERTEX_UB,CELL_GCM_LOCATION_LOCAL,0);
-	//}
 
-	if(vertexOffsets[VERTEX_TEXCOORD])	{
-		cellGcmSetVertexDataArray(vertex.GetAttributeIndex(VERTEX_TEXCOORD),
-			0, 
-			sizeof(Vertex), 
-			2, 
-			CELL_GCM_VERTEX_F, 
-			CELL_GCM_LOCATION_LOCAL, 
-			(uint32_t)vertexOffsets[VERTEX_TEXCOORD]
-		);
-	}
-	//else{
-	//	cellGcmSetVertexDataArray(vertex.GetAttributeIndex(VERTEX_TEXCOORD),0,0,0,CELL_GCM_VERTEX_F,CELL_GCM_LOCATION_LOCAL,0);
-	//}
+		if(vertexOffsets[VERTEX_COLOUR])	{
+			cellGcmSetVertexDataArray(vertex.GetAttributeIndex(VERTEX_COLOUR),
+				0, 
+				sizeof(Vertex), 
+				4, 
+				CELL_GCM_VERTEX_UB, 
+				CELL_GCM_LOCATION_LOCAL, 
+				(uint32_t)vertexOffsets[VERTEX_COLOUR]
+			);
+		}
+		if(vertexOffsets[VERTEX_NORMAL])	{
+			cellGcmSetVertexDataArray(vertex.GetAttributeIndex(VERTEX_NORMAL),
+				0, 
+				sizeof(Vertex), 
+				3, 
+				CELL_GCM_VERTEX_F, 
+				CELL_GCM_LOCATION_LOCAL, 
+				(uint32_t)vertexOffsets[VERTEX_NORMAL]
+			);
+		}
+		//else{
+		//	cellGcmSetVertexDataArray(vertex.GetAttributeIndex(VERTEX_COLOUR),0,0,0,CELL_GCM_VERTEX_UB,CELL_GCM_LOCATION_LOCAL,0);
+		//}
 
-	if(vertexOffsets[VERTEX_INDEX]) 
-	{	//If we have indices
-		
-		cellGcmSetDrawIndexArray(type, numIndices, CELL_GCM_DRAW_INDEX_ARRAY_TYPE_16,
-			CELL_GCM_LOCATION_LOCAL, vertexOffsets[VERTEX_INDEX]);
+		if(vertexOffsets[VERTEX_TEXCOORD])	{
+			cellGcmSetVertexDataArray(vertex.GetAttributeIndex(VERTEX_TEXCOORD),
+				0, 
+				sizeof(Vertex), 
+				2, 
+				CELL_GCM_VERTEX_F, 
+				CELL_GCM_LOCATION_LOCAL, 
+				(uint32_t)vertexOffsets[VERTEX_TEXCOORD]
+			);
+		}
+		//else{
+		//	cellGcmSetVertexDataArray(vertex.GetAttributeIndex(VERTEX_TEXCOORD),0,0,0,CELL_GCM_VERTEX_F,CELL_GCM_LOCATION_LOCAL,0);
+		//}
+
+		if(vertexOffsets[VERTEX_INDEX]) 
+		{	//If we have indices
+			
+			cellGcmSetDrawIndexArray(type, numIndices, CELL_GCM_DRAW_INDEX_ARRAY_TYPE_16,
+				CELL_GCM_LOCATION_LOCAL, vertexOffsets[VERTEX_INDEX]);
+		}
+		else{
+			//else just draw an ordered list of vertices
+			
+			cellGcmSetDrawArrays(type, 0, numVertices);
+		}
 	}
-	else{
-		//else just draw an ordered list of vertices
-		
-		cellGcmSetDrawArrays(type, 0, numVertices);
-	}	
 }
 
 
@@ -248,7 +252,7 @@ void Mesh::GenerateNormals(unsigned short* indices)
 			vertexData[i+2].nz = normal.getZ();
 		}
 	}
-	
+	cellGcmAddressToOffset(&vertexData->nx, &vertexOffsets[VERTEX_NORMAL]);
 }
 
 Vector3 Mesh::NormaliseVec3(Vector3& inp)
