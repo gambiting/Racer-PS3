@@ -57,9 +57,9 @@ void Renderer::RenderScene() {
 
 	currentVert->UpdateShaderMatrices(modelMatrix, viewMatrix, projMatrix);
 
-	currentFrag->SetParameter("lightPosition", (float*)&camera->GetPosition());//.getX());
-	currentFrag->SetParameter("cameraPos", (float*)&camera->GetPosition());
-	currentFrag->SetParameter("lightRadius", &testRadius);
+	//currentFrag->SetParameter("lightPosition", (float*)&camera->GetPosition());//.getX());
+	//currentFrag->SetParameter("cameraPos", (float*)&camera->GetPosition());
+	//currentFrag->SetParameter("lightRadius", &testRadius);
 	//currentFrag->SetParameter("lightColour", &float{1.0,1.0,1.0});
 
 	if(root) {

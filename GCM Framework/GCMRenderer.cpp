@@ -340,9 +340,10 @@ void	GCMRenderer::DrawNode(SceneNode*n)	{
 		of textures to units, but the slight changes in how GCM handles textures
 		make it more intuitive to place it here, instead.
 		*/
-	
-		SetTextureSampler(currentFrag->GetParameter("texture"),n->GetMesh()->GetDefaultTexture());
-
+		if(n->GetMesh()->GetDefaultTexture())
+		{
+			SetTextureSampler(currentFrag->GetParameter("texture"),n->GetMesh()->GetDefaultTexture());
+		}
 		/*
 		The GCM Mesh class needs the current vertex shader, fragment
 		shader is just sent for convenience, in case it's needed in future...
