@@ -17,6 +17,8 @@ _-_-_-_-_-_-_-""  ""
 #include "GCMRenderer.h"
 #include "Mesh.h"
 #include "TextMesh.h"
+#include "Camera.h"
+#include "GameEntity.h"
 
 class Renderer : public GCMRenderer	{
 public:
@@ -24,9 +26,18 @@ public:
 	~Renderer(void);
 
 	virtual void RenderScene();
+
+	void AddSphere(float radius, float mass);
+	void AddCube(float width, float mass);
+
 protected:
 	void Renderer::DrawText(const std::string &text, const Vector3 &position, const float size, const bool perspective=false);
 	Font* basicFont;
 	CellGcmTexture* FontTex;
 	float testRadius;
+
+	SceneNode* root;
+
+	Mesh* cube;
+	Mesh* triangle;
 };

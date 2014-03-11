@@ -8,6 +8,8 @@ Camera::Camera(void)	{
 	pitch	= 0.0f;
 	pad		= JOYPAD_A;
 	position = Vector3(0,0,0);
+	pySensitivity = 0.075f;
+	mSensitivity = 0.01f;
 }
 
 Camera::~Camera(void)	{
@@ -31,8 +33,8 @@ void Camera::Update(float msec) {
 
 	Input::GetJoypadMovement(y,p,pad);
 
-	yaw += y;
-	pitch-= p;
+	yaw += y * pySensitivity;
+	pitch -= p * pySensitivity;
 	
 	pitch = min(pitch,90.0f);
 	pitch = max(pitch,-90.0f);
@@ -45,17 +47,17 @@ void Camera::Update(float msec) {
 	}
 
 	if(Input::ButtonDown(INPUT_UP,pad)) {
-		position += (Matrix4::rotationY(DegToRad(-yaw)) * Vector3(0,0,-1) * msec).getXYZ();
+		position += ((Matrix4::rotationY(DegToRad(-yaw)) * Vector3(0,0,-1) * msec).getXYZ()) * mSensitivity;
 	}
 	if(Input::ButtonDown(INPUT_DOWN,pad)) {
-		position -= (Matrix4::rotationY(DegToRad(-yaw)) * Vector3(0,0,-1) * msec).getXYZ();
+		position -= ((Matrix4::rotationY(DegToRad(-yaw)) * Vector3(0,0,-1) * msec).getXYZ()) * mSensitivity;
 	}
 
 	if(Input::ButtonDown(INPUT_LEFT,pad)) {
-		position += (Matrix4::rotationY(DegToRad(-yaw)) * Vector3(-1,0,0) * msec).getXYZ();
+		position += ((Matrix4::rotationY(DegToRad(-yaw)) * Vector3(-1,0,0) * msec).getXYZ()) * mSensitivity;
 	}
 	if(Input::ButtonDown(INPUT_RIGHT,pad)) {
-		position -= (Matrix4::rotationY(DegToRad(-yaw)) * Vector3(-1,0,0) * msec).getXYZ();
+		position -= ((Matrix4::rotationY(DegToRad(-yaw)) * Vector3(-1,0,0) * msec).getXYZ()) * mSensitivity;
 	}
 
 	//Go up and down using the shoulder buttons!

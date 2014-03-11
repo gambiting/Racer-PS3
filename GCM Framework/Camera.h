@@ -56,4 +56,6 @@ protected:
 	float		yaw;
 	float		pitch;
 	Vector3		position;
+	float		pySensitivity;	//Pitch/Yaw
+	float		mSensitivity;	//Movement (D-PAD)
 };

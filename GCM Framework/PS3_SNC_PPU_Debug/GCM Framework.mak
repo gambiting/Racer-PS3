@@ -79,6 +79,7 @@ OBJS=\
 	"PS3_SNC_PPU_Debug/Shader.obj"\
 	"PS3_SNC_PPU_Debug/TextMesh.obj"\
 	"PS3_SNC_PPU_Debug/Timer.obj"\
+	"PS3_SNC_PPU_Debug/GameEntity.obj"\
 
 CST_OBJS=\
 
@@ -141,6 +142,10 @@ COMPILE: $(OBJS)
 "PS3_SNC_PPU_Debug/Timer.obj":
 	@echo ProDG Compiling "d:/Team Project/Racer-PS3/GCM Framework/Timer.cpp"
 	$(CXX) $(CXX_FLAGS) "d:/Team Project/Racer-PS3/GCM Framework/Timer.cpp" -o $@
+
+"PS3_SNC_PPU_Debug/GameEntity.obj":
+	@echo ProDG Compiling "d:/Team Project/Racer-PS3/GCM Framework/GameEntity.cpp"
+	$(CXX) $(CXX_FLAGS) "d:/Team Project/Racer-PS3/GCM Framework/GameEntity.cpp" -o $@
 
 LINK: "PS3_SNC_PPU_Debug/GCM Framework.ppu.self"
 

@@ -5,15 +5,15 @@ Renderer::Renderer(void)	{
 	You're provided with a very basic vertex / fragment shader, to get you started
 	with Cg, and drawing textured objects. 
 	*/
-	//VertexShader* basicVert		= new VertexShader("/vertex.vpo");
-	//FragmentShader* basicFrag	= new FragmentShader("/fragment.fpo");
+	VertexShader* basicVert		= new VertexShader("/vertex.vpo");
+	FragmentShader* basicFrag	= new FragmentShader("/fragment.fpo");
 
-	VertexShader* lightVert = new VertexShader("/TerrainVertex.cg");
-	FragmentShader* lightFrag = new FragmentShader("/TerrainFragment.cg");
+	//VertexShader* lightVert = new VertexShader("/TerrainVertex.cg");
+	//FragmentShader* lightFrag = new FragmentShader("/TerrainFragment.cg");
 
-	this->SetCurrentShader(*lightVert,*lightFrag);
+	this->SetCurrentShader(*basicVert,*basicFrag);
 
-	//CellGcmTexture*g = LoadGTF("/OutputCube.gtf");
+	CellGcmTexture* g = LoadGTF("/OutputCube.gtf");
 	testRadius = 25.0f;
 
 	FontTex = GCMRenderer::LoadGTF("/tahoma.gtf");
@@ -22,6 +22,8 @@ Renderer::Renderer(void)	{
 	Projection matrix...0.7853982 is 45 degrees in radians.
 	*/
 	projMatrix	= Matrix4::perspective(0.7853982, screenRatio, 1.0f, 20000.0f);	//CHANGED TO THIS!!
+
+	triangle = Mesh::GenerateTriangle();
 }
 
 Renderer::~Renderer(void)	{
@@ -63,6 +65,7 @@ void Renderer::RenderScene() {
 	if(root) {
 		DrawNode(root);
 	}
+	//triangle->Draw(&currentVert, &currentFrag);
 	DrawText("BLOODY PS3", Vector3(0, screenHeight/1.1, 0), 16.0f);
 	projMatrix	= Matrix4::perspective(0.7853982, screenRatio, 1.0f, 20000.0f);	//CHANGED TO THIS!!
 
@@ -94,4 +97,10 @@ void Renderer::DrawText(const std::string &text, const Vector3 &position, const 
 	mesh->Draw(*currentVert, *currentFrag);
 
 	delete mesh; 
+}
+
+void Renderer::AddSphere(float radius, float mass) {
+}
+
+void Renderer::AddCube(float radius, float mass) {
 }
