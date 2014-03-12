@@ -1,6 +1,6 @@
 @echo off
 @echo Performing Custom Build Step
-C:/usr/local/cell\host-win32\Cg\bin\sce-cgc -profile sce_vp_rsx -o "vertex.vpo" "d:\PS3\GCM Framework\vertex.cg"
+C:/usr/local/cell\host-win32\Cg\bin\sce-cgc -profile sce_vp_rsx -o "vertex.vpo" "d:\Team Project\Racer-PS3\GCM Framework\vertex.cg"
 if errorlevel 1 goto VCReportError
 goto VCEnd
 :VCReportError
