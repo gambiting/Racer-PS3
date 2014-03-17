@@ -8,6 +8,8 @@ Camera::Camera(void)	{
 	pitch	= 0.0f;
 	pad		= JOYPAD_A;
 	position = Vector3(0,0,0);
+	ypSensitivity = 0.3f;
+	invertPitch = true;
 }
 
 Camera::~Camera(void)	{
@@ -31,8 +33,10 @@ void Camera::Update(float msec) {
 
 	Input::GetJoypadMovement(y,p,pad);
 
-	yaw += y;
-	pitch-= p;
+	yaw += y * ypSensitivity;
+	//pitch-= p * ypSensitivity;
+
+	pitch -= invertPitch ? -(p*ypSensitivity) : (p*ypSensitivity);
 	
 	pitch = min(pitch,90.0f);
 	pitch = max(pitch,-90.0f);

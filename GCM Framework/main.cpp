@@ -44,7 +44,6 @@ interesting with the Playstation!
 int main(void)	{
 	std::cout << "FG-RACER!!! :- PS3 Version\n" << std::endl;
 	
-
 	//Start off by initialising the Input system
 	Input::Initialise();
 	//If the start button is pressed, call this function!
@@ -58,9 +57,10 @@ int main(void)	{
 	HeightMap* h = new HeightMap(SYS_APP_HOME "/terrain.raw");
 	h->SetDefaultTexture(*GCMRenderer::LoadGTF("/Sand.gtf"));
 	
-	printf("Beginning OBJ Mesh Loading\n");
-	//Mesh* thing = new OBJMesh(SYS_APP_HOME "/sphere.obj");
-	printf("OBJ Mesh Loading Complete\n");
+	/*printf("Beginning OBJ Mesh Loading\n");
+	Mesh* thing = new OBJMesh(SYS_APP_HOME "/sphere.obj");
+	printf("OBJ Mesh Loading Complete\n");*/
+	
 	//Create a new scenenode
 	root = new SceneNode();
 
@@ -68,15 +68,15 @@ int main(void)	{
 	h_map->SetMesh(h);
 	//h_map->SetTransform(/*Matrix4::rotationX(DegToRad(-spin)) */ Matrix4::scale(Vector3(10,10,10)));
 
-
-	SceneNode* thing_node = new SceneNode();
-	//thing_node->SetMesh(thing);
-	//thing_node->SetTransform(Matrix4::scale(Vector3(100,100,100)));
+	/*SceneNode* thing_node = new SceneNode();
+	thing_node->SetMesh(thing);
+	thing_node->SetTransform(Matrix4::scale(Vector3(100,100,100)));*/
 
 	root->AddChild(*h_map);
 	//root->AddChild(*thing_node);
 
 	renderer.SetRootNode(root); //Set our new SceneNode as the root for our Renderer
+	renderer.SetupPlayers();
 
 	//We need a new camera!
 	camera = new Camera();	

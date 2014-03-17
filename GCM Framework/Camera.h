@@ -56,4 +56,6 @@ protected:
 	float		yaw;
 	float		pitch;
 	Vector3		position;
+	float ypSensitivity;
+	bool invertPitch;
 };

@@ -26,7 +26,7 @@ public:
 
 	virtual void RenderScene();
 
-	void AddSphere(); //Only for testing of physics and whatnot.
+	void SetupPlayers(); //Only for testing of physics and whatnot.
 
 protected:
 
@@ -35,11 +35,12 @@ protected:
 	CellGcmTexture* FontTex;
 	float testRadius;
 
-	//std::vector<SceneNode*> theObjects;
+	SceneNode* playerOne;
+	SceneNode* playerTwo;
 
-	SceneNode* root;
-	SceneNode* testSphere;
+	Mesh* sphereOne;
+	Mesh* sphereTwo;
 
-	Mesh* sphere;
+	Vector3 playerDimensions;
 
 };

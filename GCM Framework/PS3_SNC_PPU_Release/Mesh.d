@@ -1,6 +1,0 @@
-PS3_SNC_PPU_Release/Mesh.obj: "d:/PS3 Tutorial Source/GCM Framework/Mesh.cpp"
-PS3_SNC_PPU_Release/Mesh.obj: "d:/PS3 Tutorial Source/GCM Framework/Mesh.h"
-PS3_SNC_PPU_Release/Mesh.obj: "d:/PS3 Tutorial Source/GCM Framework/Shader.h"
-PS3_SNC_PPU_Release/Mesh.obj: "d:/PS3 Tutorial Source/GCM Framework/GCMRenderer.h"
-PS3_SNC_PPU_Release/Mesh.obj: "d:/PS3 Tutorial Source/GCM Framework/SceneNode.h"
-PS3_SNC_PPU_Release/Mesh.obj: "d:/PS3 Tutorial Source/GCM Framework/CameraNode.h"

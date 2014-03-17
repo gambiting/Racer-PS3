@@ -16,12 +16,15 @@ Renderer::Renderer(void)	{
 	//CellGcmTexture*g = LoadGTF("/OutputCube.gtf");
 	testRadius = 25.0f;
 
-	std::cout << "Loading sphere in renderer" << std::endl;
-		sphere = new OBJMesh(SYS_APP_HOME "/sphere.obj");
-	std::cout << "Renderer sphere load success!" << std::endl;
-	testSphere = new SceneNode();
-	testSphere->SetMesh(sphere);
-	testSphere->SetTransform(Matrix4::scale(Vector3(100,100,100)));
+	std::cout << "Loading sphere ONE in renderer" << std::endl;
+		sphereOne = new OBJMesh(SYS_APP_HOME "/sphere.obj");
+	std::cout << "Renderer sphere ONE load success!" << std::endl;
+	sphereOne->SetDefaultTexture(*GCMRenderer::LoadGTF("/Textures/checkerboard.gtf"));
+
+	std::cout << "Loading sphere TWO in renderer" << std::endl;
+		sphereTwo = new OBJMesh(SYS_APP_HOME "/sphere.obj");
+	std::cout << "Renderer sphere TWO load success!" << std::endl;
+	sphereTwo->SetDefaultTexture(*GCMRenderer::LoadGTF("/FT_Logo2.gtf"));
 
 	FontTex = GCMRenderer::LoadGTF("/tahoma.gtf");
 	basicFont = new Font(FontTex, 16, 16);
@@ -44,6 +47,9 @@ some slightly different matrix access.
 */
 void Renderer::RenderScene() {
 	//std::cout << "RenderScene!" << std::endl;
+	
+	playerOne->SetPosition(playerOne->GetPosition() + Vector3(0.0f, 0.1f, 0.0f));
+
 	SetViewport();
 	ClearBuffer();
 	this->SetCurrentShader(*currentVert,*currentFrag);
@@ -101,4 +107,22 @@ void Renderer::DrawText(const std::string &text, const Vector3 &position, const 
 	mesh->Draw(*currentVert, *currentFrag);
 
 	delete mesh; 
+}
+
+void Renderer::SetupPlayers() {
+
+	playerDimensions = Vector3(50,50,50);
+
+	playerOne = new SceneNode();
+	playerOne->SetMesh(sphereOne);
+	playerOne->SetScale(playerDimensions);
+	playerOne->SetPosition(Vector3(0, 500, 0));
+	root->AddChild(*playerOne);
+
+	playerTwo = new SceneNode();
+	playerTwo->SetMesh(sphereTwo);
+	playerTwo->SetScale(playerDimensions);
+	playerTwo->SetPosition(Vector3(500, 500, 0));
+	root->AddChild(*playerTwo);
+
 }
