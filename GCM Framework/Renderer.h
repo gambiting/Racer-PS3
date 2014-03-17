@@ -16,6 +16,7 @@ _-_-_-_-_-_-_-""  ""
 #pragma once
 #include "GCMRenderer.h"
 #include "Mesh.h"
+#include "OBJMesh.h"
 #include "TextMesh.h"
 
 class Renderer : public GCMRenderer	{
@@ -24,9 +25,21 @@ public:
 	~Renderer(void);
 
 	virtual void RenderScene();
+
+	void AddSphere(); //Only for testing of physics and whatnot.
+
 protected:
+
 	void Renderer::DrawText(const std::string &text, const Vector3 &position, const float size, const bool perspective=false);
 	Font* basicFont;
 	CellGcmTexture* FontTex;
 	float testRadius;
+
+	//std::vector<SceneNode*> theObjects;
+
+	SceneNode* root;
+	SceneNode* testSphere;
+
+	Mesh* sphere;
+
 };

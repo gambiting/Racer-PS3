@@ -7,4 +7,6 @@ PS3_SNC_PPU_Debug/Renderer.obj: "d:/Team Project/Racer-PS3/GCM Framework/Input.h
 PS3_SNC_PPU_Debug/Renderer.obj: "d:/Team Project/Racer-PS3/GCM Framework/common.h"
 PS3_SNC_PPU_Debug/Renderer.obj: "d:/Team Project/Racer-PS3/GCM Framework/Shader.h"
 PS3_SNC_PPU_Debug/Renderer.obj: "d:/Team Project/Racer-PS3/GCM Framework/Mesh.h"
+PS3_SNC_PPU_Debug/Renderer.obj: "d:/Team Project/Racer-PS3/GCM Framework/OBJMesh.h"
+PS3_SNC_PPU_Debug/Renderer.obj: "d:/Team Project/Racer-PS3/GCM Framework/ChildMeshInterface.h"
 PS3_SNC_PPU_Debug/Renderer.obj: "d:/Team Project/Racer-PS3/GCM Framework/TextMesh.h"

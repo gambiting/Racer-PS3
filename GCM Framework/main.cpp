@@ -59,7 +59,7 @@ int main(void)	{
 	h->SetDefaultTexture(*GCMRenderer::LoadGTF("/Sand.gtf"));
 	
 	printf("Beginning OBJ Mesh Loading\n");
-	Mesh* thing = new OBJMesh(SYS_APP_HOME "/sphere.obj");
+	//Mesh* thing = new OBJMesh(SYS_APP_HOME "/sphere.obj");
 	printf("OBJ Mesh Loading Complete\n");
 	//Create a new scenenode
 	root = new SceneNode();
@@ -70,13 +70,11 @@ int main(void)	{
 
 
 	SceneNode* thing_node = new SceneNode();
-	thing_node->SetMesh(thing);
-	thing_node->SetTransform(Matrix4::scale(Vector3(100,100,100)));
-	
+	//thing_node->SetMesh(thing);
+	//thing_node->SetTransform(Matrix4::scale(Vector3(100,100,100)));
 
 	root->AddChild(*h_map);
-	root->AddChild(*thing_node);
-
+	//root->AddChild(*thing_node);
 
 	renderer.SetRootNode(root); //Set our new SceneNode as the root for our Renderer
 

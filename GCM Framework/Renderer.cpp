@@ -16,6 +16,13 @@ Renderer::Renderer(void)	{
 	//CellGcmTexture*g = LoadGTF("/OutputCube.gtf");
 	testRadius = 25.0f;
 
+	std::cout << "Loading sphere in renderer" << std::endl;
+		sphere = new OBJMesh(SYS_APP_HOME "/sphere.obj");
+	std::cout << "Renderer sphere load success!" << std::endl;
+	testSphere = new SceneNode();
+	testSphere->SetMesh(sphere);
+	testSphere->SetTransform(Matrix4::scale(Vector3(100,100,100)));
+
 	FontTex = GCMRenderer::LoadGTF("/tahoma.gtf");
 	basicFont = new Font(FontTex, 16, 16);
 	/*
