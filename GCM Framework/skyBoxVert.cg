@@ -1,0 +1,39 @@
+float3  normalizeF3(float3 v)
+{
+
+  float d = dot(v, v); // x*x + y*y + z*z
+
+  return v / sqrt(d);
+
+}
+
+
+void main
+(
+	float4 position	: POSITION,
+	
+	
+	out float4 oPosition : POSITION,
+	out float3 oNormal : TEXCOORD1,
+	
+    uniform float4x4 modelMat,// : C0,
+	uniform float4x4 viewMat,//  : C4,
+	uniform float4x4 projMat//  : C8,
+	
+	
+)
+{	
+	
+
+	float4x4 mvp = mul(projMat, mul(viewMat, modelMat));
+	float3 tempPos = float3(position.x, position.y, position.z);
+	tempPos=  tempPos - float3(0,0,1);
+	mvp = projMat * viewMat * modelMat;
+	
+	float3x3 tempMat = transpose((float3x3)viewMat);
+	//float3 tempN = mul(tempMat, (tempPos));
+	
+	oPosition 	 = mul(mvp, position);
+	oNormal = mul(tempMat, normalizeF3(tempPos));
+	
+}

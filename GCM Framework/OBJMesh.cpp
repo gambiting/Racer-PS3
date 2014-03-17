@@ -170,11 +170,26 @@ bool	OBJMesh::LoadOBJMesh(std::string filename)
 					m->vertexData[j].z = inputVertices[sm->vertIndices[j]-1].getZ();
 			}
 
-			if(!sm->texIndices.empty())	{
+			if(!sm->texIndices.empty())	
+			{
 				
-				for(unsigned int j = 0; j < sm->texIndices.size(); ++j) {
+				for(unsigned int j = 0; j < sm->vertIndices.size(); j++) 
+				{
+					m->vertexData[j].x = inputVertices[sm->vertIndices[j]-1].getX();
+					m->vertexData[j].y = inputVertices[sm->vertIndices[j]-1].getY();
+					m->vertexData[j].z = inputVertices[sm->vertIndices[j]-1].getZ();
+
 					m->vertexData[j].u = inputTexCoords[sm->texIndices[j]-1].getX();
 					m->vertexData[j].v = inputTexCoords[sm->texIndices[j]-1].getY();
+				}
+			}
+			else
+			{
+				for(unsigned int j = 0; j < sm->vertIndices.size(); j++) 
+				{
+					m->vertexData[j].x = inputVertices[sm->vertIndices[j]-1].getX();
+					m->vertexData[j].y = inputVertices[sm->vertIndices[j]-1].getY();
+					m->vertexData[j].z = inputVertices[sm->vertIndices[j]-1].getZ();
 				}
 			}
 
@@ -196,7 +211,10 @@ bool	OBJMesh::LoadOBJMesh(std::string filename)
 
 			cellGcmAddressToOffset(&m->vertexData->x, &m->vertexOffsets[VERTEX_POSITION]);
 			cellGcmAddressToOffset(&m->vertexData->rgba, &m->vertexOffsets[VERTEX_COLOUR]);
-			cellGcmAddressToOffset(&m->vertexData->u, &m->vertexOffsets[VERTEX_TEXCOORD]);
+			if(!sm->texIndices.empty())
+			{
+				cellGcmAddressToOffset(&m->vertexData->u, &m->vertexOffsets[VERTEX_TEXCOORD]);
+			}
 			//cellGcmAddressToOffset(indices, &m->vertexOffsets[VERTEX_INDEX]);
 			AddChild(m);
 		}

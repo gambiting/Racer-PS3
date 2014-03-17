@@ -288,6 +288,14 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\skyBoxFrag.cg"
+				>
+			</File>
+			<File
+				RelativePath=".\skyBoxVert.cg"
+				>
+			</File>
+			<File
 				RelativePath=".\TerrainFragment.cg"
 				>
 			</File>

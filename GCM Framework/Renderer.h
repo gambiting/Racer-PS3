@@ -24,9 +24,22 @@ public:
 	~Renderer(void);
 
 	virtual void RenderScene();
+	void DrawScene();
+
 protected:
-	void Renderer::DrawText(const std::string &text, const Vector3 &position, const float size, const bool perspective=false);
+	void DrawText(const std::string &text, const Vector3 &position, const float size, const bool perspective=false);
 	Font* basicFont;
 	CellGcmTexture* FontTex;
+	CellGcmTexture* cubeMap;
 	float testRadius;
+	void drawSkyBox();
+
+	VertexShader* skyVert;
+	FragmentShader* skyFrag;
+
+	VertexShader* basicVert;
+	FragmentShader* basicFrag;
+
+	Mesh* quad;
+
 };

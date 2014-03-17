@@ -5,8 +5,13 @@ Renderer::Renderer(void)	{
 	You're provided with a very basic vertex / fragment shader, to get you started
 	with Cg, and drawing textured objects. 
 	*/
-	VertexShader* basicVert		= new VertexShader("/vertex.vpo");
-	FragmentShader* basicFrag	= new FragmentShader("/fragment.fpo");
+	quad = Mesh::GenerateQuad();
+
+	skyVert	= new VertexShader("/skyBoxVert.vpo");
+	skyFrag	= new FragmentShader("/skyBoxFrag.fpo");
+
+	basicVert		= new VertexShader("/vertex.vpo");
+	basicFrag	= new FragmentShader("/fragment.fpo");
 
 	//VertexShader* lightVert = new VertexShader("/TerrainVertex.cg");
 	//FragmentShader* lightFrag = new FragmentShader("/TerrainFragment.cg");
@@ -18,6 +23,8 @@ Renderer::Renderer(void)	{
 
 	FontTex = GCMRenderer::LoadGTF("/tahoma.gtf");
 	basicFont = new Font(FontTex, 16, 16);
+
+	cubeMap = GCMRenderer::LoadGTF("/cubemap.gtf");
 	/*
 	Projection matrix...0.7853982 is 45 degrees in radians.
 	*/
@@ -37,36 +44,19 @@ some slightly different matrix access.
 */
 void Renderer::RenderScene() {
 	//std::cout << "RenderScene!" << std::endl;
-	SetViewport();
 	ClearBuffer();
-	this->SetCurrentShader(*currentVert,*currentFrag);
 
-	cellGcmSetDepthTestEnable(CELL_GCM_TRUE);
-	cellGcmSetDepthFunc(CELL_GCM_LESS);
+	SetHalfViewport1();
+	setCurrentCamera(camera1);
+	DrawScene();
 
-	modelMatrix = Matrix4::identity(); 
-
-	if(camera) {
-		viewMatrix = camera->BuildViewMatrix();
-	}
-	else{
-		viewMatrix = Matrix4::identity();
-	}
-
-	currentVert->UpdateShaderMatrices(modelMatrix, viewMatrix, projMatrix);
-
-	//currentFrag->SetParameter("lightPosition", (float*)&camera->GetPosition());//.getX());
-	//currentFrag->SetParameter("cameraPos", (float*)&camera->GetPosition());
-	//currentFrag->SetParameter("lightRadius", &testRadius);
-	//currentFrag->SetParameter("lightColour", &float{1.0,1.0,1.0});
-
-	if(root) {
-		DrawNode(root);
-	}
-	DrawText("BLOODY PS3", Vector3(0, screenHeight/1.1, 0), 16.0f);
-	projMatrix	= Matrix4::perspective(0.7853982, screenRatio, 1.0f, 20000.0f);	//CHANGED TO THIS!!
+	SetHalfViewport2();
+	setCurrentCamera(camera2);
+	DrawScene();
 
 	SwapBuffers();
+
+	
 }
 
 void Renderer::DrawText(const std::string &text, const Vector3 &position, const float size, const bool perspective)
@@ -77,7 +67,7 @@ void Renderer::DrawText(const std::string &text, const Vector3 &position, const 
 	
 	if(perspective) {
 		modelMatrix = Matrix4::translation(position) * Matrix4::scale(Vector3(size,size,1));
-		viewMatrix = camera->BuildViewMatrix();
+		viewMatrix = currentCamera->BuildViewMatrix();
 		projMatrix = Matrix4::perspective(0.7853982, screenRatio, 1.0f, 20000.0f);
 	}
 	else{	
@@ -89,9 +79,58 @@ void Renderer::DrawText(const std::string &text, const Vector3 &position, const 
 	
 	currentVert->UpdateShaderMatrices(modelMatrix, viewMatrix, projMatrix);
 	
-	SetTextureSampler(currentFrag->GetParameter("texture"),mesh->GetDefaultTexture());
+	if(mesh->GetDefaultTexture())
+	{
+		SetTextureSampler(currentFrag->GetParameter("texture"),mesh->GetDefaultTexture());
+	}
 
 	mesh->Draw(*currentVert, *currentFrag);
 
 	delete mesh; 
+}
+void Renderer::drawSkyBox()
+{
+	//May need to change to VPO and FPO
+	cellGcmSetDepthMask(CELL_GCM_FALSE);
+	this->SetCurrentShader(*skyVert,*skyFrag);
+	currentVert->UpdateShaderMatrices(modelMatrix, viewMatrix, projMatrix);
+	SetTextureSampler(currentFrag->GetParameter("texture"), cubeMap);
+
+	quad->Draw(*skyVert,*skyFrag);
+
+	this->SetCurrentShader(*basicVert,*basicFrag);
+	cellGcmSetDepthMask(CELL_GCM_TRUE);
+}
+
+void Renderer::DrawScene()
+{
+	
+	this->SetCurrentShader(*currentVert,*currentFrag);
+	
+	cellGcmSetDepthTestEnable(CELL_GCM_TRUE);
+	cellGcmSetDepthFunc(CELL_GCM_LESS);
+
+	modelMatrix = Matrix4::identity(); 
+
+	if(camera1) {
+		viewMatrix = currentCamera->BuildViewMatrix();
+	}
+	else{
+		viewMatrix = Matrix4::identity();
+	}
+	drawSkyBox();
+	currentVert->UpdateShaderMatrices(modelMatrix, viewMatrix, projMatrix);
+
+	//currentFrag->SetParameter("lightPosition", (float*)&camera->GetPosition());//.getX());
+	//currentFrag->SetParameter("cameraPos", (float*)&camera->GetPosition());
+	//currentFrag->SetParameter("lightRadius", &testRadius);
+	//currentFrag->SetParameter("lightColour", &float{1.0,1.0,1.0});
+
+	if(root) {
+		DrawNode(root);
+	}
+	//DrawText("BLOODY PS3", Vector3(0, screenHeight/1.1, 0), 16.0f);
+	//projMatrix	= Matrix4::perspective(0.7853982, screenRatio, 1.0f, 20000.0f);	//CHANGED TO THIS!!
+
+	
 }

@@ -19,7 +19,8 @@ bool done = false;
 Renderer renderer;
 SceneNode *root;
 
-Camera* camera;
+Camera* camera1;
+Camera* camera2;
 
 void start_button()		{
 	done = true;
@@ -27,9 +28,9 @@ void start_button()		{
 }
 
 void select_button()		{
-	camera->SetPosition(Vector3(0,0,10));
-	camera->SetPitch(0.0f);
-	camera->SetYaw(0.0f);
+	camera1->SetPosition(Vector3(0,0,10));
+	camera1->SetPitch(0.0f);
+	camera1->SetYaw(0.0f);
 }
 
 
@@ -59,7 +60,12 @@ int main(void)	{
 	h->SetDefaultTexture(*GCMRenderer::LoadGTF("/Sand.gtf"));
 	
 	printf("Beginning OBJ Mesh Loading\n");
-	Mesh* thing = new OBJMesh(SYS_APP_HOME "/sphere.obj");
+	Mesh* thing = new OBJMesh(SYS_APP_HOME "/BR_Kyogre.obj");
+	thing->SetDefaultTexture(*GCMRenderer::LoadGTF("/kyogre_0_0.gtf"));
+
+	Mesh* tree = new OBJMesh(SYS_APP_HOME "/tree.obj");
+	tree->SetDefaultTexture(*GCMRenderer::LoadGTF("/grass.gtf"));
+
 	printf("OBJ Mesh Loading Complete\n");
 	//Create a new scenenode
 	root = new SceneNode();
@@ -68,24 +74,46 @@ int main(void)	{
 	h_map->SetMesh(h);
 	//h_map->SetTransform(/*Matrix4::rotationX(DegToRad(-spin)) */ Matrix4::scale(Vector3(10,10,10)));
 
-
+	
 	SceneNode* thing_node = new SceneNode();
 	thing_node->SetMesh(thing);
-	thing_node->SetTransform(Matrix4::scale(Vector3(100,100,100)));
+	thing_node->SetTransform(Matrix4::translation(Vector3(700,300,500)) * Matrix4::scale(Vector3(10,10,10)) * Matrix4::rotationX(DegToRad(90)));
 	
+	SceneNode* tree_node1 = new SceneNode();
+	tree_node1->SetMesh(tree);
+	tree_node1->SetTransform(Matrix4::translation(Vector3(200,400,200)) * Matrix4::scale(Vector3(30,30,30)));
+
+	SceneNode* tree_node2 = new SceneNode();
+	tree_node2->SetMesh(tree);
+	tree_node2->SetTransform(Matrix4::translation(Vector3(1000,50 ,600)) * Matrix4::scale(Vector3(30,90,30)));
+
+	SceneNode* tree_node3 = new SceneNode();
+	tree_node3->SetMesh(tree);
+	tree_node3->SetTransform(Matrix4::translation(Vector3(750, 50 ,550)) * Matrix4::scale(Vector3(40,30,40)));
+
 
 	root->AddChild(*h_map);
 	root->AddChild(*thing_node);
+	root->AddChild(*tree_node1);
+	root->AddChild(*tree_node2);
+	root->AddChild(*tree_node3);
 
 
 	renderer.SetRootNode(root); //Set our new SceneNode as the root for our Renderer
 
 	//We need a new camera!
-	camera = new Camera();	
-	camera->SetControllingPad(JOYPAD_A);	//Controlled via joypad A
-	camera->SetPosition(Vector3(200, 500, 200)); //And set back slightly so we can see the node at the origin
+	camera1 = new Camera();	
+	camera1->SetControllingPad(JOYPAD_A);	//Controlled via joypad A
+	camera1->SetPosition(Vector3(700, 450, 1200)); //And set back slightly so we can see the node at the origin
 
-	renderer.SetCamera(camera);	//Set the current renderer camera
+	renderer.SetCamera1(camera1);	//Set the current renderer camera
+
+	//We need a new camera!
+	camera2 = new Camera();	
+	camera2->SetControllingPad(JOYPAD_B);	//Controlled via joypad A
+	camera2->SetPosition(Vector3(700, 450, 1200)); //And set back slightly so we can see the node at the origin
+
+	renderer.SetCamera2(camera2);	//Set the current renderer camera
 
 	Timer gameTime;
 
@@ -96,7 +124,8 @@ int main(void)	{
 
 		float msec = (float)gameTime.GetTimedMS();
 
-		camera->Update(msec);
+		camera1->Update(msec);
+		camera2->Update(msec);
 
 		root->Update(msec);	//Update our scene hierarchy. This bit is new (previously the renderer handled it)
 

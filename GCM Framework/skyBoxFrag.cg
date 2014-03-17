@@ -1,0 +1,10 @@
+void main
+(
+	in float4 oNormal : TEXCOORD1,
+	uniform samplerCUBE texture,
+	out float4 color_out : COLOR
+)
+{
+	color_out = texCUBE(texture, oNormal);
+	
+}

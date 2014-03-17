@@ -74,12 +74,12 @@ OBJS=\
 	"PS3_SNC_PPU_Debug/Input.obj"\
 	"PS3_SNC_PPU_Debug/main.obj"\
 	"PS3_SNC_PPU_Debug/Mesh.obj"\
+	"PS3_SNC_PPU_Debug/OBJMesh.obj"\
 	"PS3_SNC_PPU_Debug/Renderer.obj"\
 	"PS3_SNC_PPU_Debug/SceneNode.obj"\
 	"PS3_SNC_PPU_Debug/Shader.obj"\
 	"PS3_SNC_PPU_Debug/TextMesh.obj"\
 	"PS3_SNC_PPU_Debug/Timer.obj"\
-	"PS3_SNC_PPU_Debug/OBJMesh.obj"\
 
 CST_OBJS=\
 
@@ -123,6 +123,10 @@ COMPILE: $(OBJS)
 	@echo ProDG Compiling "d:/PS3/GCM Framework/Mesh.cpp"
 	$(CXX) $(CXX_FLAGS) "d:/PS3/GCM Framework/Mesh.cpp" -o $@
 
+"PS3_SNC_PPU_Debug/OBJMesh.obj":
+	@echo ProDG Compiling "d:/PS3/GCM Framework/OBJMesh.cpp"
+	$(CXX) $(CXX_FLAGS) "d:/PS3/GCM Framework/OBJMesh.cpp" -o $@
+
 "PS3_SNC_PPU_Debug/Renderer.obj":
 	@echo ProDG Compiling "d:/PS3/GCM Framework/Renderer.cpp"
 	$(CXX) $(CXX_FLAGS) "d:/PS3/GCM Framework/Renderer.cpp" -o $@
@@ -142,10 +146,6 @@ COMPILE: $(OBJS)
 "PS3_SNC_PPU_Debug/Timer.obj":
 	@echo ProDG Compiling "d:/PS3/GCM Framework/Timer.cpp"
 	$(CXX) $(CXX_FLAGS) "d:/PS3/GCM Framework/Timer.cpp" -o $@
-
-"PS3_SNC_PPU_Debug/OBJMesh.obj":
-	@echo ProDG Compiling "d:/PS3/GCM Framework/OBJMesh.cpp"
-	$(CXX) $(CXX_FLAGS) "d:/PS3/GCM Framework/OBJMesh.cpp" -o $@
 
 LINK: "PS3_SNC_PPU_Debug/GCM Framework.ppu.self"
 

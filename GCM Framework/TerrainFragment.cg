@@ -5,7 +5,7 @@ void main
 	 float3 normal	: TEXCOORD1,
 	 float2 texCoord	: TEXCOORD0,
 	
-	uniform samplerRECT diffTex,
+	uniform samplerRECT texture,
 	
 	uniform float4x4 modelMat,
 	uniform float3 lightPosition,
