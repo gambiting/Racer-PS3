@@ -14,9 +14,9 @@ bool	OBJMesh::LoadOBJMesh(std::string filename)
 	/*
 	Stores the loaded in vertex attributes
 	*/
-	std::vector<float> inputVertices;//Vec3
-	std::vector<float> inputTexCoords;//Vec2
-	std::vector<float> inputNormals;//Vec3
+	std::vector<Vector3> inputVertices;//Vec3
+	std::vector<Vector3> inputTexCoords;//Vec2
+	std::vector<Vector3> inputNormals;//Vec3
 
 	/*
 	SubMeshes temporarily get kept in here
@@ -29,7 +29,7 @@ bool	OBJMesh::LoadOBJMesh(std::string filename)
 	while(!f.eof()) {
 		std::string currentLine;
 		f >> currentLine;
-
+		float tempx, tempy, tempz;
 		if(currentLine == OBJCOMMENT) {		//This line is a comment, ignore it
 			continue;
 		}
@@ -38,29 +38,28 @@ bool	OBJMesh::LoadOBJMesh(std::string filename)
 			inputSubMeshes.push_back(currentMesh);
 		}
 		else if(currentLine == OBJVERT) {	//This line is a vertex
-			float temp;
-			f >> temp;//x
-			inputVertices.push_back(temp);
-			f >> temp;//y
-			inputVertices.push_back(temp);
-			f >> temp;//z
-			inputVertices.push_back(temp);
+			
+			f >> tempx;//x
+			
+			f >> tempy;//y
+			
+			f >> tempz;//z
+			inputVertices.push_back(Vector3(tempx, tempy, tempz));
 		}
 		else if(currentLine == OBJNORM) {	//This line is a Normal!
-			float temp;
-			f >> temp;//nx
-			inputNormals.push_back(temp);
-			f >> temp;//ny
-			inputNormals.push_back(temp);
-			f >> temp;//nz
-			inputNormals.push_back(temp);
+			f >> tempx;//nx
+			
+			f >> tempy;//ny
+			
+			f >> tempz;//nz
+			inputNormals.push_back(Vector3(tempx, tempy, tempz));
+			
 		}
 		else if(currentLine == OBJTEX) {	//This line is a texture coordinate!
-			float temp;
-			f >> temp;//u
-			inputTexCoords.push_back(temp);
-			f >> temp;//v
-			inputTexCoords.push_back(temp);
+			f >> tempx;//u
+			
+			f >> tempy;//v
+			inputTexCoords.push_back(Vector3(tempx, tempy, 0.0f));
 		}
 		else if(currentLine == OBJFACE) {	//This is an object face!
 			if(!currentMesh) {
@@ -161,20 +160,21 @@ bool	OBJMesh::LoadOBJMesh(std::string filename)
 		*/
 		if(!sm->vertIndices.empty()) {
 			OBJMesh*m		= new OBJMesh();
-
+	
 			m->numVertices	= sm->vertIndices.size();
 			m->vertexData =  (Vertex*)GCMRenderer::localMemoryAlign(128, sizeof(Vertex) * m->numVertices);
-			for(unsigned int j = 0; j < sm->vertIndices.size(); ++j) {
-				m->vertexData[j].x = inputVertices[sm->vertIndices[j]-1];
-				m->vertexData[j].y = inputVertices[sm->vertIndices[j]];
-				m->vertexData[j].z = inputVertices[sm->vertIndices[j]+1];
+			for(unsigned int j = 0; j < sm->vertIndices.size(); j++) 
+			{
+					m->vertexData[j].x = inputVertices[sm->vertIndices[j]-1].getX();
+					m->vertexData[j].y = inputVertices[sm->vertIndices[j]-1].getY();
+					m->vertexData[j].z = inputVertices[sm->vertIndices[j]-1].getZ();
 			}
 
 			if(!sm->texIndices.empty())	{
 				
 				for(unsigned int j = 0; j < sm->texIndices.size(); ++j) {
-					m->vertexData[j].u = inputTexCoords[sm->texIndices[j]-1];
-					m->vertexData[j].v = inputTexCoords[sm->texIndices[j]];
+					m->vertexData[j].u = inputTexCoords[sm->texIndices[j]-1].getX();
+					m->vertexData[j].v = inputTexCoords[sm->texIndices[j]-1].getY();
 				}
 			}
 
@@ -184,9 +184,9 @@ bool	OBJMesh::LoadOBJMesh(std::string filename)
 						}
 						else{
 							for(unsigned int j = 0; j < sm->normIndices.size(); j=+3) {
-								m->vertexData[j].nx = inputNormals[sm->normIndices[j]-1];
-								m->vertexData[j].ny = inputNormals[sm->normIndices[j]];
-								m->vertexData[j].nz = inputNormals[sm->normIndices[j]+1];
+								m->vertexData[j].nx = inputNormals[sm->vertIndices[j]-1].getX();
+								m->vertexData[j].ny = inputNormals[sm->vertIndices[j]-1].getY();
+								m->vertexData[j].nz = inputNormals[sm->vertIndices[j]-1].getZ();
 							}
 						}
 			#endif
