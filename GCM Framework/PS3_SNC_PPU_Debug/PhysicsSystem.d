@@ -2,6 +2,3 @@ PS3_SNC_PPU_Debug/PhysicsSystem.obj: "d:/Team Project/Racer-PS3/GCM Framework/Ph
 PS3_SNC_PPU_Debug/PhysicsSystem.obj: "d:/Team Project/Racer-PS3/GCM Framework/PhysicsSystem.h"
 PS3_SNC_PPU_Debug/PhysicsSystem.obj: "d:/Team Project/Racer-PS3/GCM Framework/PhysicsNode.h"
 PS3_SNC_PPU_Debug/PhysicsSystem.obj: "d:/Team Project/Racer-PS3/GCM Framework/SceneNode.h"
-PS3_SNC_PPU_Debug/PhysicsSystem.obj: "d:/Team Project/Racer-PS3/GCM Framework/Camera.h"
-PS3_SNC_PPU_Debug/PhysicsSystem.obj: "d:/Team Project/Racer-PS3/GCM Framework/Input.h"
-PS3_SNC_PPU_Debug/PhysicsSystem.obj: "d:/Team Project/Racer-PS3/GCM Framework/common.h"

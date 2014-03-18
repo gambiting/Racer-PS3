@@ -18,6 +18,7 @@ _-_-_-_-_-_-_-""  ""
 #include "Mesh.h"
 #include "OBJMesh.h"
 #include "TextMesh.h"
+#include "PhysicsNode.h"
 
 class Renderer : public GCMRenderer	{
 public:
@@ -35,8 +36,8 @@ protected:
 	CellGcmTexture* FontTex;
 	float testRadius;
 
-	SceneNode* playerOne;
-	SceneNode* playerTwo;
+	PhysicsNode* playerOne;
+	PhysicsNode* playerTwo;
 
 	Mesh* sphereOne;
 	Mesh* sphereTwo;

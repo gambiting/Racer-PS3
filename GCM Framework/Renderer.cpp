@@ -113,13 +113,13 @@ void Renderer::SetupPlayers() {
 
 	playerDimensions = Vector3(50,50,50);
 
-	playerOne = new SceneNode();
+	playerOne = new PhysicsNode();
 	playerOne->SetMesh(sphereOne);
 	playerOne->SetScale(playerDimensions);
 	playerOne->SetPosition(Vector3(0, 500, 0));
 	root->AddChild(*playerOne);
 
-	playerTwo = new SceneNode();
+	playerTwo = new PhysicsNode();
 	playerTwo->SetMesh(sphereTwo);
 	playerTwo->SetScale(playerDimensions);
 	playerTwo->SetPosition(Vector3(500, 500, 0));
