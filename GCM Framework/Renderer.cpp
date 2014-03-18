@@ -6,9 +6,13 @@ Renderer::Renderer(void)	{
 	with Cg, and drawing textured objects. 
 	*/
 	quad = Mesh::GenerateQuad();
+	testColour = Vector4(1.0,1.0,1.0,1.0);
 
 	skyVert	= new VertexShader("/skyBoxVert.vpo");
 	skyFrag	= new FragmentShader("/skyBoxFrag.fpo");
+
+	lightVert	= new VertexShader("/TerrainVert.vpo");
+	lightFrag	= new FragmentShader("/TerrainFrag.fpo");
 
 	basicVert		= new VertexShader("/vertex.vpo");
 	basicFrag	= new FragmentShader("/fragment.fpo");
@@ -16,15 +20,18 @@ Renderer::Renderer(void)	{
 	//VertexShader* lightVert = new VertexShader("/TerrainVertex.cg");
 	//FragmentShader* lightFrag = new FragmentShader("/TerrainFragment.cg");
 
-	this->SetCurrentShader(*basicVert,*basicFrag);
+	this->SetCurrentShader(*lightVert,*lightFrag);
+
+	//DrawLoading();
 
 	//CellGcmTexture*g = LoadGTF("/OutputCube.gtf");
-	testRadius = 25.0f;
+	testRadius = 2500.0f;
 
 	FontTex = GCMRenderer::LoadGTF("/tahoma.gtf");
 	basicFont = new Font(FontTex, 16, 16);
-
+	
 	cubeMap = GCMRenderer::LoadGTF("/cubemap.gtf");
+	quad->SetDefaultTexture(*cubeMap);
 	/*
 	Projection matrix...0.7853982 is 45 degrees in radians.
 	*/
@@ -33,6 +40,9 @@ Renderer::Renderer(void)	{
 
 Renderer::~Renderer(void)	{
 	delete basicFont;
+	
+	delete tempQuad;
+	delete tempTex;
 }
 
 /*
@@ -46,11 +56,16 @@ void Renderer::RenderScene() {
 	//std::cout << "RenderScene!" << std::endl;
 	ClearBuffer();
 
+	
+	
+
 	SetHalfViewport1();
+	//drawSkyBox();
 	setCurrentCamera(camera1);
 	DrawScene();
 
 	SetHalfViewport2();
+	//drawSkyBox();
 	setCurrentCamera(camera2);
 	DrawScene();
 
@@ -90,16 +105,19 @@ void Renderer::DrawText(const std::string &text, const Vector3 &position, const 
 }
 void Renderer::drawSkyBox()
 {
+	
 	//May need to change to VPO and FPO
 	cellGcmSetDepthMask(CELL_GCM_FALSE);
 	this->SetCurrentShader(*skyVert,*skyFrag);
+
 	currentVert->UpdateShaderMatrices(modelMatrix, viewMatrix, projMatrix);
-	SetTextureSampler(currentFrag->GetParameter("texture"), cubeMap);
+	SetTextureSampler(currentFrag->GetParameter("cubeTex"), cubeMap);
 
-	quad->Draw(*skyVert,*skyFrag);
+	quad->Draw(*currentVert,*currentFrag);
 
-	this->SetCurrentShader(*basicVert,*basicFrag);
+	this->SetCurrentShader(*lightVert,*lightFrag);
 	cellGcmSetDepthMask(CELL_GCM_TRUE);
+	
 }
 
 void Renderer::DrawScene()
@@ -109,22 +127,26 @@ void Renderer::DrawScene()
 	
 	cellGcmSetDepthTestEnable(CELL_GCM_TRUE);
 	cellGcmSetDepthFunc(CELL_GCM_LESS);
+	
+	
 
 	modelMatrix = Matrix4::identity(); 
+	
+	
 
-	if(camera1) {
+	if(currentCamera) {
 		viewMatrix = currentCamera->BuildViewMatrix();
 	}
 	else{
 		viewMatrix = Matrix4::identity();
 	}
-	drawSkyBox();
+	
 	currentVert->UpdateShaderMatrices(modelMatrix, viewMatrix, projMatrix);
-
-	//currentFrag->SetParameter("lightPosition", (float*)&camera->GetPosition());//.getX());
-	//currentFrag->SetParameter("cameraPos", (float*)&camera->GetPosition());
-	//currentFrag->SetParameter("lightRadius", &testRadius);
-	//currentFrag->SetParameter("lightColour", &float{1.0,1.0,1.0});
+	
+	currentFrag->SetParameter("lightPosition", (float*)&currentCamera->GetPosition());//.getX());
+	currentFrag->SetParameter("cameraPos", (float*)&currentCamera->GetPosition());
+	currentFrag->SetParameter("lightRadius", &testRadius);
+	currentFrag->SetParameter("lightColour", (float*)&testColour);
 
 	if(root) {
 		DrawNode(root);
@@ -133,4 +155,26 @@ void Renderer::DrawScene()
 	//projMatrix	= Matrix4::perspective(0.7853982, screenRatio, 1.0f, 20000.0f);	//CHANGED TO THIS!!
 
 	
+}
+
+void Renderer::DrawLoading()
+{
+	ClearBuffer();
+
+	viewMatrix=Matrix4::identity();
+	projMatrix = Matrix4::orthographic(-1.0f,1.0f,(float)screenWidth, 0.0f,(float)screenHeight, 0.0f);
+	
+	modelMatrix = Matrix4::identity();
+
+	tempQuad = Mesh::GenerateQuad();
+	tempTex = GCMRenderer::LoadGTF("/loading512.gtf");
+	tempQuad->SetDefaultTexture(*tempTex);
+
+	currentVert->UpdateShaderMatrices(modelMatrix, viewMatrix, projMatrix);
+	tempQuad->Draw(*currentVert, *currentFrag);
+
+	SwapBuffers();
+
+
+	//projMatrix = Matrix4::perspective(0.7853982, screenRatio, 1.0f, 20000.0f);
 }
