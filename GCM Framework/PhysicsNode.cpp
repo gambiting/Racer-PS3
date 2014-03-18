@@ -13,5 +13,21 @@ PhysicsNode::PhysicsNode(void)	{
 
 }
 
+PhysicsNode::PhysicsNode(Vector3 s, Vector3 p) {
+	scale = s;
+	position = p;
+	SetPosition(position);
+}
+
 PhysicsNode::~PhysicsNode(void) {
+}
+
+void PhysicsNode::UpdatePosition(float msec) {
+
+	//Linear movement
+	Vector3 acceleration;
+
+	acceleration = m_force * m_invMass  + gravity;
+
+
 }

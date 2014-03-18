@@ -81,7 +81,7 @@ public:
 	static void*	localMemoryAlign(const uint32_t alignment, const uint32_t size);
 	static void		setLocalMem(uint32_t to);
 
-	virtual void RenderScene() = 0;
+	virtual void RenderScene(float msec) = 0;
 
 	void	SetCamera(Camera* n);
 	void	SetRootNode(SceneNode * r);

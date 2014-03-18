@@ -98,7 +98,7 @@ int main(void)	{
 
 		root->Update(msec);	//Update our scene hierarchy. This bit is new (previously the renderer handled it)
 
-		renderer.RenderScene();	//Render the scene
+		renderer.RenderScene(msec);	//Render the scene
 
 		
 	}

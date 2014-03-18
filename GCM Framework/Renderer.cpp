@@ -5,6 +5,7 @@ Renderer::Renderer(void)	{
 	You're provided with a very basic vertex / fragment shader, to get you started
 	with Cg, and drawing textured objects. 
 	*/
+
 	VertexShader* basicVert		= new VertexShader("/vertex.vpo");
 	FragmentShader* basicFrag	= new FragmentShader("/fragment.fpo");
 
@@ -45,10 +46,10 @@ render some stuff, then swap the buffers. All that's different is
 some slightly different matrix access.
 
 */
-void Renderer::RenderScene() {
+void Renderer::RenderScene(float msec) {
 	//std::cout << "RenderScene!" << std::endl;
-	
-	playerOne->SetPosition(playerOne->GetPosition() + Vector3(0.0f, 0.1f, 0.0f));
+
+	playerOne->UpdatePosition(msec);
 
 	SetViewport();
 	ClearBuffer();
@@ -113,16 +114,15 @@ void Renderer::SetupPlayers() {
 
 	playerDimensions = Vector3(50,50,50);
 
-	playerOne = new PhysicsNode();
+	playerOne = new PhysicsNode(playerDimensions);
 	playerOne->SetMesh(sphereOne);
-	playerOne->SetScale(playerDimensions);
 	playerOne->SetPosition(Vector3(0, 500, 0));
 	root->AddChild(*playerOne);
 
-	playerTwo = new PhysicsNode();
+	playerTwo = new PhysicsNode(playerDimensions);
 	playerTwo->SetMesh(sphereTwo);
-	playerTwo->SetScale(playerDimensions);
 	playerTwo->SetPosition(Vector3(500, 500, 0));
 	root->AddChild(*playerTwo);
+
 
 }

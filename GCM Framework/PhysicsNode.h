@@ -1,4 +1,5 @@
 #include "SceneNode.h"
+#include "Camera.h"
 
 #pragma once
 
@@ -13,6 +14,9 @@ class PhysicsNode : public SceneNode {
 public:
 
 	PhysicsNode(void);
+	PhysicsNode(Vector3 s) { scale = s; }
+	PhysicsNode(Vector3 s, Vector3 p);		//Scale & position
+
 	virtual ~PhysicsNode(void);
 
 	void			SetScale(Vector3 s)					{ scale = s; }
@@ -24,23 +28,25 @@ public:
 	Vector3			GetScale() const					{ return scale; }
 	Vector3			GetPosition() const					{ return position; }
 
+	void UpdatePosition(float msec);
+
 protected:
 	Vector3		scale;
 	Vector3		position;
-	Vector3 gravity;
-	float radius;
+	Vector3		gravity;
+	float		radius;
 	
 	//<----LINEAR---->
-	Vector3 m_position;
-	Vector3 m_linearVelocity;
-	Vector3 m_force;
-	float m_invMass;
+	Vector3		m_position;
+	Vector3		m_linearVelocity;
+	Vector3		m_force;
+	float		m_invMass;
 
 	//<----ANGULAR---->
-	Quat m_orientation;
-	Vector3 m_angularVelocity;
-	Vector3 m_torque;
-	Matrix4 m_invInertia;
+	Quat		m_orientation;
+	Vector3		m_angularVelocity;
+	Vector3		m_torque;
+	Matrix4		m_invInertia;
 
 	SceneNode* target;
 };

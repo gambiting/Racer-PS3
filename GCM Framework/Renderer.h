@@ -18,6 +18,7 @@ _-_-_-_-_-_-_-""  ""
 #include "Mesh.h"
 #include "OBJMesh.h"
 #include "TextMesh.h"
+#include "timer.h"
 #include "PhysicsNode.h"
 
 class Renderer : public GCMRenderer	{
@@ -25,7 +26,7 @@ public:
 	Renderer(void);
 	~Renderer(void);
 
-	virtual void RenderScene();
+	virtual void RenderScene(float msec);
 
 	void SetupPlayers(); //Only for testing of physics and whatnot.
 
