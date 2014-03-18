@@ -14,7 +14,7 @@ Renderer::Renderer(void)	{
 
 	this->SetCurrentShader(*basicVert,*basicFrag);
 
-	//CellGcmTexture*g = LoadGTF("/OutputCube.gtf");
+	CellGcmTexture* g = LoadGTF("/OutputCube.gtf");
 	testRadius = 25.0f;
 
 	std::cout << "Loading sphere ONE in renderer" << std::endl;
@@ -49,6 +49,7 @@ some slightly different matrix access.
 void Renderer::RenderScene(float msec) {
 	//std::cout << "RenderScene!" << std::endl;
 
+	playerOne->SetPosition(playerOne->GetPosition() + Vector3(0.0f, 0.1f, 0.0f));
 	playerOne->UpdatePosition(msec);
 
 	SetViewport();
@@ -77,6 +78,7 @@ void Renderer::RenderScene(float msec) {
 	if(root) {
 		DrawNode(root);
 	}
+	//triangle->Draw(&currentVert, &currentFrag);
 	DrawText("BLOODY PS3", Vector3(0, screenHeight/1.1, 0), 16.0f);
 	projMatrix	= Matrix4::perspective(0.7853982, screenRatio, 1.0f, 20000.0f);	//CHANGED TO THIS!!
 
@@ -123,6 +125,4 @@ void Renderer::SetupPlayers() {
 	playerTwo->SetMesh(sphereTwo);
 	playerTwo->SetPosition(Vector3(500, 500, 0));
 	root->AddChild(*playerTwo);
-
-
 }

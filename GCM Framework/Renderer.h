@@ -44,5 +44,4 @@ protected:
 	Mesh* sphereTwo;
 
 	Vector3 playerDimensions;
-
 };
