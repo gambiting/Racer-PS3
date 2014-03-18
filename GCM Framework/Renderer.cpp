@@ -49,7 +49,7 @@ some slightly different matrix access.
 void Renderer::RenderScene(float msec) {
 	//std::cout << "RenderScene!" << std::endl;
 
-	playerOne->SetPosition(playerOne->GetPosition() + Vector3(0.0f, 0.1f, 0.0f));
+	//playerOne->SetPosition(playerOne->GetPosition() + Vector3(0.0f, -0.00098f, 0.0f));
 	playerOne->UpdatePosition(msec);
 
 	SetViewport();
@@ -118,11 +118,20 @@ void Renderer::SetupPlayers() {
 
 	playerOne = new PhysicsNode(playerDimensions);
 	playerOne->SetMesh(sphereOne);
-	playerOne->SetPosition(Vector3(0, 500, 0));
+	playerOne->SetPosition(Vector3(0, 1500, 0));
 	root->AddChild(*playerOne);
 
 	playerTwo = new PhysicsNode(playerDimensions);
 	playerTwo->SetMesh(sphereTwo);
-	playerTwo->SetPosition(Vector3(500, 500, 0));
+	playerTwo->SetPosition(Vector3(500, 1500, 0));
 	root->AddChild(*playerTwo);
+}
+
+//Something nice and basic to put the players back at the start.
+void Renderer::ResetPlayers() {
+	playerOne->SetPosition(Vector3(0, 1500, 0));
+	playerOne->SetLinearVelocity(Vector3(0,0,0));
+	
+	playerTwo->SetPosition(Vector3(500, 1500, 0));
+	playerTwo->SetLinearVelocity(Vector3(0,0,0));
 }

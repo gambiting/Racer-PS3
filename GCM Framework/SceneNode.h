@@ -36,6 +36,11 @@ public:
 
 	virtual void	Update(float msec);
 
+	void VectorToZero(Vector3 &v) {
+		v.setX(0.0f);
+		v.setY(0.0f);
+		v.setZ(0.0f);
+	}
 
 	void			AddChild(SceneNode& s);
 

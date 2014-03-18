@@ -14,25 +14,25 @@ class PhysicsNode : public SceneNode {
 public:
 
 	PhysicsNode(void);
-	PhysicsNode(Vector3 s) { scale = s; }
+	PhysicsNode(Vector3 s);
 	PhysicsNode(Vector3 s, Vector3 p);		//Scale & position
 
 	virtual ~PhysicsNode(void);
 
 	void			SetScale(Vector3 s)					{ scale = s; }
 	void			SetPosition(Vector3 pos)			{ 
-		position = pos;
-		SetTransform(Matrix4::translation(position) * Matrix4::scale(scale));
+		m_position = pos;
+		SetTransform(Matrix4::translation(m_position) * Matrix4::scale(scale));
 	}
+	void			SetLinearVelocity(Vector3 vel)		{m_linearVelocity = vel; }
 
 	Vector3			GetScale() const					{ return scale; }
-	Vector3			GetPosition() const					{ return position; }
+	Vector3			GetPosition() const					{ return m_position; }
 
 	void UpdatePosition(float msec);
 
 protected:
 	Vector3		scale;
-	Vector3		position;
 	Vector3		gravity;
 	float		radius;
 	

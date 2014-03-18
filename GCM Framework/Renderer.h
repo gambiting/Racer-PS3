@@ -29,6 +29,7 @@ public:
 	virtual void RenderScene(float msec);
 
 	void SetupPlayers(); //Only for testing of physics and whatnot.
+	void ResetPlayers();
 
 protected:
 

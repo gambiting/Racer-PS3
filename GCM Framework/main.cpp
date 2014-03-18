@@ -32,6 +32,12 @@ void select_button()		{
 	camera->SetYaw(0.0f);
 }
 
+void cross_button() {
+}
+
+void square_button() {
+	renderer.ResetPlayers();
+}
 
 /*
 Here's a quick example program. It'll load up a single SceneNode
@@ -48,7 +54,9 @@ int main(void)	{
 	Input::Initialise();
 	//If the start button is pressed, call this function!
 	Input::SetPadFunction(INPUT_START,	start_button);
-	Input::SetPadFunction(INPUT_START,	select_button);
+	Input::SetPadFunction(INPUT_SELECT,	select_button);
+	Input::SetPadFunction(INPUT_SQUARE, square_button);
+	Input::SetPadFunction(INPUT_CROSS, cross_button);
 
 	//Make a new quad mesh, and set its texture to a newcastle logo
 	//Mesh* m = Mesh::GenerateQuad();
