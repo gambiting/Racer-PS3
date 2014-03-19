@@ -2,6 +2,8 @@
 
 PhysicsNode::PhysicsNode(void)	{
 
+	ignoringGravity = false;
+
 	target			= NULL;
 
 	m_linearVelocity	= Vector3(0.0f, 0.0f, 0.0f);
@@ -15,13 +17,17 @@ PhysicsNode::PhysicsNode(void)	{
 
 }
 
-PhysicsNode::PhysicsNode(Vector3 s) {
-	scale = s;
+PhysicsNode::PhysicsNode(float r) {
+	
+	radius = r;
+	scale = Vector3(r,r,r);
+
+	ignoringGravity = false;
 
 	target			= NULL;
 
 	m_linearVelocity	= Vector3(0.0f, 0.0f, 0.0f);
-	m_invMass			= 1.0f / 20.0f;
+	m_invMass			= 1.0f / r;
 	m_invInertia		= Matrix4();
 
 	gravity			= Vector3(0.0f, GRAVITY, 0.0f);
@@ -30,14 +36,17 @@ PhysicsNode::PhysicsNode(Vector3 s) {
 	VectorToZero(m_force);
 }
 
-PhysicsNode::PhysicsNode(Vector3 s, Vector3 p) {
-	scale = s;
+PhysicsNode::PhysicsNode(float r, Vector3 p) {
+	radius = r;
+	scale = Vector3(r,r,r);
 	SetPosition(m_position);
 
+	ignoringGravity = false;
+
 	target			= NULL;
 
 	m_linearVelocity	= Vector3(0.0f, 0.0f, 0.0f);
-	m_invMass			= 1.0f / 20.0f;
+	m_invMass			= 1.0f / r;
 	m_invInertia		= Matrix4();
 
 	gravity			= Vector3(0.0f, GRAVITY, 0.0f);
@@ -54,7 +63,11 @@ void PhysicsNode::UpdatePosition(float msec) {
 	//Linear movement
 	Vector3 acceleration;
 
-	acceleration = m_force * m_invMass + gravity;
+	if (ignoringGravity) {
+		acceleration = m_force * m_invMass;
+	} else {
+		acceleration = m_force * m_invMass + gravity;
+	}
 
 	m_linearVelocity = m_linearVelocity + acceleration * msec;
 	m_position = m_position + m_linearVelocity * msec;
@@ -62,4 +75,12 @@ void PhysicsNode::UpdatePosition(float msec) {
 
 	VectorToZero(m_force);
 
+}
+
+void PhysicsNode::GravityOn() {
+	ignoringGravity = false;
+}
+
+void PhysicsNode::GravityOff() {
+	ignoringGravity = true;
 }

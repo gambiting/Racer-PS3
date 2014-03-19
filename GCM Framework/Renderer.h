@@ -27,9 +27,13 @@ public:
 	~Renderer(void);
 
 	virtual void RenderScene(float msec);
+	virtual void UpdateScene(float msec);
 
 	void SetupPlayers(); //Only for testing of physics and whatnot.
 	void ResetPlayers();
+	void ActivatePlayers();
+	
+	void AddSphere();
 
 protected:
 
@@ -44,5 +48,6 @@ protected:
 	Mesh* sphereOne;
 	Mesh* sphereTwo;
 
-	Vector3 playerDimensions;
+	std::vector<PhysicsNode*> firedSpheres;
+
 };

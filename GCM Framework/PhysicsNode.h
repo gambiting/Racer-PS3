@@ -14,8 +14,8 @@ class PhysicsNode : public SceneNode {
 public:
 
 	PhysicsNode(void);
-	PhysicsNode(Vector3 s);
-	PhysicsNode(Vector3 s, Vector3 p);		//Scale & position
+	PhysicsNode(float r);
+	PhysicsNode(float r, Vector3 p);		//Radius (scale) & position
 
 	virtual ~PhysicsNode(void);
 
@@ -31,7 +31,13 @@ public:
 
 	void UpdatePosition(float msec);
 
+	void GravityOn();
+	void GravityOff();
+
 protected:
+
+	bool ignoringGravity;
+
 	Vector3		scale;
 	Vector3		gravity;
 	float		radius;

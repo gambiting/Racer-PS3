@@ -33,10 +33,15 @@ void select_button()		{
 }
 
 void cross_button() {
+	renderer.AddSphere();
 }
 
 void square_button() {
 	renderer.ResetPlayers();
+}
+
+void triangle_button() {
+	renderer.ActivatePlayers();
 }
 
 /*
@@ -57,6 +62,7 @@ int main(void)	{
 	Input::SetPadFunction(INPUT_SELECT,	select_button);
 	Input::SetPadFunction(INPUT_SQUARE, square_button);
 	Input::SetPadFunction(INPUT_CROSS, cross_button);
+	Input::SetPadFunction(INPUT_TRIANGLE, triangle_button);
 
 	//Make a new quad mesh, and set its texture to a newcastle logo
 	//Mesh* m = Mesh::GenerateQuad();
@@ -101,6 +107,8 @@ int main(void)	{
 		//logo->SetTransform(/*Matrix4::rotationX(DegToRad(-spin)) */ Matrix4::scale(Vector3(10,10,10)));
 
 		float msec = (float)gameTime.GetTimedMS();
+
+		renderer.UpdateScene(msec);
 
 		camera->Update(msec);
 
