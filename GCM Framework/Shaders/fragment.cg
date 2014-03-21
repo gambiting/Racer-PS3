@@ -13,6 +13,15 @@ void main
 	out float4 color_out : COLOR
 )
 {	
+	
 	color_out = texRECT(texture, texcoord);// * texRECT(textureTwo, texcoord);
+	float f = 0;
+	f+=color_out.x;
+	f+=color_out.y;
+	f+=color_out.z;
+	if(f <= 0.7)
+	{
+		discard;
+	}
 	//color_out = float4(1.0,1.0,0.0,1.0);
 }

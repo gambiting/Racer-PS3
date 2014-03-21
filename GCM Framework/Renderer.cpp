@@ -64,7 +64,7 @@ void Renderer::RenderScene() {
 	setCurrentCamera(camera1);
 	drawSkyBox();
 	DrawScene();
-	DrawText("Player 1", Vector3(0, screenHeight/1.1, 0), 16.0f);
+	DrawText("Player 1", Vector3(0, screenHeight/1.1, 0), 26.0f);
 	projMatrix	= Matrix4::perspective(0.7853982, screenRatio, 1.0f, 20000.0f);
 
 	SetHalfViewport2();
@@ -72,7 +72,7 @@ void Renderer::RenderScene() {
 	setCurrentCamera(camera2);
 	drawSkyBox();
 	DrawScene();
-	DrawText("Player 2", Vector3(0, screenHeight/1.1, 0), 16.0f);
+	DrawText("Player 2", Vector3(0, screenHeight/1.1, 0), 26.0f);
 	projMatrix	= Matrix4::perspective(0.7853982, screenRatio, 1.0f, 20000.0f);
 
 	SwapBuffers();
