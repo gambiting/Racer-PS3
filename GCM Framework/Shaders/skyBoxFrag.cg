@@ -1,0 +1,14 @@
+void main
+(
+	in float3 oNormal : TEXCOORD1,
+	in float2 oTexCoord : TEXCOORD0,
+	uniform samplerCUBE cubeTex,
+	uniform samplerRECT texture,
+	
+	out float4 color_out : COLOR
+)
+{
+	color_out = texCUBE(cubeTex, normalize(oNormal));
+	color_out += texRECT(texture, oTexCoord);
+	
+}

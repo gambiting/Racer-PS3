@@ -140,12 +140,12 @@ bool	OBJMesh::LoadOBJMesh(std::string filename)
 			}
 		}
 		else{
-			std::cout << "OBJMesh::LoadOBJMesh Unknown file data:" << currentLine << std::endl;
+			//std::cout << "OBJMesh::LoadOBJMesh Unknown file data:" << currentLine << std::endl;
 		}
 	}
 
 	f.close();
-	std::cout<<"OBJMesh:- Temp Data Load Successfull";
+	std::cout<<"OBJMesh:- Temp Data Load Successfull\n";
 
 	//11/03/2014 - above works, future errors derrived from editing above or code bellow
 
@@ -193,18 +193,23 @@ bool	OBJMesh::LoadOBJMesh(std::string filename)
 				}
 			}
 
-			#ifdef OBJ_USE_NORMALS
+			
 						if(sm->normIndices.empty()) {
-							m->GenerateNormals();
+							m->GenerateNormals((unsigned short*)&sm->vertIndices[0]);
+							printf("OBJMesh:- Normals Generated\n");
 						}
 						else{
-							for(unsigned int j = 0; j < sm->normIndices.size(); j=+3) {
-								m->vertexData[j].nx = inputNormals[sm->vertIndices[j]-1].getX();
-								m->vertexData[j].ny = inputNormals[sm->vertIndices[j]-1].getY();
-								m->vertexData[j].nz = inputNormals[sm->vertIndices[j]-1].getZ();
+							printf("OBJMesh:- Normals Loading\n");
+							for(unsigned int j = 0; j < sm->normIndices.size(); j++) 
+							{
+								m->vertexData[j].nx = inputNormals[sm->normIndices[j]-1].getX();
+								m->vertexData[j].ny = inputNormals[sm->normIndices[j]-1].getY();
+								m->vertexData[j].nz = inputNormals[sm->normIndices[j]-1].getZ();
 							}
+							printf("OBJMesh:- Normals Loaded\n");
 						}
-			#endif
+			
+			
 //#ifdef OBJ_USE_TANGENTS_BUMPMAPS
 //			m->GenerateTangents();
 //#endif

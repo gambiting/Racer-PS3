@@ -598,7 +598,7 @@ CellGcmTexture* GCMRenderer::LoadGTF(std::string filename) {
 	GTF textures can technically have multiple textures in it, for now
 	lets just load 1
 	*/
-	for(int i = 0; i < min(1,header.NumTexture); ++i) {
+	for(int i = 0; i < header.NumTexture; ++i) {
 		memcpy((void*)texture,(void*)&(attributes[i].tex), sizeof(CellGcmTexture));
 
 		file.seekg(attributes[i].OffsetToTex);
@@ -638,7 +638,9 @@ Set the sampler called 'diffuse' to have no texture
 void	GCMRenderer::SetTextureSampler(CGparameter sampler, const CellGcmTexture *texture) {
 	if(!sampler) {
 		return; //cellGcmCgGetParameterResource dies on an invalid parameter!
+		printf("\n\n~Texture Sampler:- Invalid Sampler.... Bugger~\n\n");
 	}
+
 	//Get a pointer to the actual bound texture unit for this sampler
 	CGresource unitResource = (CGresource)(cellGcmCgGetParameterResource(currentFrag->program, sampler) - CG_TEXUNIT0);
 
@@ -646,6 +648,7 @@ void	GCMRenderer::SetTextureSampler(CGparameter sampler, const CellGcmTexture *t
 
 	//If we want to turn off a texture unit, for example
 	if(!texture) {
+		printf("\n\n~Texture Sampler:- Invalid Texture.... Bugger~\n\n");
 		cellGcmSetTextureControl(unitResource, CELL_GCM_FALSE, 0, 0, 0); //Disable sampling on the TU
 		return;
 	}

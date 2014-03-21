@@ -8,14 +8,14 @@ Renderer::Renderer(void)	{
 	quad = Mesh::GenerateQuad();
 	testColour = Vector4(1.0,1.0,1.0,1.0);
 
-	skyVert	= new VertexShader("/skyBoxVert.vpo");
-	skyFrag	= new FragmentShader("/skyBoxFrag.fpo");
+	skyVert	= new VertexShader("/Shaders/skyBoxVert.vpo");
+	skyFrag	= new FragmentShader("/Shaders/skyBoxFrag.fpo");
 
-	lightVert	= new VertexShader("/TerrainVert.vpo");
-	lightFrag	= new FragmentShader("/TerrainFrag.fpo");
+	lightVert	= new VertexShader("/Shaders/TerrainVert.vpo");
+	lightFrag	= new FragmentShader("/Shaders/TerrainFrag.fpo");
 
-	basicVert		= new VertexShader("/vertex.vpo");
-	basicFrag	= new FragmentShader("/fragment.fpo");
+	//basicVert		= new VertexShader("/Shaders/vertex.vpo");
+	//basicFrag	= new FragmentShader("/Shaders/fragment.fpo");
 
 	//VertexShader* lightVert = new VertexShader("/TerrainVertex.cg");
 	//FragmentShader* lightFrag = new FragmentShader("/TerrainFragment.cg");
@@ -25,13 +25,13 @@ Renderer::Renderer(void)	{
 	//DrawLoading();
 
 	//CellGcmTexture*g = LoadGTF("/OutputCube.gtf");
-	testRadius = 2500.0f;
+	testRadius = 1000.0f;
 
 	FontTex = GCMRenderer::LoadGTF("/tahoma.gtf");
 	basicFont = new Font(FontTex, 16, 16);
 	
 	cubeMap = GCMRenderer::LoadGTF("/cubemap.gtf");
-	quad->SetDefaultTexture(*cubeMap);
+	quad->SetDefaultTexture(*GCMRenderer::LoadGTF("/FT_Logo2.gtf"));
 	/*
 	Projection matrix...0.7853982 is 45 degrees in radians.
 	*/
@@ -60,13 +60,15 @@ void Renderer::RenderScene() {
 	
 
 	SetHalfViewport1();
-	//drawSkyBox();
+	
 	setCurrentCamera(camera1);
+	drawSkyBox();
 	DrawScene();
 
 	SetHalfViewport2();
-	//drawSkyBox();
+	
 	setCurrentCamera(camera2);
+	drawSkyBox();
 	DrawScene();
 
 	SwapBuffers();
@@ -106,16 +108,23 @@ void Renderer::DrawText(const std::string &text, const Vector3 &position, const 
 void Renderer::drawSkyBox()
 {
 	
-	//May need to change to VPO and FPO
+	
 	cellGcmSetDepthMask(CELL_GCM_FALSE);
-	this->SetCurrentShader(*skyVert,*skyFrag);
 
+	this->SetCurrentShader(*skyVert,*skyFrag);
+	if(currentCamera) {
+		viewMatrix = currentCamera->BuildViewMatrix();
+	}
+	else{
+		viewMatrix = Matrix4::identity();
+	}
 	currentVert->UpdateShaderMatrices(modelMatrix, viewMatrix, projMatrix);
 	SetTextureSampler(currentFrag->GetParameter("cubeTex"), cubeMap);
 
 	quad->Draw(*currentVert,*currentFrag);
 
 	this->SetCurrentShader(*lightVert,*lightFrag);
+
 	cellGcmSetDepthMask(CELL_GCM_TRUE);
 	
 }
@@ -143,7 +152,8 @@ void Renderer::DrawScene()
 	
 	currentVert->UpdateShaderMatrices(modelMatrix, viewMatrix, projMatrix);
 	
-	currentFrag->SetParameter("lightPosition", (float*)&currentCamera->GetPosition());//.getX());
+	currentFrag->SetParameter("lightPosition1", (float*)&camera1->GetPosition());//.getX());
+	currentFrag->SetParameter("lightPosition2", (float*)&camera2->GetPosition());//.getX());
 	currentFrag->SetParameter("cameraPos", (float*)&currentCamera->GetPosition());
 	currentFrag->SetParameter("lightRadius", &testRadius);
 	currentFrag->SetParameter("lightColour", (float*)&testColour);
@@ -176,5 +186,5 @@ void Renderer::DrawLoading()
 	SwapBuffers();
 
 
-	//projMatrix = Matrix4::perspective(0.7853982, screenRatio, 1.0f, 20000.0f);
+	projMatrix = Matrix4::perspective(0.7853982, screenRatio, 1.0f, 20000.0f);
 }

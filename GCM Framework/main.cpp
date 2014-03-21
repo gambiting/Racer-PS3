@@ -60,8 +60,11 @@ int main(void)	{
 	h->SetDefaultTexture(*GCMRenderer::LoadGTF("/Sand.gtf"));
 	
 	printf("Beginning OBJ Mesh Loading\n");
-	Mesh* thing = new OBJMesh(SYS_APP_HOME "/BR_Kyogre.obj");
-	thing->SetDefaultTexture(*GCMRenderer::LoadGTF("/kyogre_0_0.gtf"));
+	Mesh* thing1 = new OBJMesh(SYS_APP_HOME "/BR_Kyogre.obj");
+	thing1->SetDefaultTexture(*GCMRenderer::LoadGTF("/kyogre_0_0.gtf"));
+
+	Mesh* thing2 = new OBJMesh(SYS_APP_HOME "/Groudon.obj");
+	thing2->SetDefaultTexture(*GCMRenderer::LoadGTF("/groudon_0_0.gtf"));
 
 	Mesh* tree = new OBJMesh(SYS_APP_HOME "/tree.obj");
 	tree->SetDefaultTexture(*GCMRenderer::LoadGTF("/grass.gtf"));
@@ -75,9 +78,13 @@ int main(void)	{
 	//h_map->SetTransform(/*Matrix4::rotationX(DegToRad(-spin)) */ Matrix4::scale(Vector3(10,10,10)));
 
 	
-	SceneNode* thing_node = new SceneNode();
-	thing_node->SetMesh(thing);
-	thing_node->SetTransform(Matrix4::translation(Vector3(700,300,500)) * Matrix4::scale(Vector3(10,10,10)) * Matrix4::rotationX(DegToRad(90)));
+	SceneNode* thing_node1 = new SceneNode();
+	thing_node1->SetMesh(thing1);
+	thing_node1->SetTransform(Matrix4::translation(Vector3(700,300,500)) * Matrix4::scale(Vector3(10,10,10)) * Matrix4::rotationX(DegToRad(90)));
+	
+	SceneNode* thing_node2 = new SceneNode();
+	thing_node2->SetMesh(thing2);
+	thing_node2->SetTransform(Matrix4::translation(Vector3(700,300,1500)) * Matrix4::scale(Vector3(10,10,10)) * Matrix4::rotationY(DegToRad(180)));
 	
 	SceneNode* tree_node1 = new SceneNode();
 	tree_node1->SetMesh(tree);
@@ -93,7 +100,8 @@ int main(void)	{
 
 
 	root->AddChild(*h_map);
-	root->AddChild(*thing_node);
+	root->AddChild(*thing_node1);
+	root->AddChild(*thing_node2);
 	root->AddChild(*tree_node1);
 	root->AddChild(*tree_node2);
 	root->AddChild(*tree_node3);
