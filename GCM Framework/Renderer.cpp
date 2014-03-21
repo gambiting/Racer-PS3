@@ -8,14 +8,14 @@ Renderer::Renderer(void)	{
 	quad = Mesh::GenerateQuad();
 	testColour = Vector4(1.0,1.0,1.0,1.0);
 
-	skyVert	= new VertexShader("/Shaders/skyBoxVert.vpo");
-	skyFrag	= new FragmentShader("/Shaders/skyBoxFrag.fpo");
+	skyVert			= new VertexShader("/Shaders/skyBoxVert.vpo");
+	skyFrag			= new FragmentShader("/Shaders/skyBoxFrag.fpo");
 
-	lightVert	= new VertexShader("/Shaders/TerrainVert.vpo");
-	lightFrag	= new FragmentShader("/Shaders/TerrainFrag.fpo");
+	lightVert		= new VertexShader("/Shaders/TerrainVert.vpo");
+	lightFrag		= new FragmentShader("/Shaders/TerrainFrag.fpo");
 
-	//basicVert		= new VertexShader("/Shaders/vertex.vpo");
-	//basicFrag	= new FragmentShader("/Shaders/fragment.fpo");
+	basicVert		= new VertexShader("/Shaders/vertex.vpo");
+	basicFrag		= new FragmentShader("/Shaders/fragment.fpo");
 
 	//VertexShader* lightVert = new VertexShader("/TerrainVertex.cg");
 	//FragmentShader* lightFrag = new FragmentShader("/TerrainFragment.cg");
@@ -64,12 +64,16 @@ void Renderer::RenderScene() {
 	setCurrentCamera(camera1);
 	drawSkyBox();
 	DrawScene();
+	DrawText("Player 1", Vector3(0, screenHeight/1.1, 0), 16.0f);
+	projMatrix	= Matrix4::perspective(0.7853982, screenRatio, 1.0f, 20000.0f);
 
 	SetHalfViewport2();
 	
 	setCurrentCamera(camera2);
 	drawSkyBox();
 	DrawScene();
+	DrawText("Player 2", Vector3(0, screenHeight/1.1, 0), 16.0f);
+	projMatrix	= Matrix4::perspective(0.7853982, screenRatio, 1.0f, 20000.0f);
 
 	SwapBuffers();
 
@@ -78,7 +82,8 @@ void Renderer::RenderScene() {
 
 void Renderer::DrawText(const std::string &text, const Vector3 &position, const float size, const bool perspective)
 {
-	
+	this->SetCurrentShader(*basicVert,*basicFrag);
+
 	TextMesh* mesh = new TextMesh(text,*basicFont);
 
 	
@@ -91,7 +96,7 @@ void Renderer::DrawText(const std::string &text, const Vector3 &position, const 
 		
 		modelMatrix = Matrix4::translation(Vector3(position.getX(),screenHeight-position.getY(), position.getZ())) * Matrix4::scale(Vector3(size,size,1));
 		viewMatrix=Matrix4::identity();
-		projMatrix = Matrix4::orthographic(-1.0f,1.0f,(float)screenWidth, 0.0f,(float)screenHeight, 0.0f);
+		projMatrix = Matrix4::orthographic(0.0f,(float)screenWidth,(float)screenHeight, 0.0f,1.0f, -1.0f);
 	}
 	
 	currentVert->UpdateShaderMatrices(modelMatrix, viewMatrix, projMatrix);
@@ -104,6 +109,7 @@ void Renderer::DrawText(const std::string &text, const Vector3 &position, const 
 	mesh->Draw(*currentVert, *currentFrag);
 
 	delete mesh; 
+	this->SetCurrentShader(*lightVert,*lightFrag);
 }
 void Renderer::drawSkyBox()
 {

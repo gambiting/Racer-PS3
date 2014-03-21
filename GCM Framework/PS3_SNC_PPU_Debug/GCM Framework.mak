@@ -84,18 +84,8 @@ OBJS=\
 CST_OBJS=\
 
 CST_OUTS=\
-	fragment.fpo\
-	fragment_asm.txt\
-	vertex.vpo\
 
 CUSTOM: $(CST_OUTS) $(CST_OBJS)
-
-"fragment_asm.txt":
-"fragment.fpo":
-	cmd /c "PS3_SNC_PPU_Debug\fragment.cg.bat"
-
-"vertex.vpo":
-	cmd /c "PS3_SNC_PPU_Debug\vertex.cg.bat"
 
 COMPILE: $(OBJS)
 
