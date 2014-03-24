@@ -18,16 +18,13 @@ Renderer::Renderer(void)	{
 	basicVert		= new VertexShader("/Shaders/vertex.vpo");
 	basicFrag		= new FragmentShader("/Shaders/fragment.fpo");
 
-	//VertexShader* lightVert = new VertexShader("/TerrainVertex.cg");
-	//FragmentShader* lightFrag = new FragmentShader("/TerrainFragment.cg");
-
 	this->SetCurrentShader(*lightVert,*lightFrag);
 
 	//DrawLoading();
 
 
 	CellGcmTexture* g = LoadGTF("/OutputCube.gtf");
-	testRadius = 25.0f;
+	testRadius = 1000.0f;
 
 	//Sphere One
 	std::cout << "Loading sphere ONE in renderer" << std::endl;
