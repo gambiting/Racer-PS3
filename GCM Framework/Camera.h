@@ -48,6 +48,7 @@ public:
 	//Sets pitch, in degrees
 	void	SetPitch(float p) {pitch = p;}
 
+	Vector3 GetLookDirection();
 
 	void	SetControllingPad(JoyPadNum p) {pad = p;}
 
@@ -56,4 +57,7 @@ protected:
 	float		yaw;
 	float		pitch;
 	Vector3		position;
+
+	float ypSensitivity;
+	bool invertPitch;
 };

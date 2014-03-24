@@ -637,8 +637,8 @@ Set the sampler called 'diffuse' to have no texture
 */
 void	GCMRenderer::SetTextureSampler(CGparameter sampler, const CellGcmTexture *texture) {
 	if(!sampler) {
-		return; //cellGcmCgGetParameterResource dies on an invalid parameter!
 		printf("\n\n~Texture Sampler:- Invalid Sampler.... Bugger~\n\n");
+		return; //cellGcmCgGetParameterResource dies on an invalid parameter!
 	}
 
 	//Get a pointer to the actual bound texture unit for this sampler

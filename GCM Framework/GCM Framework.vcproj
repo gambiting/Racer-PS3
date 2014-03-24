@@ -190,6 +190,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\PhysicsNode.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\PhysicsSystem.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Renderer.cpp"
 				>
 			</File>
@@ -244,6 +252,14 @@
 			</File>
 			<File
 				RelativePath=".\OBJMesh.h"
+				>
+			</File>
+			<File
+				RelativePath=".\PhysicsNode.h"
+				>
+			</File>
+			<File
+				RelativePath=".\PhysicsSystem.h"
 				>
 			</File>
 			<File

@@ -5,6 +5,7 @@ Renderer::Renderer(void)	{
 	You're provided with a very basic vertex / fragment shader, to get you started
 	with Cg, and drawing textured objects. 
 	*/
+
 	quad = Mesh::GenerateQuad();
 	testColour = Vector4(1.0,1.0,1.0,1.0);
 
@@ -24,8 +25,21 @@ Renderer::Renderer(void)	{
 
 	//DrawLoading();
 
-	//CellGcmTexture*g = LoadGTF("/OutputCube.gtf");
-	testRadius = 1000.0f;
+
+	CellGcmTexture* g = LoadGTF("/OutputCube.gtf");
+	testRadius = 25.0f;
+
+	//Sphere One
+	std::cout << "Loading sphere ONE in renderer" << std::endl;
+		sphereOne = new OBJMesh(SYS_APP_HOME "/sphere.obj");
+	std::cout << "Renderer sphere ONE load success!" << std::endl;
+	sphereOne->SetDefaultTexture(*GCMRenderer::LoadGTF("/Textures/checkerboard.gtf"));
+
+	//SphereTwo
+	std::cout << "Loading sphere TWO in renderer" << std::endl;
+		sphereTwo = new OBJMesh(SYS_APP_HOME "/sphere.obj");
+	std::cout << "Renderer sphere TWO load success!" << std::endl;
+	sphereTwo->SetDefaultTexture(*GCMRenderer::LoadGTF("/FT_Logo2.gtf"));
 
 	FontTex = GCMRenderer::LoadGTF("/tahoma.gtf");
 	basicFont = new Font(FontTex, 16, 16);
@@ -46,14 +60,48 @@ Renderer::~Renderer(void)	{
 }
 
 /*
+Physics stuff, positions and whatnot, happen here. 
+If possible it will get moved out of the renderer at some point.
+*/
+void Renderer::UpdateScene(float msec) {
+	playerOne->UpdatePosition(msec);
+	playerTwo->UpdatePosition(msec);
+
+	for(std::vector<PhysicsNode*>::iterator i = firedSpheres.begin(); i != firedSpheres.end(); ++i) {
+		(*i)->UpdatePosition(msec);
+	}
+
+}
+
+//We should also move this!!!
+void Renderer::CollisionTests() {
+
+	//To start just check spheres against the two players, it's all we need to test sphere/sphere collision anyway.
+	for(std::vector<PhysicsNode*>::iterator i = firedSpheres.begin(); i != firedSpheres.end(); ++i) {
+		if (physics.SphereSphereCollision( *(*i), *playerOne) ) {
+			CollisionData cData;
+			std::cout << "Sphere hitting player ONE" << std::endl;
+			physics.AddCollisionImpulse(*(*i), *playerOne, cData.m_point, cData.m_normal, cData.m_penetration);
+		}
+		if (physics.SphereSphereCollision( *(*i), *playerTwo) ) {
+			CollisionData cData;
+			std::cout << "Sphere hitting player TWO" << std::endl;
+			physics.AddCollisionImpulse(*(*i), *playerTwo, cData.m_point, cData.m_normal, cData.m_penetration);
+		}
+	}
+
+}
+
+/*
 Main rendering function. Note how it's essentially the same as the
 ones you were writing in OpenGL! We start by clearing the buffer,
 render some stuff, then swap the buffers. All that's different is
 some slightly different matrix access.
 
 */
-void Renderer::RenderScene() {
-	//std::cout << "RenderScene!" << std::endl;
+
+void Renderer::RenderScene(float msec) {
+
 	ClearBuffer();
 
 	
@@ -72,6 +120,9 @@ void Renderer::RenderScene() {
 	setCurrentCamera(camera2);
 	drawSkyBox();
 	DrawScene();
+	if(root) {
+		DrawNode(root);
+	}
 	DrawText("Player 2", Vector3(0, screenHeight/1.1, 0), 26.0f);
 	projMatrix	= Matrix4::perspective(0.7853982, screenRatio, 1.0f, 20000.0f);
 
@@ -193,4 +244,47 @@ void Renderer::DrawLoading()
 
 
 	projMatrix = Matrix4::perspective(0.7853982, screenRatio, 1.0f, 20000.0f);
+}
+
+
+void Renderer::SetupPlayers() {
+
+	playerOne = new PhysicsNode(25.0f);
+	playerOne->GravityOff(); //Turn gravity OFF
+	playerOne->SetMesh(sphereOne);
+	playerOne->SetPosition(Vector3(0, 1500, 0));
+	root->AddChild(*playerOne);
+
+	playerTwo = new PhysicsNode(25.0f);
+	playerTwo->GravityOff(); //Turn gravity OFF
+	playerTwo->SetMesh(sphereTwo);
+	playerTwo->SetPosition(Vector3(500, 1500, 0));
+	root->AddChild(*playerTwo);
+}
+
+//Something nice and basic to put the players back at the start.
+void Renderer::ResetPlayers() {
+	playerOne->GravityOff();
+	playerOne->SetPosition(Vector3(0, 1000, 0));
+	playerOne->SetLinearVelocity(Vector3(0,0,0));
+	
+	playerTwo->GravityOff();
+	playerTwo->SetPosition(Vector3(500, 1000, 0));
+	playerTwo->SetLinearVelocity(Vector3(0,0,0));
+}
+
+void Renderer::ActivatePlayers() {
+	playerOne->GravityOn();
+	playerTwo->GravityOn();
+}
+
+void Renderer::AddSphere() {
+	PhysicsNode* newSphere = new PhysicsNode(25.0f);
+	newSphere->SetMesh(sphereOne);
+	newSphere->SetPosition(camera1->GetPosition());
+	
+	newSphere->SetLinearVelocity(camera1->GetLookDirection());
+	
+	root->AddChild(*newSphere);
+	firedSpheres.push_back(newSphere);
 }

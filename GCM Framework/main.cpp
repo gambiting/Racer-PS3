@@ -33,6 +33,17 @@ void select_button()		{
 	camera1->SetYaw(0.0f);
 }
 
+void cross_button() {
+	renderer.AddSphere();
+}
+
+void square_button() {
+	renderer.ResetPlayers();
+}
+
+void triangle_button() {
+	renderer.ActivatePlayers();
+}
 
 /*
 Here's a quick example program. It'll load up a single SceneNode
@@ -45,12 +56,14 @@ interesting with the Playstation!
 int main(void)	{
 	std::cout << "FG-RACER!!! :- PS3 Version\n" << std::endl;
 	
-
 	//Start off by initialising the Input system
 	Input::Initialise();
 	//If the start button is pressed, call this function!
 	Input::SetPadFunction(INPUT_START,	start_button);
-	Input::SetPadFunction(INPUT_START,	select_button);
+	Input::SetPadFunction(INPUT_SELECT,	select_button);
+	Input::SetPadFunction(INPUT_SQUARE, square_button);
+	Input::SetPadFunction(INPUT_CROSS, cross_button);
+	Input::SetPadFunction(INPUT_TRIANGLE, triangle_button);
 
 	//Make a new quad mesh, and set its texture to a newcastle logo
 	//Mesh* m = Mesh::GenerateQuad();
@@ -59,6 +72,7 @@ int main(void)	{
 	HeightMap* h = new HeightMap(SYS_APP_HOME "/terrain.raw");
 	h->SetDefaultTexture(*GCMRenderer::LoadGTF("/Sand.gtf"));
 	
+
 	printf("Beginning OBJ Mesh Loading\n");
 	Mesh* thing1 = new OBJMesh(SYS_APP_HOME "/BR_Kyogre.obj");
 	thing1->SetDefaultTexture(*GCMRenderer::LoadGTF("/kyogre_0_0.gtf"));
@@ -70,13 +84,13 @@ int main(void)	{
 	tree->SetDefaultTexture(*GCMRenderer::LoadGTF("/grass.gtf"));
 
 	printf("OBJ Mesh Loading Complete\n");
+
 	//Create a new scenenode
 	root = new SceneNode();
 
 	SceneNode* h_map = new SceneNode();
 	h_map->SetMesh(h);
 	//h_map->SetTransform(/*Matrix4::rotationX(DegToRad(-spin)) */ Matrix4::scale(Vector3(10,10,10)));
-
 	
 	SceneNode* thing_node1 = new SceneNode();
 	thing_node1->SetMesh(thing1);
@@ -106,8 +120,8 @@ int main(void)	{
 	root->AddChild(*tree_node2);
 	root->AddChild(*tree_node3);
 
-
 	renderer.SetRootNode(root); //Set our new SceneNode as the root for our Renderer
+	renderer.SetupPlayers();
 
 	//We need a new camera!
 	camera1 = new Camera();	
@@ -137,8 +151,9 @@ int main(void)	{
 
 		root->Update(msec);	//Update our scene hierarchy. This bit is new (previously the renderer handled it)
 
-		renderer.RenderScene();	//Render the scene
-
+		renderer.RenderScene(msec);	//Render the scene
+		
+		renderer.CollisionTests();
 		
 	}
 	//If we get here, joypad A has had its start button pressed

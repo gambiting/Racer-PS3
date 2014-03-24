@@ -145,6 +145,7 @@ bool	OBJMesh::LoadOBJMesh(std::string filename)
 	}
 
 	f.close();
+
 	std::cout<<"OBJMesh:- Temp Data Load Successfull\n";
 
 	//11/03/2014 - above works, future errors derrived from editing above or code bellow

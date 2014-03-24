@@ -8,6 +8,9 @@ Camera::Camera(void)	{
 	pitch	= 0.0f;
 	pad		= JOYPAD_A;
 	position = Vector3(0,0,0);
+
+	ypSensitivity = 0.3f;
+	invertPitch = true;
 }
 
 Camera::~Camera(void)	{
@@ -31,8 +34,8 @@ void Camera::Update(float msec) {
 
 	Input::GetJoypadMovement(y,p,pad);
 
-	yaw += y;
-	pitch-= p;
+	yaw += y;// * ypSensitivity;
+	pitch -= p;// invertPitch ? -(p*ypSensitivity) : (p*ypSensitivity);
 	
 	pitch = min(pitch,90.0f);
 	pitch = max(pitch,-90.0f);
@@ -45,17 +48,17 @@ void Camera::Update(float msec) {
 	}
 
 	if(Input::ButtonDown(INPUT_UP,pad)) {
-		position += (Matrix4::rotationY(DegToRad(-yaw)) * Vector3(0,0,-1) * msec).getXYZ();
+		position += ((Matrix4::rotationY(DegToRad(-yaw)) * Vector3(0,0,-1) * msec).getXYZ());
 	}
 	if(Input::ButtonDown(INPUT_DOWN,pad)) {
-		position -= (Matrix4::rotationY(DegToRad(-yaw)) * Vector3(0,0,-1) * msec).getXYZ();
+		position -= ((Matrix4::rotationY(DegToRad(-yaw)) * Vector3(0,0,-1) * msec).getXYZ());
 	}
 
 	if(Input::ButtonDown(INPUT_LEFT,pad)) {
-		position += (Matrix4::rotationY(DegToRad(-yaw)) * Vector3(-1,0,0) * msec).getXYZ();
+		position += ((Matrix4::rotationY(DegToRad(-yaw)) * Vector3(-1,0,0) * msec).getXYZ());
 	}
 	if(Input::ButtonDown(INPUT_RIGHT,pad)) {
-		position -= (Matrix4::rotationY(DegToRad(-yaw)) * Vector3(-1,0,0) * msec).getXYZ();
+		position -= ((Matrix4::rotationY(DegToRad(-yaw)) * Vector3(-1,0,0) * msec).getXYZ());
 	}
 
 	//Go up and down using the shoulder buttons!
@@ -73,4 +76,17 @@ Matrix4 Camera::BuildViewMatrix() {
 	return	Matrix4::rotationX(DegToRad(-pitch)) * 
 		Matrix4::rotationY(DegToRad(yaw)) * 
 		Matrix4::translation(-position);
+}
+
+
+Vector3 Camera::GetLookDirection() {
+	Vector3 fwd = Vector3(0,0,-1);
+	
+	Vector3 forward = 
+		(Matrix4::rotation(yaw, Vector3(0,1,0)) * 
+		(Matrix4::rotation(pitch, Vector3(1,0,0)) * fwd)).getXYZ();
+
+	//Works until we change the p or y?
+
+	return forward;
 }
