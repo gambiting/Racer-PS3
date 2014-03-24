@@ -75,13 +75,13 @@ OBJS=\
 	"PS3_SNC_PPU_Debug/main.obj"\
 	"PS3_SNC_PPU_Debug/Mesh.obj"\
 	"PS3_SNC_PPU_Debug/OBJMesh.obj"\
+	"PS3_SNC_PPU_Debug/PhysicsNode.obj"\
 	"PS3_SNC_PPU_Debug/PhysicsSystem.obj"\
 	"PS3_SNC_PPU_Debug/Renderer.obj"\
 	"PS3_SNC_PPU_Debug/SceneNode.obj"\
 	"PS3_SNC_PPU_Debug/Shader.obj"\
 	"PS3_SNC_PPU_Debug/TextMesh.obj"\
 	"PS3_SNC_PPU_Debug/Timer.obj"\
-	"PS3_SNC_PPU_Debug/PhysicsNode.obj"\
 
 CST_OBJS=\
 
@@ -102,60 +102,60 @@ CUSTOM: $(CST_OUTS) $(CST_OBJS)
 COMPILE: $(OBJS)
 
 "PS3_SNC_PPU_Debug/Camera.obj":
-	@echo ProDG Compiling "d:/Team Project/Racer-PS3/GCM Framework/Camera.cpp"
-	$(CXX) $(CXX_FLAGS) "d:/Team Project/Racer-PS3/GCM Framework/Camera.cpp" -o $@
+	@echo ProDG Compiling "d:/Dev/FGRacer/Racer-PS3/GCM Framework/Camera.cpp"
+	$(CXX) $(CXX_FLAGS) "d:/Dev/FGRacer/Racer-PS3/GCM Framework/Camera.cpp" -o $@
 
 "PS3_SNC_PPU_Debug/GCMRenderer.obj":
-	@echo ProDG Compiling "d:/Team Project/Racer-PS3/GCM Framework/GCMRenderer.cpp"
-	$(CXX) $(CXX_FLAGS) "d:/Team Project/Racer-PS3/GCM Framework/GCMRenderer.cpp" -o $@
+	@echo ProDG Compiling "d:/Dev/FGRacer/Racer-PS3/GCM Framework/GCMRenderer.cpp"
+	$(CXX) $(CXX_FLAGS) "d:/Dev/FGRacer/Racer-PS3/GCM Framework/GCMRenderer.cpp" -o $@
 
 "PS3_SNC_PPU_Debug/HeightMap.obj":
-	@echo ProDG Compiling "d:/Team Project/Racer-PS3/GCM Framework/HeightMap.cpp"
-	$(CXX) $(CXX_FLAGS) "d:/Team Project/Racer-PS3/GCM Framework/HeightMap.cpp" -o $@
+	@echo ProDG Compiling "d:/Dev/FGRacer/Racer-PS3/GCM Framework/HeightMap.cpp"
+	$(CXX) $(CXX_FLAGS) "d:/Dev/FGRacer/Racer-PS3/GCM Framework/HeightMap.cpp" -o $@
 
 "PS3_SNC_PPU_Debug/Input.obj":
-	@echo ProDG Compiling "d:/Team Project/Racer-PS3/GCM Framework/Input.cpp"
-	$(CXX) $(CXX_FLAGS) "d:/Team Project/Racer-PS3/GCM Framework/Input.cpp" -o $@
+	@echo ProDG Compiling "d:/Dev/FGRacer/Racer-PS3/GCM Framework/Input.cpp"
+	$(CXX) $(CXX_FLAGS) "d:/Dev/FGRacer/Racer-PS3/GCM Framework/Input.cpp" -o $@
 
 "PS3_SNC_PPU_Debug/main.obj":
-	@echo ProDG Compiling "d:/Team Project/Racer-PS3/GCM Framework/main.cpp"
-	$(CXX) $(CXX_FLAGS) "d:/Team Project/Racer-PS3/GCM Framework/main.cpp" -o $@
+	@echo ProDG Compiling "d:/Dev/FGRacer/Racer-PS3/GCM Framework/main.cpp"
+	$(CXX) $(CXX_FLAGS) "d:/Dev/FGRacer/Racer-PS3/GCM Framework/main.cpp" -o $@
 
 "PS3_SNC_PPU_Debug/Mesh.obj":
-	@echo ProDG Compiling "d:/Team Project/Racer-PS3/GCM Framework/Mesh.cpp"
-	$(CXX) $(CXX_FLAGS) "d:/Team Project/Racer-PS3/GCM Framework/Mesh.cpp" -o $@
+	@echo ProDG Compiling "d:/Dev/FGRacer/Racer-PS3/GCM Framework/Mesh.cpp"
+	$(CXX) $(CXX_FLAGS) "d:/Dev/FGRacer/Racer-PS3/GCM Framework/Mesh.cpp" -o $@
 
 "PS3_SNC_PPU_Debug/OBJMesh.obj":
-	@echo ProDG Compiling "d:/Team Project/Racer-PS3/GCM Framework/OBJMesh.cpp"
-	$(CXX) $(CXX_FLAGS) "d:/Team Project/Racer-PS3/GCM Framework/OBJMesh.cpp" -o $@
-
-"PS3_SNC_PPU_Debug/PhysicsSystem.obj":
-	@echo ProDG Compiling "d:/Team Project/Racer-PS3/GCM Framework/PhysicsSystem.cpp"
-	$(CXX) $(CXX_FLAGS) "d:/Team Project/Racer-PS3/GCM Framework/PhysicsSystem.cpp" -o $@
-
-"PS3_SNC_PPU_Debug/Renderer.obj":
-	@echo ProDG Compiling "d:/Team Project/Racer-PS3/GCM Framework/Renderer.cpp"
-	$(CXX) $(CXX_FLAGS) "d:/Team Project/Racer-PS3/GCM Framework/Renderer.cpp" -o $@
-
-"PS3_SNC_PPU_Debug/SceneNode.obj":
-	@echo ProDG Compiling "d:/Team Project/Racer-PS3/GCM Framework/SceneNode.cpp"
-	$(CXX) $(CXX_FLAGS) "d:/Team Project/Racer-PS3/GCM Framework/SceneNode.cpp" -o $@
-
-"PS3_SNC_PPU_Debug/Shader.obj":
-	@echo ProDG Compiling "d:/Team Project/Racer-PS3/GCM Framework/Shader.cpp"
-	$(CXX) $(CXX_FLAGS) "d:/Team Project/Racer-PS3/GCM Framework/Shader.cpp" -o $@
-
-"PS3_SNC_PPU_Debug/TextMesh.obj":
-	@echo ProDG Compiling "d:/Team Project/Racer-PS3/GCM Framework/TextMesh.cpp"
-	$(CXX) $(CXX_FLAGS) "d:/Team Project/Racer-PS3/GCM Framework/TextMesh.cpp" -o $@
-
-"PS3_SNC_PPU_Debug/Timer.obj":
-	@echo ProDG Compiling "d:/Team Project/Racer-PS3/GCM Framework/Timer.cpp"
-	$(CXX) $(CXX_FLAGS) "d:/Team Project/Racer-PS3/GCM Framework/Timer.cpp" -o $@
+	@echo ProDG Compiling "d:/Dev/FGRacer/Racer-PS3/GCM Framework/OBJMesh.cpp"
+	$(CXX) $(CXX_FLAGS) "d:/Dev/FGRacer/Racer-PS3/GCM Framework/OBJMesh.cpp" -o $@
 
 "PS3_SNC_PPU_Debug/PhysicsNode.obj":
-	@echo ProDG Compiling "d:/Team Project/Racer-PS3/GCM Framework/PhysicsNode.cpp"
-	$(CXX) $(CXX_FLAGS) "d:/Team Project/Racer-PS3/GCM Framework/PhysicsNode.cpp" -o $@
+	@echo ProDG Compiling "d:/Dev/FGRacer/Racer-PS3/GCM Framework/PhysicsNode.cpp"
+	$(CXX) $(CXX_FLAGS) "d:/Dev/FGRacer/Racer-PS3/GCM Framework/PhysicsNode.cpp" -o $@
+
+"PS3_SNC_PPU_Debug/PhysicsSystem.obj":
+	@echo ProDG Compiling "d:/Dev/FGRacer/Racer-PS3/GCM Framework/PhysicsSystem.cpp"
+	$(CXX) $(CXX_FLAGS) "d:/Dev/FGRacer/Racer-PS3/GCM Framework/PhysicsSystem.cpp" -o $@
+
+"PS3_SNC_PPU_Debug/Renderer.obj":
+	@echo ProDG Compiling "d:/Dev/FGRacer/Racer-PS3/GCM Framework/Renderer.cpp"
+	$(CXX) $(CXX_FLAGS) "d:/Dev/FGRacer/Racer-PS3/GCM Framework/Renderer.cpp" -o $@
+
+"PS3_SNC_PPU_Debug/SceneNode.obj":
+	@echo ProDG Compiling "d:/Dev/FGRacer/Racer-PS3/GCM Framework/SceneNode.cpp"
+	$(CXX) $(CXX_FLAGS) "d:/Dev/FGRacer/Racer-PS3/GCM Framework/SceneNode.cpp" -o $@
+
+"PS3_SNC_PPU_Debug/Shader.obj":
+	@echo ProDG Compiling "d:/Dev/FGRacer/Racer-PS3/GCM Framework/Shader.cpp"
+	$(CXX) $(CXX_FLAGS) "d:/Dev/FGRacer/Racer-PS3/GCM Framework/Shader.cpp" -o $@
+
+"PS3_SNC_PPU_Debug/TextMesh.obj":
+	@echo ProDG Compiling "d:/Dev/FGRacer/Racer-PS3/GCM Framework/TextMesh.cpp"
+	$(CXX) $(CXX_FLAGS) "d:/Dev/FGRacer/Racer-PS3/GCM Framework/TextMesh.cpp" -o $@
+
+"PS3_SNC_PPU_Debug/Timer.obj":
+	@echo ProDG Compiling "d:/Dev/FGRacer/Racer-PS3/GCM Framework/Timer.cpp"
+	$(CXX) $(CXX_FLAGS) "d:/Dev/FGRacer/Racer-PS3/GCM Framework/Timer.cpp" -o $@
 
 LINK: "PS3_SNC_PPU_Debug/GCM Framework.ppu.self"
 
