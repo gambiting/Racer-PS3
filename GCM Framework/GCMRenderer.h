@@ -83,7 +83,9 @@ public:
 
 	virtual void RenderScene(float msec) = 0;
 
-	void	SetCamera(Camera* n);
+	void	SetCamera1(Camera* n);
+	void	SetCamera2(Camera* n);
+	void	setCurrentCamera(Camera* n){currentCamera = n;}
 	void	SetRootNode(SceneNode * r);
 
 	void	DrawNode(SceneNode*n);
@@ -96,10 +98,13 @@ protected:
 	void	SetTextureSampler(CGparameter sampler, const CellGcmTexture *texture);
 
 	void ClearBuffer(); //Clear the screen
+
 	void SwapBuffers(); //Swap buffers
 	void InitDisplay(); //Initialise the display and buffers
 	void InitSurfaces();//Initialise the render surfaces
 	void SetViewport(); //Set the viewport to default
+	void SetHalfViewport1();//Sets the left Hand viewport
+	void SetHalfViewport2();//Sets the right Hand viewport
 
 	bool SetResolution(GCMResolution resolution);
 
@@ -127,7 +132,10 @@ protected:
 	FragmentShader*		currentFrag;	//currently assigned fragment shader
 	VertexShader*		currentVert;	//currently assigned vertex shader
 
-	Camera*			camera;			//Current viewpoint origin
+	Camera*			camera1;			//Current viewpoint origin
+	Camera*			camera2;			//Current viewpoint origin
+
+	Camera*			currentCamera;
 	SceneNode*			root;			//The scenegraph the renderer is drawing
 
 	CellGcmSurface surfaces[2];			//Front and back buffers

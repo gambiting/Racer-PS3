@@ -97,7 +97,7 @@ HeightMap::HeightMap(std::string name)
 	out.close();*/
 
 
-	//GenerateNormals(indices);
+	
 	//GenerateTangents();
 	std::cout<<"NumVert = "<<numVertices<<"\nNumInd = "<<numIndices<<"\n";
 	
@@ -106,6 +106,8 @@ HeightMap::HeightMap(std::string name)
 	cellGcmAddressToOffset(&vertexData->u, &vertexOffsets[VERTEX_TEXCOORD]);
 	//Normals A20 in the Gen Normals Method
 	cellGcmAddressToOffset(indices, &vertexOffsets[VERTEX_INDEX]);
+	GenerateNormals(indices);
+	
 
 }
 

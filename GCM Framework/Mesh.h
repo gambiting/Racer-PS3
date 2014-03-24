@@ -1,47 +1,3 @@
-/******************************************************************************
-Class:Mesh
-Implements:
-Author:Rich Davison
-Description: As with the Graphics for Games Mesh class, this wraps up the GCM
-functionality for primitives, geometry, and so on. 
-
-The GenerateTriangle demonstrates basic, linear vertex processing, while
-GenerateQuad demonstrates indexed vertex processing.
-
-Unlike Graphics for Games, which used separate VBOs for each vertex attribute,
-this class uses interleaved vertices. Thinking memory-wise, before we had
-a series of separate VBOs in memory:
-
-Position A, Position B, Position C, Colour A, Colour B, Colour C
-
-whereas now, we have interleaving:
-
-Position A, Colour A, Position B, Colour B, Position C, Colour C
-
-It's not quite as neat as the separate VBOs in terms of avoiding unnecessary
-data for simple Meshes, but oh well.
-
-As an offshoot of this, instead of having a number of pointers to the data for
-each attribute, this time we have a single pointer, to an array of Vertex
-structs. 
-
-The local variable vertexOffsets is roughly analogous to the bufferObject array
-variable in the OpenGL framework, and provides GCM with the memory positions of 
-the first position, colour, tex coord etc. I even use the handy enum to
-explicitly set its size. 
-
-Texture has been renamed defaultTexture, to make it a bit more obvious that you
-can have a texture defined in a SceneNode if you want, and use that instead,
-you don't need separate cube meshes for crates and companion cubes, just 
-separate scene node texture pointers...
-
-
--_-_-_-_-_-_-_,------,   
-_-_-_-_-_-_-_-|   /\_/\   NYANYANYAN
--_-_-_-_-_-_-~|__( ^ .^) /
-_-_-_-_-_-_-_-""  ""   
-
-*//////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 #include <sysutil/sysutil_sysparam.h>	
@@ -58,7 +14,8 @@ enum VertexAttributes {
 	VERTEX_TEXCOORD = 2,
 	VERTEX_INDEX	= 3,
 	VERTEX_NORMAL	= 4,
-	VERTEX_SIZE		= 5
+	VERTEX_TANGENT	= 5,
+	VERTEX_SIZE		= 6
 };
 
 #include "Shader.h"
@@ -67,20 +24,12 @@ enum VertexAttributes {
 class VertexShader;		//Compile our shader classes first, please
 class FragmentShader;
 
-/*
-Instead of separate data pointers for each vertex attribute, this time
-we have a single array of this data type. It should be fairly obvious
-that x,y, and z are position, while u and v are tex coord. Why aren't
-they in Vector3/2 structs? because the Vector3 struct is padded, and
-so wastes a byte for every vec3 per vertex (if we had a normal and tangent
-in addition to position, we'd be wasting 3 bytes...)
-*/
 
 //x, y, z - Position
 //u, v - Tex Co-ord
 //nx, ny, nz - Normal
 struct	Vertex{
-	float x, y, z,u,v, nx, ny, nz;
+	float x, y, z, u, v, nx, ny, nz;
 	uint32_t rgba; 
 };
 
@@ -110,7 +59,8 @@ protected:
 
 	//Bellow contains my hatred
 	void GenerateNormals(unsigned short* indices);
-	Vector3 NormaliseVec3(Vector3& inp);
-	Vector3 CrossVec3(Vector3 a, Vector3 b);
+	//Vector3 NormaliseVec3(Vector3& inp);
+	//Vector3 CrossVec3(Vector3 a, Vector3 b);
 	Vector3 MakeTempVec3(Vertex a);
+	Vector3 MakeTempNormalVec3(Vertex a);
 };

@@ -1,14 +1,16 @@
+
 void main
 (
-	 float4 position	: POSITION,
+	 float4 position	: TEXCOORD2,
 	 float4 color		: COLOR,
 	 float3 normal	: TEXCOORD1,
 	 float2 texCoord	: TEXCOORD0,
 	
-	uniform samplerRECT diffTex,
+	uniform samplerRECT texture,
 	
 	uniform float4x4 modelMat,
-	uniform float3 lightPosition,
+	uniform float3 lightPosition1,
+	uniform float3 lightPosition2,
 	uniform float4 lightColour,
 	uniform float  lightRadius,
 	uniform float3  cameraPos,
@@ -17,37 +19,39 @@ void main
 )
 {
 
-	float length(float3 v)
+	color_out = float4(0,0,0,0);
+	float3 lightPosition = lightPosition1;
+	for(int i =0; i<2; i++)
 	{
-	  return sqrt(dot(v,v));
+		float4 tempPos = float4( position.x, position.y, position.z, 1.0);
+		float3 worldPos = tempPos.xyz;
+		
+		float4 diffuse = texRECT(texture,  texCoord);
+		
+		float3 tempInc = lightPosition - worldPos;
+		float3 incident = normalize(tempInc);
+		float lambert = max(0.0, dot(incident,  normal));
+		
+		float dist = length(lightPosition - worldPos);
+		float atten = 1.0 - clamp(dist/lightRadius, 0.0, 1.0);
+		
+		float3 viewDir = normalize(cameraPos - worldPos);
+		float3 halfDir = normalize(incident + viewDir);
+		
+		float rFactor = max(0.0, dot(halfDir,  normal));
+		float sFactor = pow(rFactor, 50.0);
+		
+		float3 tempColour = (diffuse.rgb * lightColour.rgb);
+		tempColour += (lightColour.rgb * sFactor) * 0.33;
+		
+		color_out += float4(((tempColour * atten)), diffuse.a);// * lambert, returns zero all the time, not used at the moment.
+		color_out += float4(((diffuse.rgb * lightColour.rgb) * 0.1), 0.0);
+		
+		float3 lightPosition = lightPosition2;
 	}
-	float4 tempPos = float4( position.x, position.y, position.z, 1.0);
-	float3 worldPos = tempPos.xyz;
-	
-	float4 diffuse = texRECT(diffTex,  texCoord);
-	
-	float3 tempInc = lightPosition - worldPos;
-	float3 incident = tempInc;//normalize(tempInc);
-	float lambert = max(0.0, dot(incident,  normal));
-	
-	float dist = length(lightPosition - worldPos);
-	//float atten = 1.0 - clamp(dist/lightRadius, 0.0, 1.0);
-	
-	//float3 viewDir = normalize(cameraPos - worldPos);
-	//float3 halfDir = normalize(incident + viewDir);
-	
-	//float rFactor = max(0.0, dot(halfDir,  normal));
-	//float sFactor = pow(rFactor, 50.0);
-	
-	//float3 tempColour = (diffuse.rgb * lightColour.rgb);
-	//tempColour += (lightColour.rgb * sFactor) * 0.33;
-	
-	//color_out = float4(((tempColour * atten) * lambert), diffuse.a);
-	//tempColour += (diffuse.rgb * lightColour.rgb) * 0.1;
-	
-	//color_out = tempColour;
+	//color_out = tempColour + float4(normal, 0.0);
 	
 	 
-	color_out = float4(1.0,1.0,0.0,1.0);
+	//color_out = color_out + float4(1.0,1.0,0.0,1.0);
 }
 

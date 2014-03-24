@@ -8,7 +8,9 @@ GCMRenderer::GCMRenderer(void)	{
 		std::cout << "cellGcmInit failed!" << std::endl;	
 	}
 
-	camera	= NULL;
+	camera1	= NULL;
+	camera2	= NULL;
+
 	root	= NULL;
 
 	InitDisplay();
@@ -230,6 +232,106 @@ void GCMRenderer::SetViewport() {
 	cellGcmSetViewport(x, y, w, h, min, max, scale, offset);
 }
 
+void GCMRenderer::SetHalfViewport1() {
+	uint16_t x,y,w,h;
+	float min, max;
+	float scale[4],offset[4];
+
+	/*
+	I kinda gloss over what this function does in the GCM tutorial text,
+	but if you can't be bothered to look up the cellGcmSetViewport SDK
+	documentation, here's basically what it does. 
+
+	Remember how in the Introduction to Graphics tutorial, it was explained
+	that at the 'end' of the pipeline, your graphics end up in 'Native Device'
+	space, which has an axis ranging from -1 to 1? The viewport function must
+	then map those -1 to 1 axis coordinates to your screen space. Internally 
+	to GCM, this will be done with another matrix.
+
+	To map an x axis range of -1 to 1 to screen coordinates, we can multiply
+	the x axis by half the width (assuming a default width of 720, that gives
+	us a new range of -360 to 360), and then translating / offsetting it also
+	by half of the width (moving us to 0 to 720). The same is done with the Y
+	axis, while the Z axis goes from 0.0 to 1.0 (remember the depth buffer
+	values?)
+
+	Note also the y axis scaling is inverted - NDC has <MAX AXIS VALUE> at the 
+	'top', whereas our screenspace coordinates have <MIN AXIS VALUE> at the 
+	'top', so we can 'flip' the image the right way up with a negative scale.
+	*/
+
+	x = 0;	//starting position of the viewport (left of screen)
+	y = 0;  //starting position of the viewport (top of screen)
+	w = screenWidth/2;
+	h = screenHeight;
+	min = 0.0f;
+	max = 1.0f;
+	//Scale our NDC coordinates to the size of the screen
+	scale[0] = screenWidth * 0.5f;
+	scale[1] = h * -0.5f;
+	scale[2] = (max - min) * 0.5f;
+	scale[3] = 0.0f;
+
+	//Translate from a range starting from -1 to a range starting at 0
+	offset[0] = x + scale[0];
+	offset[1] = y + h * 0.5f;
+	offset[2] = (max + min) * 0.5f;
+	offset[3] = 0.0f;
+
+	//analogous to the glViewport function...but with extra values!
+	cellGcmSetViewport(x, y, w, h, min, max, scale, offset);
+}
+
+void GCMRenderer::SetHalfViewport2() {
+	uint16_t x,y,w,h;
+	float min, max;
+	float scale[4],offset[4];
+
+	/*
+	I kinda gloss over what this function does in the GCM tutorial text,
+	but if you can't be bothered to look up the cellGcmSetViewport SDK
+	documentation, here's basically what it does. 
+
+	Remember how in the Introduction to Graphics tutorial, it was explained
+	that at the 'end' of the pipeline, your graphics end up in 'Native Device'
+	space, which has an axis ranging from -1 to 1? The viewport function must
+	then map those -1 to 1 axis coordinates to your screen space. Internally 
+	to GCM, this will be done with another matrix.
+
+	To map an x axis range of -1 to 1 to screen coordinates, we can multiply
+	the x axis by half the width (assuming a default width of 720, that gives
+	us a new range of -360 to 360), and then translating / offsetting it also
+	by half of the width (moving us to 0 to 720). The same is done with the Y
+	axis, while the Z axis goes from 0.0 to 1.0 (remember the depth buffer
+	values?)
+
+	Note also the y axis scaling is inverted - NDC has <MAX AXIS VALUE> at the 
+	'top', whereas our screenspace coordinates have <MIN AXIS VALUE> at the 
+	'top', so we can 'flip' the image the right way up with a negative scale.
+	*/
+
+	x = screenWidth/2;	//starting position of the viewport (left of screen)
+	y = 0;  //starting position of the viewport (top of screen)
+	w = screenWidth;
+	h = screenHeight;
+	min = 0.0f;
+	max = 1.0f;
+	//Scale our NDC coordinates to the size of the screen
+	scale[0] = w * 0.5f;
+	scale[1] = h * -0.5f;
+	scale[2] = (max - min) * 0.5f;
+	scale[3] = 0.0f;
+
+	//Translate from a range starting from -1 to a range starting at 0
+	offset[0] = x + scale[0];
+	offset[1] = y + h * 0.5f;
+	offset[2] = (max + min) * 0.5f;
+	offset[3] = 0.0f;
+
+	//analogous to the glViewport function...but with extra values!
+	cellGcmSetViewport(x, y, w, h, min, max, scale, offset);
+}
+
 void GCMRenderer::SwapBuffers() {
 	// wait until FlipStatus = 0 so that PPU does not run too ahead of RSX
 	// FlipStatus turns to 0 when the previous flip is finished
@@ -300,8 +402,11 @@ void	GCMRenderer::SetCurrentShader(VertexShader & vert, FragmentShader &frag) {
 }
 
 //Sets the camera. Can be NULL
-void	GCMRenderer::SetCamera(Camera* c) {
-	camera = c;
+void	GCMRenderer::SetCamera1(Camera* c) {
+	camera1 = c;
+}
+void	GCMRenderer::SetCamera2(Camera* c) {
+	camera2 = c;
 }
 
 //Sets the root node. Can be NULL
@@ -493,7 +598,7 @@ CellGcmTexture* GCMRenderer::LoadGTF(std::string filename) {
 	GTF textures can technically have multiple textures in it, for now
 	lets just load 1
 	*/
-	for(int i = 0; i < min(1,header.NumTexture); ++i) {
+	for(int i = 0; i < header.NumTexture; ++i) {
 		memcpy((void*)texture,(void*)&(attributes[i].tex), sizeof(CellGcmTexture));
 
 		file.seekg(attributes[i].OffsetToTex);
@@ -532,8 +637,10 @@ Set the sampler called 'diffuse' to have no texture
 */
 void	GCMRenderer::SetTextureSampler(CGparameter sampler, const CellGcmTexture *texture) {
 	if(!sampler) {
+		printf("\n\n~Texture Sampler:- Invalid Sampler.... Bugger~\n\n");
 		return; //cellGcmCgGetParameterResource dies on an invalid parameter!
 	}
+
 	//Get a pointer to the actual bound texture unit for this sampler
 	CGresource unitResource = (CGresource)(cellGcmCgGetParameterResource(currentFrag->program, sampler) - CG_TEXUNIT0);
 
@@ -541,6 +648,7 @@ void	GCMRenderer::SetTextureSampler(CGparameter sampler, const CellGcmTexture *t
 
 	//If we want to turn off a texture unit, for example
 	if(!texture) {
+		printf("\n\n~Texture Sampler:- Invalid Texture.... Bugger~\n\n");
 		cellGcmSetTextureControl(unitResource, CELL_GCM_FALSE, 0, 0, 0); //Disable sampling on the TU
 		return;
 	}

@@ -1,0 +1,34 @@
+struct VertexOut
+{
+	float4 endPosition : POSITION;
+	float4 oPosition : TEXCOORD2;
+	float4 oColor    : COLOR;
+	float3 oNormal	: TEXCOORD1;
+	float2 oTexCoord : TEXCOORD0;
+	
+};
+VertexOut main
+(
+	float3 position	: POSITION,
+	float4 color	: COLOR,
+	float3 normal	: NORMAL,
+	float2 texCoord	: TEXCOORD0,
+    uniform float4x4 modelMat,
+	uniform float4x4 viewMat,
+	uniform float4x4 projMat	
+)
+{	
+	
+	VertexOut OUT;
+	
+	float4x4 mvp = mul(projMat, mul(viewMat, modelMat));
+	
+	OUT.oPosition 	 = mul(modelMat, float4(position,1.0));
+	OUT.endPosition = mul(mvp, float4(position, 1.0));
+	OUT.oColor		 = color;
+	OUT.oNormal		 = normal;
+	OUT.oTexCoord	 = texCoord;
+	
+	return OUT;
+	
+}

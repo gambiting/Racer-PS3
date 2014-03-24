@@ -287,44 +287,6 @@
 				>
 			</File>
 		</Filter>
-		<Filter
-			Name="Shaders"
-			>
-			<File
-				RelativePath=".\fragment.cg"
-				>
-				<FileConfiguration
-					Name="PS3 SNC Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						CommandLine="$(SCE_PS3_ROOT)\host-win32\Cg\bin\sce-cgc -profile sce_fp_rsx -o &quot;$(InputName).fpo&quot; &quot;$(InputPath)&quot;&#x0D;&#x0A;$(SCE_PS3_ROOT)\host-win32\Cg\bin\sce-cgcdisasm &quot;$(InputName).fpo&quot;&#x0D;&#x0A;"
-						Outputs="$(InputName).fpo;$(InputName)_asm.txt"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\TerrainFragment.cg"
-				>
-			</File>
-			<File
-				RelativePath=".\TerrainVertex.cg"
-				>
-			</File>
-			<File
-				RelativePath=".\vertex.cg"
-				>
-				<FileConfiguration
-					Name="PS3 SNC Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						CommandLine="$(SCE_PS3_ROOT)\host-win32\Cg\bin\sce-cgc -profile sce_vp_rsx -o &quot;$(InputName).vpo&quot; &quot;$(InputPath)&quot;&#x0D;&#x0A;"
-						Outputs="$(InputName).vpo"
-					/>
-				</FileConfiguration>
-			</File>
-		</Filter>
 	</Files>
 	<Globals>
 	</Globals>

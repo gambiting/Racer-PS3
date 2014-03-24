@@ -2,11 +2,11 @@
 
 bool	OBJMesh::LoadOBJMesh(std::string filename)	
 {
-	std::cout<<"OBJMesh:- Beggining File Load\n";
+	std::cout<<"OBJMesh:- Beginning File Load of "<< filename <<"\n";
 	std::ifstream f(filename.c_str(),std::ios::in);
 
 	if(!f) {//Oh dear, it can't find the file :(
-		std::cout<<"OBJMesh:- Bugger... \n";
+		std::cout<<"OBJMesh:- File not found! Fleeing the scene! \n";
 		return false;
 	}
 	std::cout<<"OBJMesh:- File Exists\n";
@@ -140,12 +140,13 @@ bool	OBJMesh::LoadOBJMesh(std::string filename)
 			}
 		}
 		else{
-			std::cout << "OBJMesh::LoadOBJMesh Unknown file data:" << currentLine << std::endl;
+			//std::cout << "OBJMesh::LoadOBJMesh Unknown file data:" << currentLine << std::endl;
 		}
 	}
 
 	f.close();
-	std::cout<<"OBJMesh:- Temp Data Load Successfull" << std::endl;
+
+	std::cout<<"OBJMesh:- Temp Data Load Successful\n";
 
 	//11/03/2014 - above works, future errors derrived from editing above or code bellow
 
@@ -170,33 +171,56 @@ bool	OBJMesh::LoadOBJMesh(std::string filename)
 					m->vertexData[j].z = inputVertices[sm->vertIndices[j]-1].getZ();
 			}
 
-			if(!sm->texIndices.empty())	{
+			if(!sm->texIndices.empty())	
+			{
 				
-				for(unsigned int j = 0; j < sm->texIndices.size(); ++j) {
+				for(unsigned int j = 0; j < sm->vertIndices.size(); j++) 
+				{
+					m->vertexData[j].x = inputVertices[sm->vertIndices[j]-1].getX();
+					m->vertexData[j].y = inputVertices[sm->vertIndices[j]-1].getY();
+					m->vertexData[j].z = inputVertices[sm->vertIndices[j]-1].getZ();
+
 					m->vertexData[j].u = inputTexCoords[sm->texIndices[j]-1].getX();
 					m->vertexData[j].v = inputTexCoords[sm->texIndices[j]-1].getY();
 				}
 			}
+			else
+			{
+				for(unsigned int j = 0; j < sm->vertIndices.size(); j++) 
+				{
+					m->vertexData[j].x = inputVertices[sm->vertIndices[j]-1].getX();
+					m->vertexData[j].y = inputVertices[sm->vertIndices[j]-1].getY();
+					m->vertexData[j].z = inputVertices[sm->vertIndices[j]-1].getZ();
+				}
+			}
 
-			#ifdef OBJ_USE_NORMALS
+			
 						if(sm->normIndices.empty()) {
-							m->GenerateNormals();
+							m->GenerateNormals((unsigned short*)&sm->vertIndices[0]);
+							printf("OBJMesh:- Normals Generated\n");
 						}
 						else{
-							for(unsigned int j = 0; j < sm->normIndices.size(); j=+3) {
-								m->vertexData[j].nx = inputNormals[sm->vertIndices[j]-1].getX();
-								m->vertexData[j].ny = inputNormals[sm->vertIndices[j]-1].getY();
-								m->vertexData[j].nz = inputNormals[sm->vertIndices[j]-1].getZ();
+							printf("OBJMesh:- Normals Loading\n");
+							for(unsigned int j = 0; j < sm->normIndices.size(); j++) 
+							{
+								m->vertexData[j].nx = inputNormals[sm->normIndices[j]-1].getX();
+								m->vertexData[j].ny = inputNormals[sm->normIndices[j]-1].getY();
+								m->vertexData[j].nz = inputNormals[sm->normIndices[j]-1].getZ();
 							}
+							printf("OBJMesh:- Normals Loaded\n");
 						}
-			#endif
+			
+			
 //#ifdef OBJ_USE_TANGENTS_BUMPMAPS
 //			m->GenerateTangents();
 //#endif
 
 			cellGcmAddressToOffset(&m->vertexData->x, &m->vertexOffsets[VERTEX_POSITION]);
 			cellGcmAddressToOffset(&m->vertexData->rgba, &m->vertexOffsets[VERTEX_COLOUR]);
-			cellGcmAddressToOffset(&m->vertexData->u, &m->vertexOffsets[VERTEX_TEXCOORD]);
+			if(!sm->texIndices.empty())
+			{
+				cellGcmAddressToOffset(&m->vertexData->u, &m->vertexOffsets[VERTEX_TEXCOORD]);
+			}
 			//cellGcmAddressToOffset(indices, &m->vertexOffsets[VERTEX_INDEX]);
 			AddChild(m);
 		}
