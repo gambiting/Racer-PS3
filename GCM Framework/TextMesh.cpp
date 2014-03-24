@@ -40,7 +40,7 @@ TextMesh::TextMesh(const std::string &text, Font &font) :  font(font)	{
 		float x = (float)(c%font.xCount);
 		float y = (float)((c / font.xCount)%font.yCount);
 
-		vertexData[(i*4)  ].x  = (float)i;
+		/*vertexData[(i*4)  ].x  = (float)i;
 		vertexData[(i*4)  ].y  =   0;
 		vertexData[(i*4)  ].z  =   0;
 		vertexData[(i*4)  ].u  =  x*texelWidth;
@@ -62,7 +62,30 @@ TextMesh::TextMesh(const std::string &text, Font &font) :  font(font)	{
 		vertexData[(i*4)+3].y  =   -1;
 		vertexData[(i*4)+3].z  =   0;
 		vertexData[(i*4)+3].u  =  (x+1)*texelWidth;
-		vertexData[(i*4)+3].v  =  (y+1)*texelHeight;
+		vertexData[(i*4)+3].v  =  (y+1)*texelHeight;*/
+		vertexData[(i*4)  ].x  = (float)i;
+		vertexData[(i*4)  ].y  =   0;
+		vertexData[(i*4)  ].z  =   0;
+		vertexData[(i*4)  ].u  =  (x)*texelWidth;
+		vertexData[(i*4)  ].v  =  (y+1)*texelHeight;
+
+		vertexData[(i*4)+1].x  = (float)i;
+		vertexData[(i*4)+1].y  =   -1;
+		vertexData[(i*4)+1].z  =   0;
+		vertexData[(i*4)+1].u  =  (x)*texelWidth;
+		vertexData[(i*4)+1].v  =  (y)*texelHeight;
+
+		vertexData[(i*4)+2].x  = (float)i+1;
+		vertexData[(i*4)+2].y  =   0;
+		vertexData[(i*4)+2].z  =   0;
+		vertexData[(i*4)+2].u  =  (x+1)*texelWidth;
+		vertexData[(i*4)+2].v  =  (y+1)*texelHeight;
+
+		vertexData[(i*4)+3].x  = (float)i+1;
+		vertexData[(i*4)+3].y  =   -1;
+		vertexData[(i*4)+3].z  =   0;
+		vertexData[(i*4)+3].u  =  (x+1)*texelWidth;
+		vertexData[(i*4)+3].v  =  (y)*texelHeight;
 			
 	}
 	//Lastly, we buffer the data, just like a 'normal' mesh!

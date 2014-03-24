@@ -1,10 +1,12 @@
 #include "SceneNode.h"
 
 SceneNode::SceneNode(void)	{
+
 	transform		= Matrix4::identity();
 	worldTransform	= Matrix4::identity();
 	parent			= NULL;
 	mesh			= NULL;
+
 }
 
 SceneNode::~SceneNode(void)	{

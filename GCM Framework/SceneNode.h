@@ -16,9 +16,9 @@ _-_-_-_-_-_-_-""  ""
 #pragma once
 
 #include <vector>
+#include <vectormath/cpp/vectormath_aos.h>
 
 class Mesh; 
-#include <vectormath/cpp/vectormath_aos.h>
 
 using namespace Vectormath::Aos;
 
@@ -27,7 +27,7 @@ public:
 	SceneNode(void);
 	virtual ~SceneNode(void);
 
-	void			SetTransform(const Matrix4 &matrix) { transform = matrix; } 
+	void			SetTransform(const Matrix4 &matrix) { transform = matrix; }
 	const Matrix4&	GetTransform() const				{ return transform; }
 	Matrix4			GetWorldTransform() const			{ return worldTransform; }
 
@@ -36,6 +36,11 @@ public:
 
 	virtual void	Update(float msec);
 
+	void VectorToZero(Vector3 &v) {
+		v.setX(0.0f);
+		v.setY(0.0f);
+		v.setZ(0.0f);
+	}
 
 	void			AddChild(SceneNode& s);
 

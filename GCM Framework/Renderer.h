@@ -14,19 +14,68 @@ _-_-_-_-_-_-_-""  ""
 *//////////////////////////////////////////////////////////////////////////////
 
 #pragma once
+
+#include "PhysicsSystem.h"
 #include "GCMRenderer.h"
 #include "Mesh.h"
+#include "OBJMesh.h"
 #include "TextMesh.h"
+#include "timer.h"
+#include "PhysicsNode.h"
 
 class Renderer : public GCMRenderer	{
 public:
 	Renderer(void);
 	~Renderer(void);
 
-	virtual void RenderScene();
+	virtual void RenderScene(float msec);
+	virtual void UpdateScene(float msec);
+	void DrawScene();
+	void DrawLoading();
+	void SetupPlayers(); //Only for testing of physics and whatnot.
+	void ResetPlayers();
+	void ActivatePlayers();
+	
+	void AddSphere();
+
+	void CollisionTests();
+
 protected:
-	void Renderer::DrawText(const std::string &text, const Vector3 &position, const float size, const bool perspective=false);
+	void DrawText(const std::string &text, const Vector3 &position, const float size, const bool perspective=false);
+
 	Font* basicFont;
 	CellGcmTexture* FontTex;
+	CellGcmTexture* cubeMap;
+
 	float testRadius;
+
+	Vector4 testColour;
+
+	void drawSkyBox();
+
+	VertexShader* skyVert;
+	FragmentShader* skyFrag;
+
+	VertexShader* lightVert;
+	FragmentShader* lightFrag;
+
+	VertexShader* basicVert;
+	FragmentShader* basicFrag;
+
+	Mesh* tempQuad;
+	CellGcmTexture* tempTex;
+
+	Mesh* quad;
+
+	PhysicsNode* playerOne;
+	PhysicsNode* playerTwo;
+
+	Mesh* sphereOne;
+	Mesh* sphereTwo;
+
+	std::vector<PhysicsNode*> firedSpheres;
+
+	PhysicsSystem physics;
+
+
 };

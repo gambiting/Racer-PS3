@@ -1,0 +1,27 @@
+/*
+Should be pretty familiar territory, this. We take in 
+a colour and a tex coordinate, and sample the uniform
+texture sampler to obtain the colour. 
+*/
+void main
+(
+	float4 color_in      : COLOR,
+	float2 texcoord		 : TEXCOORD0,
+	uniform samplerRECT texture,
+	//uniform samplerRECT textureTwo,
+	
+	out float4 color_out : COLOR
+)
+{	
+	
+	color_out = texRECT(texture, texcoord);// * texRECT(textureTwo, texcoord);
+	float f = 0;
+	f+=color_out.x;
+	f+=color_out.y;
+	f+=color_out.z;
+	if(f <= 0.7)
+	{
+		discard;
+	}
+	//color_out = float4(1.0,1.0,0.0,1.0);
+}
