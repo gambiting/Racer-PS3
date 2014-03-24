@@ -1,8 +1,8 @@
-#include "SceneNode.h"
-#include "Camera.h"
-
 #pragma once
 
+#include "Defines.h"
+#include "SceneNode.h"
+#include "Camera.h"
 #include <vector>
 #include <vectormath/cpp/vectormath_aos.h>
 
