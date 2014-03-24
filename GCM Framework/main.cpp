@@ -31,48 +31,43 @@ void select_button()		{
 	camera1->SetPosition(Vector3(0,0,10));
 	camera1->SetPitch(0.0f);
 	camera1->SetYaw(0.0f);
+	std::cout << "Pressed select button!" << std::endl;
 }
 
 void cross_button() {
 	renderer.AddSphere();
+	std::cout << "Pressed X button!" << std::endl; 
+	//it's an X button, not cross. Sony should know this, crazy bastards.
 }
 
 void square_button() {
 	renderer.ResetPlayers();
+	std::cout << "Pressed square button!" << std::endl;
 }
 
 void triangle_button() {
 	renderer.ActivatePlayers();
+	std::cout << "Pressed triangle button!" << std::endl;
 }
 
-/*
-Here's a quick example program. It'll load up a single SceneNode
-scene, containing a textured quad, with a camera controllable by
-the joypad. Pretty basic, but as with Graphics for Games, its
-everything you need to get started and doing something more 
-interesting with the Playstation!
 
-*/
 int main(void)	{
 	std::cout << "FG-RACER!!! :- PS3 Version\n" << std::endl;
 	
 	//Start off by initialising the Input system
 	Input::Initialise();
-	//If the start button is pressed, call this function!
+
+	//Button functions
 	Input::SetPadFunction(INPUT_START,	start_button);
 	Input::SetPadFunction(INPUT_SELECT,	select_button);
 	Input::SetPadFunction(INPUT_SQUARE, square_button);
 	Input::SetPadFunction(INPUT_CROSS, cross_button);
 	Input::SetPadFunction(INPUT_TRIANGLE, triangle_button);
 
-	//Make a new quad mesh, and set its texture to a newcastle logo
-	//Mesh* m = Mesh::GenerateQuad();
-	//m->SetDefaultTexture(*GCMRenderer::LoadGTF("/FT_Logo2.gtf"));
-
 	HeightMap* h = new HeightMap(SYS_APP_HOME "/terrain.raw");
 	h->SetDefaultTexture(*GCMRenderer::LoadGTF("/Sand.gtf"));
 	
-
+	//.OBJ files are ignored by git! New OBJs will have to be shared manually between folks
 	printf("Beginning OBJ Mesh Loading\n");
 	Mesh* thing1 = new OBJMesh(SYS_APP_HOME "/BR_Kyogre.obj");
 	thing1->SetDefaultTexture(*GCMRenderer::LoadGTF("/kyogre_0_0.gtf"));
@@ -90,7 +85,6 @@ int main(void)	{
 
 	SceneNode* h_map = new SceneNode();
 	h_map->SetMesh(h);
-	//h_map->SetTransform(/*Matrix4::rotationX(DegToRad(-spin)) */ Matrix4::scale(Vector3(10,10,10)));
 	
 	SceneNode* thing_node1 = new SceneNode();
 	thing_node1->SetMesh(thing1);
@@ -142,13 +136,11 @@ int main(void)	{
 	while(!done) {
 		Input::UpdateJoypad();	//Receive latest joypad input for all joypads
 
-		//logo->SetTransform(/*Matrix4::rotationX(DegToRad(-spin)) */ Matrix4::scale(Vector3(10,10,10)));
-
 		float msec = (float)gameTime.GetTimedMS();
 
 		camera1->Update(msec);
 		camera2->Update(msec);
-
+		renderer.UpdateScene(msec);
 		root->Update(msec);	//Update our scene hierarchy. This bit is new (previously the renderer handled it)
 
 		renderer.RenderScene(msec);	//Render the scene
@@ -156,6 +148,7 @@ int main(void)	{
 		renderer.CollisionTests();
 		
 	}
+
 	//If we get here, joypad A has had its start button pressed
 
 	std::cout << "Quitting..." << std::endl;

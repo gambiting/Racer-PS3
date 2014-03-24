@@ -2,11 +2,11 @@
 
 bool	OBJMesh::LoadOBJMesh(std::string filename)	
 {
-	std::cout<<"OBJMesh:- Beggining File Load\n";
+	std::cout<<"OBJMesh:- Beginning File Load of "<< filename <<"\n";
 	std::ifstream f(filename.c_str(),std::ios::in);
 
 	if(!f) {//Oh dear, it can't find the file :(
-		std::cout<<"OBJMesh:- Bugger... \n";
+		std::cout<<"OBJMesh:- File not found! Fleeing the scene! \n";
 		return false;
 	}
 	std::cout<<"OBJMesh:- File Exists\n";
@@ -146,7 +146,7 @@ bool	OBJMesh::LoadOBJMesh(std::string filename)
 
 	f.close();
 
-	std::cout<<"OBJMesh:- Temp Data Load Successfull\n";
+	std::cout<<"OBJMesh:- Temp Data Load Successful\n";
 
 	//11/03/2014 - above works, future errors derrived from editing above or code bellow
 
