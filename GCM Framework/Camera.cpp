@@ -34,8 +34,8 @@ void Camera::Update(float msec) {
 
 	Input::GetJoypadMovement(y,p,pad);
 
-	yaw += y * ypSensitivity;
-	pitch -= invertPitch ? -(p*ypSensitivity) : (p*ypSensitivity);
+	yaw += y;// * ypSensitivity;
+	pitch -= p;// invertPitch ? -(p*ypSensitivity) : (p*ypSensitivity);
 	
 	pitch = min(pitch,90.0f);
 	pitch = max(pitch,-90.0f);
@@ -76,4 +76,17 @@ Matrix4 Camera::BuildViewMatrix() {
 	return	Matrix4::rotationX(DegToRad(-pitch)) * 
 		Matrix4::rotationY(DegToRad(yaw)) * 
 		Matrix4::translation(-position);
+}
+
+
+Vector3 Camera::GetLookDirection() {
+	Vector3 fwd = Vector3(0,0,-1);
+	
+	Vector3 forward = 
+		(Matrix4::rotation(yaw, Vector3(0,1,0)) * 
+		(Matrix4::rotation(pitch, Vector3(1,0,0)) * fwd)).getXYZ();
+
+	//Works until we change the p or y?
+
+	return forward;
 }

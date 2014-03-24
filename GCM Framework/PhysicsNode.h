@@ -24,10 +24,16 @@ public:
 		m_position = pos;
 		SetTransform(Matrix4::translation(m_position) * Matrix4::scale(scale));
 	}
-	void			SetLinearVelocity(Vector3 vel)		{m_linearVelocity = vel; }
+	void			SetLinearVelocity(Vector3 vel)		{ m_linearVelocity = vel; }
+	void			SetAngularVelocity(Vector3 ang)		{ m_angularVelocity = ang; }
 
 	Vector3			GetScale() const					{ return scale; }
 	Vector3			GetPosition() const					{ return m_position; }
+	float			GetRadius() const					{ return radius; }
+	Matrix4			GetInvInertia() const				{ return m_invInertia; }
+	Vector3			GetLinearVelocity() const			{ return m_linearVelocity; }
+	Vector3			GetAngularVelocity() const			{ return m_angularVelocity; }
+	float			GetInverseMass() const				{ return m_invMass; }
 
 	void UpdatePosition(float msec);
 

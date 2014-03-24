@@ -31,7 +31,6 @@ PhysicsNode::PhysicsNode(float r) {
 	m_invInertia		= Matrix4();
 
 	gravity			= Vector3(0.0f, GRAVITY, 0.0f);
-	radius			= 1.0f;
 
 	VectorToZero(m_force);
 }
@@ -50,7 +49,6 @@ PhysicsNode::PhysicsNode(float r, Vector3 p) {
 	m_invInertia		= Matrix4();
 
 	gravity			= Vector3(0.0f, GRAVITY, 0.0f);
-	radius			= 1.0f;
 
 	VectorToZero(m_force);
 }

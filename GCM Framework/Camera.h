@@ -48,6 +48,7 @@ public:
 	//Sets pitch, in degrees
 	void	SetPitch(float p) {pitch = p;}
 
+	Vector3 GetLookDirection();
 
 	void	SetControllingPad(JoyPadNum p) {pad = p;}
 

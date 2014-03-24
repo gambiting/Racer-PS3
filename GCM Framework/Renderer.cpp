@@ -49,10 +49,29 @@ void Renderer::UpdateScene(float msec) {
 	playerOne->UpdatePosition(msec);
 	playerTwo->UpdatePosition(msec);
 
-	
 	for(std::vector<PhysicsNode*>::iterator i = firedSpheres.begin(); i != firedSpheres.end(); ++i) {
 		(*i)->UpdatePosition(msec);
 	}
+
+}
+
+//We should also move this!!!
+void Renderer::CollisionTests() {
+
+	//To start just check spheres against the two players, it's all we need to test sphere/sphere collision anyway.
+	for(std::vector<PhysicsNode*>::iterator i = firedSpheres.begin(); i != firedSpheres.end(); ++i) {
+		if (physics.SphereSphereCollision( *(*i), *playerOne) ) {
+			CollisionData cData;
+			std::cout << "Sphere hitting player ONE" << std::endl;
+			physics.AddCollisionImpulse(*(*i), *playerOne, cData.m_point, cData.m_normal, cData.m_penetration);
+		}
+		if (physics.SphereSphereCollision( *(*i), *playerTwo) ) {
+			CollisionData cData;
+			std::cout << "Sphere hitting player TWO" << std::endl;
+			physics.AddCollisionImpulse(*(*i), *playerTwo, cData.m_point, cData.m_normal, cData.m_penetration);
+		}
+	}
+
 }
 
 /*
@@ -159,6 +178,9 @@ void Renderer::AddSphere() {
 	PhysicsNode* newSphere = new PhysicsNode(25.0f);
 	newSphere->SetMesh(sphereOne);
 	newSphere->SetPosition(camera->GetPosition());
+	
+	newSphere->SetLinearVelocity(camera->GetLookDirection());
+	
 	root->AddChild(*newSphere);
 	firedSpheres.push_back(newSphere);
 }

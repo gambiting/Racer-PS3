@@ -12,13 +12,18 @@ class CollisionAABB {
 };
 
 class CollisionData {
-
+public:
+	Vector3 m_point;
+	Vector3 m_normal;
+	float m_penetration;
 };
 
 
 class PhysicsSystem	{
 public:
-	friend class GameClass;
+
+	PhysicsSystem(void);
+	~PhysicsSystem(void);
 
 	void		Update(float msec);
 
@@ -41,13 +46,14 @@ public:
 	void	AddNode(PhysicsNode* n);
 
 	void	RemoveNode(PhysicsNode* n);
+	
+	bool SphereSphereCollision(const PhysicsNode &p0, const PhysicsNode &p1, CollisionData *collisionData = NULL) const;
+	
+	bool AABBCollision(const CollisionAABB &cube0, const CollisionAABB &cube1) const;
+
+	void AddCollisionImpulse(PhysicsNode &p0, PhysicsNode &p1, const Vector3 &hitPoint, const Vector3 &normal, float penetration);
 
 protected:
-	PhysicsSystem(void);
-	~PhysicsSystem(void);
-
-	bool SphereSphereCollision(const CollisionSphere &s0, const CollisionSphere &s1, CollisionData *collisionData = NULL) const;
-	bool AABBCollision(const CollisionAABB &cube0, const CollisionAABB &cube1) const;
 
 	//bool SphereAABBCollision(const CollisionSphere &sphere, const CollisionAABB &cube, CollisionData *collisionData = NULL) const; //Research!!!! :-)
 	//Sphere plane collisions we started in the previous module, and expand upon via the Plane class..

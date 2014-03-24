@@ -190,6 +190,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\PhysicsNode.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\PhysicsSystem.cpp"
 				>
 			</File>

@@ -14,6 +14,8 @@ _-_-_-_-_-_-_-""  ""
 *//////////////////////////////////////////////////////////////////////////////
 
 #pragma once
+
+#include "PhysicsSystem.h"
 #include "GCMRenderer.h"
 #include "Mesh.h"
 #include "OBJMesh.h"
@@ -35,6 +37,8 @@ public:
 	
 	void AddSphere();
 
+	void CollisionTests();
+
 protected:
 
 	void Renderer::DrawText(const std::string &text, const Vector3 &position, const float size, const bool perspective=false);
@@ -49,5 +53,7 @@ protected:
 	Mesh* sphereTwo;
 
 	std::vector<PhysicsNode*> firedSpheres;
+
+	PhysicsSystem physics;
 
 };
