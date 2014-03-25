@@ -38,7 +38,6 @@ public:
 
 	//returns a string of the player's colour
 	std::string		getColour();
-
 	
 	Item*			getHeldItem(){ return heldItem; }
 	void			setHeldItem(Item* it){ heldItem = it; }
@@ -46,10 +45,10 @@ public:
 	void			addObjectiveWon(Objective* obj);
 	std::vector<Objective*>* getObjectivesWon(){ return &objectivesWon; } 
 
-	//TODO 
-	//void resetPlayerCollision() { this->GetPhysicsNode().SetCollidedWith(NULL); }
+	//Discard collision info 
+	void			resetPlayerCollision() { this->GetPhysicsNode().SetCollidedWith(NULL); }
 
-	//TODO
+	//TODO -- not sure how player movement is implemented yet!
 	//rotate the player towards a point (for AI)
 	//void			rotateTowards(Vector3& target, Payload_ClientUpdate& commands);
 
@@ -57,6 +56,9 @@ public:
 	ItemType		getLastAffliction() { return lastAffliction; }
 	void			setAffliction(ItemType i) { lastAffliction = i; }
 	
+	//returns a pointer to the physics node, saves some faffing around
+	PhysicsNode*	GetPhysicsNodePtr() { return this->physicsNode; }
+
 	//rotation commands from player
 	void			setPlayerRotation(float rot){ playerRotation = rot; }
 	void			addPlayerRotation(float rotBy);

@@ -29,4 +29,4 @@ enum ItemType { NO_ITEM = 0, BOOST, HP_UP, TRAPITEM, TRAP1, TRAP2, TRAP3, TRAP4,
 //Objective types
 //------------------
 // Game modes
-enum ObjectiveTypes { P2P = 0, ASSASSIN };
+enum ObjectiveTypes { GAMEOVER = 0, P2P, ASSASSIN };

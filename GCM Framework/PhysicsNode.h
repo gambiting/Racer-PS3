@@ -35,6 +35,10 @@ public:
 	Vector3			GetAngularVelocity() const			{ return m_angularVelocity; }
 	float			GetInverseMass() const				{ return m_invMass; }
 
+	//record a collision with a sphere for use by Objective logic
+	void			SetCollidedWith(PhysicsNode* sphere){ collidedWith = sphere; }
+	PhysicsNode*	GetCollidedWith()					{ return collidedWith; }
+
 	void UpdatePosition(float msec);
 
 	void GravityOn();
@@ -61,4 +65,7 @@ protected:
 	Matrix4		m_invInertia;
 
 	SceneNode* target;
+
+	//for assassination game mode
+	PhysicsNode* collidedWith;
 };
