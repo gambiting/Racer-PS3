@@ -68,8 +68,6 @@ void Camera::Update(float msec) {
 	if(Input::ButtonDown(INPUT_R1,pad)) {
 		position[1] += msec;
 	}
-
-	//std::cout << "Yaw: " << yaw << " Pitch: " << pitch << std::endl;
 }
 
 Matrix4 Camera::BuildViewMatrix() {

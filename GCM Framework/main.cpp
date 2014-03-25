@@ -24,30 +24,25 @@ Camera* camera2;
 
 void start_button()		{
 	done = true;
-	std::cout << "Pressed start button!" << std::endl;
 }
 
 void select_button()		{
 	camera1->SetPosition(Vector3(0,0,10));
 	camera1->SetPitch(0.0f);
 	camera1->SetYaw(0.0f);
-	std::cout << "Pressed select button!" << std::endl;
 }
 
 void cross_button() {
 	renderer.AddSphere();
-	std::cout << "Pressed X button!" << std::endl; 
 	//it's an X button, not cross. Sony should know this, crazy bastards.
 }
 
 void square_button() {
 	renderer.ResetPlayers();
-	std::cout << "Pressed square button!" << std::endl;
 }
 
 void triangle_button() {
 	renderer.ActivatePlayers();
-	std::cout << "Pressed triangle button!" << std::endl;
 }
 
 
@@ -137,6 +132,7 @@ int main(void)	{
 		Input::UpdateJoypad();	//Receive latest joypad input for all joypads
 
 		float msec = (float)gameTime.GetTimedMS();
+		float msecStart = (float)gameTime.GetMS();
 
 		camera1->Update(msec);
 		camera2->Update(msec);
