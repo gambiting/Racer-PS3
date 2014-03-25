@@ -5,6 +5,7 @@ PhysicsNode::PhysicsNode(void)	{
 	ignoringGravity = false;
 
 	target			= NULL;
+	collidedWith	= NULL;
 
 	m_linearVelocity	= Vector3(0.0f, 0.0f, 0.0f);
 	m_invMass			= 1.0f / 20.0f;
@@ -25,6 +26,7 @@ PhysicsNode::PhysicsNode(float r) {
 	ignoringGravity = false;
 
 	target			= NULL;
+	collidedWith	= NULL;
 
 	m_linearVelocity	= Vector3(0.0f, 0.0f, 0.0f);
 	m_invMass			= 1.0f / r;
