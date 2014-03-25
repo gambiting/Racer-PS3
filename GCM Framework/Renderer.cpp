@@ -22,7 +22,6 @@ Renderer::Renderer(void)	{
 
 	//DrawLoading();
 
-
 	CellGcmTexture* g = LoadGTF("/OutputCube.gtf");
 	testRadius = 1000.0f;
 
@@ -47,6 +46,7 @@ Renderer::Renderer(void)	{
 	Projection matrix...0.7853982 is 45 degrees in radians.
 	*/
 	projMatrix	= Matrix4::perspective(0.7853982, screenRatio, 1.0f, 20000.0f);	//CHANGED TO THIS!!
+
 }
 
 Renderer::~Renderer(void)	{
@@ -77,12 +77,12 @@ void Renderer::CollisionTests() {
 	for(std::vector<PhysicsNode*>::iterator i = firedSpheres.begin(); i != firedSpheres.end(); ++i) {
 		if (physics.SphereSphereCollision( *(*i), *playerOne) ) {
 			CollisionData cData;
-			std::cout << "Sphere hitting player ONE" << std::endl;
+			playerOne->GravityOn();
 			physics.AddCollisionImpulse(*(*i), *playerOne, cData.m_point, cData.m_normal, cData.m_penetration);
 		}
 		if (physics.SphereSphereCollision( *(*i), *playerTwo) ) {
 			CollisionData cData;
-			std::cout << "Sphere hitting player TWO" << std::endl;
+			playerTwo->GravityOn();
 			physics.AddCollisionImpulse(*(*i), *playerTwo, cData.m_point, cData.m_normal, cData.m_penetration);
 		}
 	}
@@ -101,28 +101,31 @@ void Renderer::RenderScene(float msec) {
 
 	ClearBuffer();
 
-	
-	
-
-	SetHalfViewport1();
+	SetViewport();
+	//SetHalfViewport1();
+	float fps = floor(1000.0f/msec);
+	std::stringstream ss (std::stringstream::in | std::stringstream::out);
+	ss << fps << " fps";
+	std::string fpsText = ss.str();
 	
 	setCurrentCamera(camera1);
 	drawSkyBox();
 	DrawScene();
 	DrawText("Player 1", Vector3(0, screenHeight/1.1, 0), 26.0f);
+	DrawText(fpsText, Vector3(0, screenHeight/1.1 + 50, 0), 26.0f);
 	projMatrix	= Matrix4::perspective(0.7853982, screenRatio, 1.0f, 20000.0f);
 
-	SetHalfViewport2();
+	/*SetHalfViewport2();
 	
 	setCurrentCamera(camera2);
 	drawSkyBox();
 	DrawScene();
-	if(root) {
-		DrawNode(root);
-	}
 	DrawText("Player 2", Vector3(0, screenHeight/1.1, 0), 26.0f);
 	projMatrix	= Matrix4::perspective(0.7853982, screenRatio, 1.0f, 20000.0f);
-
+	if(root) {
+		DrawNode(root);
+	}*/
+	
 	SwapBuffers();
 
 	

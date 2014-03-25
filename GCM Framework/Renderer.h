@@ -15,6 +15,9 @@ _-_-_-_-_-_-_-""  ""
 
 #pragma once
 
+#include <sstream>
+#include <string>
+
 #include "PhysicsSystem.h"
 #include "GCMRenderer.h"
 #include "Mesh.h"
@@ -76,6 +79,5 @@ protected:
 	std::vector<PhysicsNode*> firedSpheres;
 
 	PhysicsSystem physics;
-
 
 };
