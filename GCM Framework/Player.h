@@ -12,7 +12,7 @@
 class Objective; 
 class Item;
 
-class Player{
+class Player : public GameEntity{
 
 public:
 	Player(int playerID);
