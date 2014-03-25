@@ -39,6 +39,7 @@ public:
 	void AddSphere();
 
 	void CollisionTests();
+	void RenderPausedScene();
 
 protected:
 	void DrawText(const std::string &text, const Vector3 &position, const float size, const bool perspective=false);
@@ -61,6 +62,8 @@ protected:
 
 	VertexShader* basicVert;
 	FragmentShader* basicFrag;
+
+	FragmentShader* loadFrag;
 
 	Mesh* tempQuad;
 	CellGcmTexture* tempTex;

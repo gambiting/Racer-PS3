@@ -18,10 +18,13 @@ Renderer::Renderer(void)	{
 	basicVert		= new VertexShader("/Shaders/vertex.vpo");
 	basicFrag		= new FragmentShader("/Shaders/fragment.fpo");
 
-	this->SetCurrentShader(*lightVert,*lightFrag);
+	loadFrag		= new FragmentShader("/Shaders/fragmentLoad.fpo");
+
+	
 
 	//DrawLoading();
 
+	this->SetCurrentShader(*lightVert,*lightFrag);
 
 	CellGcmTexture* g = LoadGTF("/OutputCube.gtf");
 	testRadius = 1000.0f;
@@ -42,7 +45,7 @@ Renderer::Renderer(void)	{
 	basicFont = new Font(FontTex, 16, 16);
 	
 	cubeMap = GCMRenderer::LoadGTF("/cubemap.gtf");
-	quad->SetDefaultTexture(*GCMRenderer::LoadGTF("/FT_Logo2.gtf"));
+	//quad->SetDefaultTexture(*GCMRenderer::LoadGTF("/FT_Logo2.gtf"));
 	/*
 	Projection matrix...0.7853982 is 45 degrees in radians.
 	*/
@@ -101,7 +104,7 @@ void Renderer::RenderScene(float msec) {
 
 	ClearBuffer();
 
-	
+	//DrawLoading();
 	
 
 	SetHalfViewport1();
@@ -117,9 +120,6 @@ void Renderer::RenderScene(float msec) {
 	setCurrentCamera(camera2);
 	drawSkyBox();
 	DrawScene();
-	if(root) {
-		DrawNode(root);
-	}
 	DrawText("Player 2", Vector3(0, screenHeight/1.1, 0), 26.0f);
 	projMatrix	= Matrix4::perspective(0.7853982, screenRatio, 1.0f, 20000.0f);
 
@@ -166,12 +166,12 @@ void Renderer::drawSkyBox()
 	cellGcmSetDepthMask(CELL_GCM_FALSE);
 
 	this->SetCurrentShader(*skyVert,*skyFrag);
-	if(currentCamera) {
+	/*if(currentCamera) {
 		viewMatrix = currentCamera->BuildViewMatrix();
 	}
 	else{
 		viewMatrix = Matrix4::identity();
-	}
+	}*/
 	currentVert->UpdateShaderMatrices(modelMatrix, viewMatrix, projMatrix);
 	SetTextureSampler(currentFrag->GetParameter("cubeTex"), cubeMap);
 
@@ -185,7 +185,7 @@ void Renderer::drawSkyBox()
 
 void Renderer::DrawScene()
 {
-	
+
 	this->SetCurrentShader(*currentVert,*currentFrag);
 	
 	cellGcmSetDepthTestEnable(CELL_GCM_TRUE);
@@ -224,9 +224,10 @@ void Renderer::DrawScene()
 void Renderer::DrawLoading()
 {
 	ClearBuffer();
-
+	SetViewport();
+	this->SetCurrentShader(*basicVert,*loadFrag);
 	viewMatrix=Matrix4::identity();
-	projMatrix = Matrix4::orthographic(-1.0f,1.0f,(float)screenWidth, 0.0f,(float)screenHeight, 0.0f);
+	//projMatrix = Matrix4::orthographic(0.0f,(float)screenWidth,(float)screenHeight, 0.0f,1.0f, -1.0f);
 	
 	modelMatrix = Matrix4::identity();
 
@@ -235,11 +236,15 @@ void Renderer::DrawLoading()
 	tempQuad->SetDefaultTexture(*tempTex);
 
 	currentVert->UpdateShaderMatrices(modelMatrix, viewMatrix, projMatrix);
+	if(tempQuad->GetDefaultTexture())
+	{
+		SetTextureSampler(currentFrag->GetParameter("texture"), tempTex);
+	}
 	tempQuad->Draw(*currentVert, *currentFrag);
 
 	SwapBuffers();
 
-
+	
 	projMatrix = Matrix4::perspective(0.7853982, screenRatio, 1.0f, 20000.0f);
 }
 
@@ -284,4 +289,34 @@ void Renderer::AddSphere() {
 	
 	root->AddChild(*newSphere);
 	firedSpheres.push_back(newSphere);
+}
+
+void Renderer::RenderPausedScene() {
+
+	//ClearBuffer();
+
+	//DrawLoading();
+	
+	SetViewport();
+	//SetHalfViewport1();
+	
+	//setCurrentCamera(camera1);
+	//drawSkyBox();
+	//DrawScene();
+	DrawText("PAUSED", Vector3(screenWidth*0.1, screenHeight/1.9, 0), 260.0f);
+	DrawText("Press X to Quit", Vector3(screenWidth*0.2, screenHeight/2.4, 0), 75.0f);
+	DrawText("Press O to Reset", Vector3(screenWidth*0.19, screenHeight/2.9, 0), 75.0f);
+	projMatrix	= Matrix4::perspective(0.7853982, screenRatio, 1.0f, 20000.0f);
+
+	//SetHalfViewport2();
+	
+	//setCurrentCamera(camera2);
+	//drawSkyBox();
+	//DrawScene();
+	//DrawText("Player 2", Vector3(0, screenHeight/1.1, 0), 26.0f);
+	//projMatrix	= Matrix4::perspective(0.7853982, screenRatio, 1.0f, 20000.0f);
+
+	SwapBuffers();
+
+	
 }

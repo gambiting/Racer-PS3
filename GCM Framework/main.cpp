@@ -16,6 +16,7 @@
 SYS_PROCESS_PARAM(1001, 0x10000)
 
 bool done = false;
+bool paused = false;
 Renderer renderer;
 SceneNode *root;
 
@@ -23,37 +24,67 @@ Camera* camera1;
 Camera* camera2;
 
 void start_button()		{
-	done = true;
+	//done = true;
+	paused=!paused;
+	renderer.RenderPausedScene();
 	std::cout << "Pressed start button!" << std::endl;
 }
 
 void select_button()		{
-	camera1->SetPosition(Vector3(0,0,10));
-	camera1->SetPitch(0.0f);
-	camera1->SetYaw(0.0f);
-	std::cout << "Pressed select button!" << std::endl;
+	if(!paused)
+	{
+		camera1->SetPosition(Vector3(0,0,10));
+		camera1->SetPitch(0.0f);
+		camera1->SetYaw(0.0f);
+		std::cout << "Pressed select button!" << std::endl;
+	}
 }
 
 void cross_button() {
-	renderer.AddSphere();
-	std::cout << "Pressed X button!" << std::endl; 
-	//it's an X button, not cross. Sony should know this, crazy bastards.
+	if(!paused)
+	{
+		renderer.AddSphere();
+		std::cout << "Pressed X button!" << std::endl; 
+		//it's an X button, not cross. Sony should know this, crazy bastards.
+	}
+	else
+	{
+		done = true;
+	}
 }
 
 void square_button() {
-	renderer.ResetPlayers();
-	std::cout << "Pressed square button!" << std::endl;
+	if(!paused)
+	{
+		renderer.ResetPlayers();
+		std::cout << "Pressed square button!" << std::endl;
+	}
 }
 
 void triangle_button() {
-	renderer.ActivatePlayers();
-	std::cout << "Pressed triangle button!" << std::endl;
+	if(!paused)
+	{
+		renderer.ActivatePlayers();
+		std::cout << "Pressed triangle button!" << std::endl;
+	}
+}
+void circle_button()
+{
+	if(!paused)
+	{
+		std::cout << "Pressed circle button!" << std::endl;
+	}
+	else
+	{
+		renderer.ResetPlayers();
+		paused = false;
+	}
 }
 
 
 int main(void)	{
 	std::cout << "FG-RACER!!! :- PS3 Version\n" << std::endl;
-	
+	renderer.DrawLoading();
 	//Start off by initialising the Input system
 	Input::Initialise();
 
@@ -63,6 +94,7 @@ int main(void)	{
 	Input::SetPadFunction(INPUT_SQUARE, square_button);
 	Input::SetPadFunction(INPUT_CROSS, cross_button);
 	Input::SetPadFunction(INPUT_TRIANGLE, triangle_button);
+	Input::SetPadFunction(INPUT_CIRCLE, circle_button);
 
 	HeightMap* h = new HeightMap(SYS_APP_HOME "/terrain.raw");
 	h->SetDefaultTexture(*GCMRenderer::LoadGTF("/Sand.gtf"));
@@ -134,10 +166,12 @@ int main(void)	{
 	Timer gameTime;
 
 	while(!done) {
+		
 		Input::UpdateJoypad();	//Receive latest joypad input for all joypads
-
+		
 		float msec = (float)gameTime.GetTimedMS();
-
+		if(!paused)
+		{
 		camera1->Update(msec);
 		camera2->Update(msec);
 		renderer.UpdateScene(msec);
@@ -146,6 +180,9 @@ int main(void)	{
 		renderer.RenderScene(msec);	//Render the scene
 		
 		renderer.CollisionTests();
+		}
+		
+
 		
 	}
 
