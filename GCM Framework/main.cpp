@@ -107,9 +107,8 @@ void circle_button()
 int main(void)	{
 	std::cout << "FG-RACER!!! :- PS3 Version\n" << std::endl;
 	//Start off by initialising the Input system
-	renderer.DrawLoading();
 	Input::Initialise();
-
+	renderer.DrawLoading();
 	//Button functions
 	Input::SetPadFunction(INPUT_START,	start_button);
 	Input::SetPadFunction(INPUT_SELECT,	select_button);
@@ -166,6 +165,7 @@ int main(void)	{
 					renderer.SetRootNode(root); //Set our new SceneNode as the root for our Renderer
 					renderer.SetupGeometry();
 					renderer.SetupPlayers();
+					renderer.DrawLoading(90);
 
 					//We need a new camera!
 					camera1 = new Camera();	
@@ -173,6 +173,7 @@ int main(void)	{
 					camera1->SetPosition(Vector3(700, 450, 1200)); //And set back slightly so we can see the node at the origin
 
 					renderer.SetCamera1(camera1);	//Set the current renderer camera
+					renderer.DrawLoading(95);
 
 					//We need a new camera!
 					camera2 = new Camera();	
@@ -180,6 +181,7 @@ int main(void)	{
 					camera2->SetPosition(Vector3(700, 450, 1200)); //And set back slightly so we can see the node at the origin
 
 					renderer.SetCamera2(camera2);	//Set the current renderer camera
+					renderer.DrawLoading(100);
 
 					
 					state=GAME_MAIN;

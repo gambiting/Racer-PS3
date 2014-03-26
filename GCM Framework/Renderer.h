@@ -32,7 +32,7 @@ public:
 	virtual void RenderScene(float msec);
 	virtual void UpdateScene(float msec);
 	void DrawScene();
-	void DrawLoading();
+	void DrawLoading(int i = 0);
 	void SetupPlayers(); //Only for testing of physics and whatnot.
 	void ResetPlayers();
 	void ActivatePlayers();
