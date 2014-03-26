@@ -14,11 +14,10 @@ ObjectivePointToPoint::ObjectivePointToPoint(){
 	autoFinish = false;
 }
 
-ObjectivePointToPoint::ObjectivePointToPoint(Player* allPlayers[]){
+ObjectivePointToPoint::ObjectivePointToPoint(Player* allPlayers[], int length){
 
 	//create start and end point based off of average location of all players
 	Vector2 sumLoc(0,0);
-	int length = sizeof(allPlayers)/sizeof(Player*);
 
 	for(int i = 0; i < length; i++){
 		sumLoc.x += allPlayers[i]->GetPhysicsNode().GetPosition().getX();

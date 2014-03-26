@@ -197,17 +197,33 @@
 					>
 				</File>
 				<File
-					RelativePath=".\ObjectiveAssassination.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ObjectivePointToPoint.cpp"
+					RelativePath=".\GameLogic.cpp"
 					>
 				</File>
 				<File
 					RelativePath=".\Player.cpp"
 					>
 				</File>
+				<Filter
+					Name="Objectives"
+					>
+					<File
+						RelativePath=".\ObjectiveAssassination.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ObjectivePointToPoint.cpp"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="Items"
+					>
+					<File
+						RelativePath=".\ItemTrap.cpp"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="Meshes"
@@ -330,25 +346,41 @@
 					>
 				</File>
 				<File
-					RelativePath=".\Item.h"
-					>
-				</File>
-				<File
-					RelativePath=".\Objective.h"
-					>
-				</File>
-				<File
-					RelativePath=".\ObjectiveAssassination.h"
-					>
-				</File>
-				<File
-					RelativePath=".\ObjectivePointToPoint.h"
+					RelativePath=".\GameLogic.h"
 					>
 				</File>
 				<File
 					RelativePath=".\Player.h"
 					>
 				</File>
+				<Filter
+					Name="Objectives"
+					>
+					<File
+						RelativePath=".\Objective.h"
+						>
+					</File>
+					<File
+						RelativePath=".\ObjectiveAssassination.h"
+						>
+					</File>
+					<File
+						RelativePath=".\ObjectivePointToPoint.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="Items"
+					>
+					<File
+						RelativePath=".\Item.h"
+						>
+					</File>
+					<File
+						RelativePath=".\ItemTrap.h"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="Meshes"

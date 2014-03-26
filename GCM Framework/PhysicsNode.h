@@ -27,6 +27,9 @@ public:
 	void			SetLinearVelocity(Vector3 vel)		{ m_linearVelocity = vel; }
 	void			SetAngularVelocity(Vector3 ang)		{ m_angularVelocity = ang; }
 
+	Vector3&		getForwardVec()						{ return forwardVec; }
+	void			setForwardVec(Vector3& vec)			{ forwardVec = vec; }
+
 	Vector3			GetScale() const					{ return scale; }
 	Vector3			GetPosition() const					{ return m_position; }
 	float			GetRadius() const					{ return radius; }
@@ -38,6 +41,11 @@ public:
 	//record a collision with a sphere for use by Objective logic
 	void			SetCollidedWith(PhysicsNode* sphere){ collidedWith = sphere; }
 	PhysicsNode*	GetCollidedWith()					{ return collidedWith; }
+
+	Vector3&		GetStoredVelocity()					{return stored_Velocity;}
+
+	bool			getAtRest()							{return atRest;}
+	void			SetAtRest(bool b)					{atRest = b;}
 
 	void UpdatePosition(float msec);
 
@@ -57,14 +65,17 @@ protected:
 	Vector3		m_linearVelocity;
 	Vector3		m_force;
 	float		m_invMass;
+	Vector3		stored_Velocity;
 
 	//<----ANGULAR---->
 	Quat		m_orientation;
 	Vector3		m_angularVelocity;
 	Vector3		m_torque;
 	Matrix4		m_invInertia;
-
-	SceneNode* target;
+	Vector3		forwardVec;
+	
+	SceneNode*	target;
+	bool		atRest;
 
 	//for assassination game mode
 	PhysicsNode* collidedWith;
