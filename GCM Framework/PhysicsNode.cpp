@@ -28,9 +28,15 @@ PhysicsNode::PhysicsNode(float r) {
 	target			= NULL;
 	collidedWith	= NULL;
 
+	float inertia = (2 * 10.f * pow(50.f, 2)) / 5;
+
 	m_linearVelocity	= Vector3(0.0f, 0.0f, 0.0f);
 	m_invMass			= 1.0f / r;
-	m_invInertia		= Matrix4();
+	m_invInertia		= Matrix4(
+		Vector4(1/inertia,0.0f,0.0f,0.0f),
+		Vector4(0.0f,1/inertia,0.0f,0.0f),
+		Vector4(0.0f,0.0f,1/inertia,0.0f),
+		Vector4(0.0f,0.0f,0.0f,1.0f));
 
 	gravity			= Vector3(0.0f, GRAVITY, 0.0f);
 
@@ -45,10 +51,16 @@ PhysicsNode::PhysicsNode(float r, Vector3 p) {
 	ignoringGravity = false;
 
 	target			= NULL;
+	
+	float inertia = (2 * 10.f * pow(50.f, 2)) / 5;
 
 	m_linearVelocity	= Vector3(0.0f, 0.0f, 0.0f);
 	m_invMass			= 1.0f / r;
-	m_invInertia		= Matrix4();
+	m_invInertia		= Matrix4(
+		Vector4(1/inertia,0.0f,0.0f,0.0f),
+		Vector4(0.0f,1/inertia,0.0f,0.0f),
+		Vector4(0.0f,0.0f,1/inertia,0.0f),
+		Vector4(0.0f,0.0f,0.0f,1.0f));
 
 	gravity			= Vector3(0.0f, GRAVITY, 0.0f);
 

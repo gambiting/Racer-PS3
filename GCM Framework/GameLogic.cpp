@@ -1,7 +1,7 @@
 #include "GameLogic.h"
 
 GameLogic::GameLogic(Renderer* passedRenderer){
-	
+	std::cout << "LOGIC..." << std::endl;
 	renderer = passedRenderer;
 
 	//Lowered the player and item counts compared to PC
@@ -21,7 +21,17 @@ GameLogic::GameLogic(Renderer* passedRenderer){
 	//set the first objective
 	currentObjective = new ObjectivePointToPoint();
 	objectiveLastLocation = currentObjective->getTargetLoc();
-	std::cout << "\nIT'S A RACE! Get to the start line!";
+	std::cout << "Race event created!" << std::endl;
+
+
+	//testing object creation....*****************************
+	Item* item	= new Trap();		
+	//set item's position 
+	item->GetPhysicsNode().SetPosition(Vector3(0,100,100));
+	//item->setItemID(ServerInterface::AddGameEntity(WEAPONS_CRATE, item->GetPhysicsNode().GetPosition()));
+	gamePowerUps.push_back(item);
+	renderer->AddItemBox(item);
+	//renderer->RemoveItemBox(item);
 }
 
 void GameLogic::updateWorld(float dt){
@@ -198,7 +208,7 @@ void GameLogic::updatePlayerPositions(float dt) {
 		Vector3	forward_vec = allPlayers[i]->GetPhysicsNode().GetStoredVelocity();
 		allPlayers[i]->GetPhysicsNode().SetAtRest(false);
 		forward_vec.setY(0.0f);
-		normalize(forward_vec);
+		forward_vec = normalize(forward_vec);
 		allPlayers[i]->GetPhysicsNode().setForwardVec(forward_vec);
 
 
@@ -272,8 +282,9 @@ void GameLogic::dropAndDeleteItem(int playerIndex, bool deleteItem){
 			break;
 		}
 	}
-	if (deleteItem)
+	if (deleteItem){
 		delete allPlayers[playerIndex]->getHeldItem();
-
+		std::cout << "Item deleted!" << std::endl;
+	}
 	allPlayers[playerIndex]->setHeldItem(NULL);
 }
