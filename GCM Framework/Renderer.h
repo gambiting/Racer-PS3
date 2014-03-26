@@ -22,6 +22,7 @@ _-_-_-_-_-_-_-""  ""
 #include "TextMesh.h"
 #include "timer.h"
 #include "PhysicsNode.h"
+#include "HeightMap.h"
 
 class Renderer : public GCMRenderer	{
 public:
@@ -40,10 +41,12 @@ public:
 
 	void CollisionTests();
 	void RenderPausedScene();
+	void RenderArrow(Matrix4 transform);//TODO
+	void SetupGeometry();
 
 protected:
 	void DrawText(const std::string &text, const Vector3 &position, const float size, const bool perspective=false);
-
+	
 	Font* basicFont;
 	CellGcmTexture* FontTex;
 	CellGcmTexture* cubeMap;
@@ -72,6 +75,10 @@ protected:
 
 	PhysicsNode* playerOne;
 	PhysicsNode* playerTwo;
+
+	Mesh* arrow;
+	Matrix4 player1Trans;
+	Matrix4 player2Trans;
 
 	Mesh* sphereOne;
 	Mesh* sphereTwo;
