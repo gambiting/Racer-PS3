@@ -8,7 +8,7 @@
 
 using namespace Vectormath::Aos;
 
-#define GRAVITY -0.00098f
+#define GRAVITY -0.0000098f
 
 class PhysicsNode : public SceneNode {
 public:
@@ -33,6 +33,7 @@ public:
 	Vector3			GetScale() const					{ return scale; }
 	Vector3			GetPosition() const					{ return m_position; }
 	float			GetRadius() const					{ return radius; }
+	void			setRadius(float f)					{ radius = f; }
 	Matrix4			GetInvInertia() const				{ return m_invInertia; }
 	Vector3			GetLinearVelocity() const			{ return m_linearVelocity; }
 	Vector3			GetAngularVelocity() const			{ return m_angularVelocity; }

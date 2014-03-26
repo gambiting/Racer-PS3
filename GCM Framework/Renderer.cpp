@@ -64,7 +64,7 @@ void Renderer::UpdateScene(float msec) {
 	playerOne->UpdatePosition(msec);
 	playerTwo->UpdatePosition(msec);
 
-	for(std::vector<PhysicsNode*>::iterator i = firedSpheres.begin(); i != firedSpheres.end(); ++i) {
+	for(std::vector<PhysicsNode*>::iterator i = worldObjects.begin(); i != worldObjects.end(); ++i) {
 		(*i)->UpdatePosition(msec);
 	}
 
@@ -73,17 +73,34 @@ void Renderer::UpdateScene(float msec) {
 //We should also move this!!!
 void Renderer::CollisionTests() {
 
-	//To start just check spheres against the two players, it's all we need to test sphere/sphere collision anyway.
-	for(std::vector<PhysicsNode*>::iterator i = firedSpheres.begin(); i != firedSpheres.end(); ++i) {
-		if (physics.SphereSphereCollision( *(*i), *playerOne) ) {
-			CollisionData cData;
-			playerOne->GravityOn();
-			physics.AddCollisionImpulse(*(*i), *playerOne, cData.m_point, cData.m_normal, cData.m_penetration);
+	/*players will be the only objects that move, so just need to check if they collide with other objects
+	for(int i = 0; i < players.size(); i++){
+		//check against all world objects
+		for(int j = 0; j < worldObjects.size(); j++{
+			if(physics.SphereSphereCollision(players[i]->GetPhysicsNode(), worldObjects[j]){
+				CollisionData cData;
+				physics.AddCollisionImpulse(
+			}
 		}
-		if (physics.SphereSphereCollision( *(*i), *playerTwo) ) {
-			CollisionData cData;
-			playerTwo->GravityOn();
-			physics.AddCollisionImpulse(*(*i), *playerTwo, cData.m_point, cData.m_normal, cData.m_penetration);
+		//check against item boxes
+		//check against players (except THIS player)
+
+	}*/
+
+
+	//To start just check spheres against the two players, it's all we need to test sphere/sphere collision anyway.
+	for(std::vector<PhysicsNode*>::iterator i = worldObjects.begin(); i != worldObjects.end(); ++i) {
+		CollisionData* cData = new CollisionData();
+		if (physics.SphereSphereCollision( *(*i), *playerOne, cData) ) {
+			//playerOne->GravityOn();
+			std::cout << "cdata mpoint: " << 
+				cData->m_penetration << std::endl;
+			physics.AddCollisionImpulse(*(*i), *playerOne, cData->m_point, cData->m_normal, cData->m_penetration);
+		}
+		if (physics.SphereSphereCollision( *(*i), *playerTwo, cData) ) {
+			
+			//playerTwo->GravityOn();
+			//physics.AddCollisionImpulse(*(*i), *playerTwo, cData->m_point, cData->m_normal, cData->m_penetration);
 		}
 	}
 
@@ -286,5 +303,27 @@ void Renderer::AddSphere() {
 	newSphere->SetLinearVelocity(camera1->GetLookDirection());
 	
 	root->AddChild(*newSphere);
-	firedSpheres.push_back(newSphere);
+	worldObjects.push_back(newSphere);
+}
+
+void Renderer::AddItemBox(Item* item){
+	itemBoxes.push_back(item);
+	item->GetPhysicsNode().SetMesh(sphereOne);
+	item->GetPhysicsNode().SetPosition(Vector3(1000, 1000, 0));
+	item->GetPhysicsNode().GravityOff();
+	item->GetPhysicsNode().setRadius(25.f);
+	root->AddChild(item->GetPhysicsNode());
+}
+
+void Renderer::RemoveItemBox(Item* item){
+	//search through itembox vector for match, remove it if found
+	//This does NOT delete the item object, only stop it from rendering and being collidable
+	for(int j= 0; j < itemBoxes.size(); j++){
+		if(itemBoxes[j] == item) {
+			itemBoxes.erase(itemBoxes.begin() + j);
+			std::cout << "Item box removed from world" << std::endl;
+			return;
+		}
+	}
+	std::cout << "Failed to remove item. Awkward..."<< std::endl;
 }
