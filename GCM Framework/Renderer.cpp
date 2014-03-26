@@ -269,13 +269,13 @@ void Renderer::SetupPlayers() {
 	playerOne = new PhysicsNode(25.0f);
 	playerOne->GravityOff(); //Turn gravity OFF
 	playerOne->SetMesh(sphereOne);
-	playerOne->SetPosition(Vector3(0, 1500, 0));
+	playerOne->SetPosition(Vector3(0, 500, 0));
 	root->AddChild(*playerOne);
 
 	playerTwo = new PhysicsNode(25.0f);
 	playerTwo->GravityOff(); //Turn gravity OFF
 	playerTwo->SetMesh(sphereTwo);
-	playerTwo->SetPosition(Vector3(500, 1500, 0));
+	playerTwo->SetPosition(Vector3(500, 500, 0));
 	root->AddChild(*playerTwo);
 }
 

@@ -29,7 +29,7 @@ bool PhysicsSystem::SphereSphereCollision(const PhysicsNode &p0, const PhysicsNo
 			collisionData->m_point = pos0 - collisionData->m_normal * (p0.GetRadius() - collisionData->m_penetration * 0.5f);
 
 		}
-		std::cout << "Colliosn!"<< std::endl;
+		std::cout << "Collision!"<< std::endl;
 		return true; //Collision happened
 	}
 	return false; //Nah It didn't.
@@ -78,32 +78,15 @@ void PhysicsSystem::AddCollisionImpulse(PhysicsNode &p0, PhysicsNode &p1, const 
 
 
 		float jn = -1*(1+e)*dot(dv, normal) / normDiv;
-		jn = jn + (penetration * 1.5f);
-
-
-		std::cout << "p0 linear velocity before: " << 
-				p0.GetLinearVelocity().getX() << "," <<
-				p0.GetLinearVelocity().getY() << "," <<
-				p0.GetLinearVelocity().getZ() <<std::endl;
+		jn = jn + (penetration * .05f);
 
 		p0.SetLinearVelocity(p0.GetLinearVelocity() + (normal * p0.GetInverseMass() * jn));
 		//p0.SetAngularVelocity(p0.GetAngularVelocity() + (worldInvInertia0 * cross(r0, normal * jn)).getXYZ() );
-		std::cout << "p0 linear velocity after: " << 
-				p0.GetLinearVelocity().getX() << "," <<
-				p0.GetLinearVelocity().getY() << "," <<
-				p0.GetLinearVelocity().getZ() <<std::endl;
 
 
-		std::cout << "p1 linear velocity before: " << 
-				p1.GetLinearVelocity().getX() << "," <<
-				p1.GetLinearVelocity().getY() << "," <<
-				p1.GetLinearVelocity().getZ() <<std::endl;
+	
 		p1.SetLinearVelocity(p1.GetLinearVelocity() + (normal * p1.GetInverseMass() * jn));
 		//p1.SetAngularVelocity(p1.GetAngularVelocity() + (worldInvInertia1 * cross(r1, normal * jn)).getXYZ() );
-		std::cout << "p1 linear velocity after: " << 
-				p1.GetLinearVelocity().getX() << "," <<
-				p1.GetLinearVelocity().getY() << "," <<
-				p1.GetLinearVelocity().getZ() <<std::endl;
 	}
 
 	//Tangent impulse

@@ -79,12 +79,21 @@ Matrix4 Camera::BuildViewMatrix() {
 
 Vector3 Camera::GetLookDirection() {
 	Vector3 fwd = Vector3(0,0,-1);
-	
-	Vector3 forward = 
-		(Matrix4::rotation(yaw, Vector3(0,1,0)) * 
-		(Matrix4::rotation(pitch, Vector3(1,0,0)) * fwd)).getXYZ();
+	Matrix4 mat1;
+	mat1 = mat1.identity();
+	mat1 = mat1.rotation(-yaw*(3.1415926f/180.0f), Vector3(0,1,0));
+
+	Matrix4 mat2;
+	mat2 = mat2.identity();
+	mat2 = mat2.rotation(pitch*(3.1415926f/180.0f), Vector3(1,0,0));
+
+	Vector3 forward = ((mat1 * mat2) * fwd).getXYZ();
+	//Vector3 forward = 
+	//	(Matrix4::rotation(yaw, Vector3(0,1,0)) * 
+	//	(Matrix4::rotation(pitch, Vector3(1,0,0)) * fwd)).getXYZ();
+
+	//forward = normalize(forward);
 
 	//Works until we change the p or y?
-
 	return forward;
 }
