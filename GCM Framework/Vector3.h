@@ -16,7 +16,7 @@ _-_-_-_-_-_-_-""  ""
 
 class Vector3	{
 public:
-	Vector3(void) {
+	Vector3() {
 		ToZero();
 	}
 

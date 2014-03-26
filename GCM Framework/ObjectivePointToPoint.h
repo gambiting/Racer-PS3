@@ -13,7 +13,7 @@ class ObjectivePointToPoint : public Objective {
 public:
 	//default constructor puts goal on origin
 	ObjectivePointToPoint();
-	ObjectivePointToPoint(Player* allPlayers[]);
+	ObjectivePointToPoint(Player* allPlayers[], int arrayLength);
 
 	Vector3				getGoalLocation(){ return goalLocation; }
 	Vector3				getStartLocation(){ return startLocation; }
