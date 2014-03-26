@@ -1,7 +1,9 @@
 #include "GameLogic.h"
 
-GameLogic::GameLogic(){
+GameLogic::GameLogic(Renderer* passedRenderer){
 	
+	renderer = passedRenderer;
+
 	//Lowered the player and item counts compared to PC
 	//as the area will likely be smaller
 	numPlayers = (sizeof(allPlayers)/sizeof(Player*));
@@ -30,8 +32,10 @@ void GameLogic::updateWorld(float dt){
 	while(mPhysicsAccumulator >= PHYSICS_TIMESTEP){
 		mPhysicsAccumulator -= PHYSICS_TIMESTEP;
 		
-		//TODO
-		//do a physics dance here! 
+		//TODO pass in item collision checks...
+		//update physics & collisions
+		renderer->UpdateScene(dt);
+		renderer->CollisionTests();
 
 		//remove item boxes that have been collided with
 		for(unsigned int i = 0; i < powerupsToRemove.size(); i++){

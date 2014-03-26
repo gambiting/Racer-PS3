@@ -7,6 +7,7 @@
 #include "ObjectivePointToPoint.h"
 #include "ItemTrap.h"
 #include "Player.h"
+#include "Renderer.h"
 
 //defines for how long processes should run
 #define PHYSICS_HZ	120
@@ -16,8 +17,8 @@
 
 class GameLogic{
 public:
-	GameLogic();
-	~GameLogic();
+	GameLogic(Renderer* passedRenderer = NULL);
+	~GameLogic(){};
 
 	void initiatePlayers();
 	void updateWorld(float dt);
@@ -29,6 +30,8 @@ private:
 	float mPhysicsAccumulator;
 	float mAIAccumulator;
 	bool gameOver;
+
+	Renderer* renderer;
 
 	//number of players to create, including AI
 	int numPlayers;

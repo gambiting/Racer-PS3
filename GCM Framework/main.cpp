@@ -12,6 +12,7 @@
 #include "camera.h"
 #include "HeightMap.h"
 #include "OBJMesh.h"
+#include "GameLogic.h"
 
 SYS_PROCESS_PARAM(1001, 0x10000)
 
@@ -127,6 +128,7 @@ int main(void)	{
 	renderer.SetCamera2(camera2);	//Set the current renderer camera
 
 	Timer gameTime;
+	GameLogic* logic = new GameLogic(&renderer);
 
 	while(!done) {
 		Input::UpdateJoypad();	//Receive latest joypad input for all joypads
@@ -136,17 +138,15 @@ int main(void)	{
 
 		camera1->Update(msec);
 		camera2->Update(msec);
-		renderer.UpdateScene(msec);
-		root->Update(msec);	//Update our scene hierarchy. This bit is new (previously the renderer handled it)
-
-		renderer.RenderScene(msec);	//Render the scene
 		
-		renderer.CollisionTests();
+		root->Update(msec);	//Update our scene hierarchy. This bit is new (previously the renderer handled it)
+		logic->updateWorld(msec);// gameplay logic...
+		renderer.RenderScene(msec);	//Render the scene
 		
 	}
 
 	//If we get here, joypad A has had its start button pressed
-
+	delete logic;
 	std::cout << "Quitting..." << std::endl;
 
 	delete h->GetDefaultTexture();
