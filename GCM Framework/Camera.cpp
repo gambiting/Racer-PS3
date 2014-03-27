@@ -59,7 +59,7 @@ void Camera::Update(float msec) {
 	if(Input::ButtonDown(INPUT_UP,pad)) {
 		//position += ((Matrix4::rotationY(DegToRad(-yaw)) * Vector3(0,0,-1) * msec).getXYZ());
 		//std::cout << "Setting camera pos to: " << player->GetPosition().getX() << ", " << player->GetPosition().getY() << ", " << player->GetPosition().getZ() << ")" << std::endl;
-		player->AddForce(Vector3(0,0,-0.07), Vector3(0,0,0));
+		player->AddForce(Vector3(0,0,-0.007), Vector3(0,0,0));
 	}
 	if(Input::ButtonDown(INPUT_DOWN,pad)) {
 		player->AddForce(Vector3(0,0,0.007), Vector3(0,0,0));

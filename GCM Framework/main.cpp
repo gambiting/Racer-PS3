@@ -169,7 +169,6 @@ int main(void)	{
 					//renderer.SetCamera2(camera2);	//Set the current renderer camera
 					renderer.DrawLoading(100);
 					
-					
 
 					state=GAME_MAIN;
 					break;
@@ -183,7 +182,9 @@ int main(void)	{
 					renderer.RenderScene(msec);	//Render the scene
 					
 					renderer.CollisionTests();
-					renderer.ActivatePlayers();
+					if (!renderer.PlayersActive()) {
+						renderer.ActivatePlayers();
+					}
 					break;
 				
 			case GAME_PAUSED: break;

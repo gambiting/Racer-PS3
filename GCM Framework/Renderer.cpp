@@ -29,7 +29,7 @@ Renderer::Renderer(void)	{
 
 	testRadius = 1000.0f;
 
-	
+	playersActive = false;
 
 	FontTex = GCMRenderer::LoadGTF("/tahoma.gtf");
 	basicFont = new Font(FontTex, 16, 16);
@@ -89,9 +89,8 @@ void Renderer::CollisionTests() {
 		{
 			/*std::cout << "normal: " << cData->m_normal.getX() << ", " <<
 				cData->m_normal.getY() << ", " <<
-				cData->m_normal.getZ() << std::endl;*/
+				cData->m_normal.	getZ() << std::endl;*/
 
-			std::cout << "penetration: " << cData->m_penetration << std::endl;
 			worldObjects.at(i)->SetInAir(false);
 			PhysicsNode *temp = new PhysicsNode();
 			physics.AddCollisionImpulse(*worldObjects.at(i), (*temp), cData->m_point, cData->m_normal, cData->m_penetration);
@@ -314,7 +313,7 @@ void Renderer::SetupPlayers() {
 
 	playerOne = new PhysicsNode(15.0f);
 	playerOne->SetMesh(sphereOne);
-	playerOne->SetPosition(Vector3(950, 1500, 800));
+	playerOne->SetPosition(Vector3(2000, 500, 2000));
 	playerOne->GravityOff();
 	camera1->SetPhysicsNode(playerOne);
 	worldObjects.push_back(playerOne);
@@ -323,7 +322,7 @@ void Renderer::SetupPlayers() {
 
 	playerTwo = new PhysicsNode(15.0f);
 	playerTwo->SetMesh(sphereTwo);
-	playerTwo->SetPosition(Vector3(800, 1000, 800));
+	playerTwo->SetPosition(Vector3(2096, 500, 2096));
 	playerTwo->GravityOff();
 	camera2->SetPhysicsNode(playerTwo);
 	worldObjects.push_back(playerTwo);
@@ -345,6 +344,7 @@ void Renderer::ResetPlayers() {
 void Renderer::ActivatePlayers() {
 	playerOne->GravityOn();
 	playerTwo->GravityOn();
+	playersActive = true;
 }
 
 void Renderer::AddSphere() {

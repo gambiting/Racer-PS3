@@ -52,6 +52,7 @@ public:
 	void RenderPausedScene();
 	void RenderArrow(Matrix4 transform);//TODO
 	void SetupGeometry();
+	bool PlayersActive() { return playersActive; }
 
 protected:
 	void DrawText(const std::string &text, const Vector3 &position, const float size, const bool perspective=false);
@@ -98,5 +99,7 @@ protected:
 	std::vector<Player*> players;
 
 	PhysicsSystem physics;
+
+	bool playersActive;
 	
 };

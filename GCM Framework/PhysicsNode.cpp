@@ -108,6 +108,21 @@ void PhysicsNode::UpdatePosition(float msec) {
 
 	}
 
+	if (m_position.getX() < radius) {
+		m_position.setX(radius) ;
+	}
+	if (m_position.getX() > 4096 - radius) {
+		m_position.setX(4096 - radius) ;
+	}
+	if (m_position.getZ() < radius) {
+		m_position.setZ(radius) ;
+	}
+	if (m_position.getZ() > 4096 - radius) {
+		m_position.setZ(4096 - radius) ;
+	}
+
+	//std::cout << "X: " << m_position.getX() << ". Z: " << m_position.getZ() << std::endl;
+
 	SetPosition(m_position);
 	VectorToZero(m_force);
 
