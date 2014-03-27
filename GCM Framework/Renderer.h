@@ -43,7 +43,7 @@ public:
 	void ResetPlayers();
 	void ActivatePlayers();
 	
-	void AddSphere();
+	void AddSphere(Camera* c);
 
 	//add and remove item boxes from the game world
 	void AddItemBox(Item* item);
@@ -54,10 +54,14 @@ public:
 	void RenderPausedScene();
 	void RenderArrow(Matrix4 transform);//TODO
 	void SetupGeometry();
+
 	bool PlayersActive() { return playersActive; }
+	void drawMenu();
+	void drawWinner(int i);
 
 protected:
 	void DrawText(const std::string &text, const Vector3 &position, const float size, const bool perspective=false);
+	void DrawSplitScreenText(const std::string &text, const Vector3 &position, const float size, const bool perspective=false);
 	
 	Font* basicFont;
 	CellGcmTexture* FontTex;
@@ -68,6 +72,7 @@ protected:
 	Vector4 testColour;
 
 	void drawSkyBox();
+	
 
 	VertexShader* skyVert;
 	FragmentShader* skyFrag;
@@ -82,6 +87,7 @@ protected:
 
 	Mesh* tempQuad;
 	CellGcmTexture* tempTex;
+	CellGcmTexture* bkgd;
 
 	Mesh* quad;
 
@@ -103,5 +109,7 @@ protected:
 	PhysicsSystem physics;
 
 	bool playersActive;
+	float halfScreenRatio;
+
 	
 };

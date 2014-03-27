@@ -5,7 +5,7 @@ Set useful default values!
 */
 Camera::Camera(void)	{
 	yaw		= 0.0f;
-	pitch	= 0.0f;
+	pitch	= -10.0f;
 	pad		= JOYPAD_A;
 	position = Vector3(0,0,0);
 
@@ -36,7 +36,7 @@ void Camera::Update(float msec) {
 		return;
 	}
 
-	position = player->GetPosition() + Vector3(200, 150 , 500);
+	position = player->GetPosition() + Vector3(0, 200, 600);
 
 	Input::GetJoypadMovement(y,p,pad);
 

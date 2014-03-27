@@ -2,16 +2,11 @@
 
 #include "Defines.h"
 #include "SceneNode.h"
-
 #include <vector>
 #include <vectormath/cpp/vectormath_aos.h>
-
 using namespace Vectormath::Aos;
-
-
 #define GRAVITY -0.00048f
 #define DAMPING_FACTOR		0.97005f;
-
 
 class PhysicsNode : public SceneNode {
 public:
@@ -62,7 +57,6 @@ public:
 															//distance = d;
 															//m_torque = CalculateTorque(distance, m_force);
 														}
-
 
 	void UpdatePosition(float msec);
 

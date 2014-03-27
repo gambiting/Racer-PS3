@@ -4,12 +4,14 @@ Renderer::Renderer(void)	{
 
 	quad = Mesh::GenerateQuad();
 
+	halfScreenRatio = (float)((screenWidth/2)/ screenHeight);
 	player1Trans= Matrix4::rotationZYX(Vector3(DegToRad(15),DegToRad(-30),DegToRad(-10)));
 	player2Trans= Matrix4::rotationZYX(Vector3(0.0f,DegToRad(115),DegToRad(30)));
 
 	tempQuad = Mesh::GenerateQuad();
-	tempTex = GCMRenderer::LoadGTF("/sand.gtf");
-	tempQuad->SetDefaultTexture(*tempTex);
+	//tempTex = GCMRenderer::LoadGTF("/sand.gtf");
+	//tempQuad->SetDefaultTexture(*tempTex);
+
 
 	testColour = Vector4(1.0,1.0,1.0,1.0);
 	printf("SkyBox Shader\n");
@@ -31,14 +33,20 @@ Renderer::Renderer(void)	{
 
 	playersActive = false;
 
+	bkgd = GCMRenderer::LoadGTF("/Textures/splashbg.gtf");
+
+
 	FontTex = GCMRenderer::LoadGTF("/tahoma.gtf");
 	basicFont = new Font(FontTex, 16, 16);
 	
 	cubeMap = GCMRenderer::LoadGTF("/cubemap.gtf");
+
+	cubeMap->cubemap	= CELL_GCM_TRUE;
 	
 	/*
 	Projection matrix...0.7853982 is 45 degrees in radians.
 	*/
+	halfScreenRatio = (float)(screenWidth / 2) / (float)screenHeight;
 	projMatrix	= Matrix4::perspective(0.7853982, screenRatio, 1.0f, 20000.0f);	//CHANGED TO THIS!!
 
 }
@@ -92,11 +100,11 @@ void Renderer::CollisionTests() {
 				cData->m_normal.	getZ() << std::endl;*/
 
 			worldObjects.at(i)->SetInAir(false);
+
 			PhysicsNode *temp = new PhysicsNode();
 			physics.AddCollisionImpulse(*worldObjects.at(i), (*temp), cData->m_point, cData->m_normal, cData->m_penetration);
 			delete temp;
 		}
-		
 
 		//if there is another node after this, check for collisions with it and following nodes
 		if(i < worldObjects.size()-1 && worldObjects.at(i)->isCollidable()){			
@@ -120,6 +128,7 @@ void Renderer::CollisionTests() {
 
 		delete cData;
 	}
+
 }
 
 /*
@@ -134,8 +143,6 @@ void Renderer::RenderScene(float msec) {
 
 	ClearBuffer();
 
-
-	SetHalfViewport1();
 	float fps = floor(1000.0f/msec);
 	std::stringstream ss (std::stringstream::in | std::stringstream::out);
 	ss << fps << " fps";
@@ -147,8 +154,10 @@ void Renderer::RenderScene(float msec) {
 	drawSkyBox();
 	DrawScene();
 
-	DrawText("Player 1", Vector3(0, screenHeight/1.1, 0), 26.0f);
-	DrawText(fpsText, Vector3(0, screenHeight/1.1 + 50, 0), 26.0f);
+	DrawSplitScreenText("Player 1", Vector3(0, screenHeight/9, 0), 26.0f);
+	RenderArrow(player1Trans);
+	DrawSplitScreenText(fpsText, Vector3(0, screenHeight/1.1 + 50, 0), 26.0f);
+
 	projMatrix	= Matrix4::perspective(0.7853982, screenRatio, 1.0f, 20000.0f);
 
 	/*Render Right Viewport*/
@@ -157,7 +166,8 @@ void Renderer::RenderScene(float msec) {
 	setCurrentCamera(camera2);
 	drawSkyBox();
 	DrawScene();
-	DrawText("Player 2", Vector3(0, screenHeight/1.1, 0), 26.0f);
+
+	DrawSplitScreenText("Player 2", Vector3(0, screenHeight/9, 0), 26.0f);
 
 	RenderArrow(player2Trans);
 
@@ -197,11 +207,58 @@ void Renderer::DrawText(const std::string &text, const Vector3 &position, const 
 	delete mesh; 
 	this->SetCurrentShader(*lightVert,*lightFrag);
 }
+void Renderer::DrawSplitScreenText(const std::string &text, const Vector3 &position, const float size, const bool perspective)
+{
+	this->SetCurrentShader(*basicVert,*basicFrag);
+
+	TextMesh* mesh = new TextMesh(text,*basicFont);
+
+	
+	if(perspective) {
+		modelMatrix = Matrix4::translation(position) * Matrix4::scale(Vector3(size,size,1));
+		viewMatrix = currentCamera->BuildViewMatrix();
+		projMatrix = Matrix4::perspective(0.7853982, screenRatio, 1.0f, 20000.0f);
+	}
+	else{	
+		
+		modelMatrix = Matrix4::translation(Vector3(position.getX(),screenHeight-position.getY(), position.getZ())) * Matrix4::scale(Vector3(size,size,1));
+		viewMatrix=Matrix4::identity();
+		projMatrix = Matrix4::orthographic(0.0f,(float)screenWidth/2,0.0f,(float)screenHeight, 1.0f, -1.0f);
+	}
+	
+	currentVert->UpdateShaderMatrices(modelMatrix, viewMatrix, projMatrix);
+	
+	if(mesh->GetDefaultTexture())
+	{
+		SetTextureSampler(currentFrag->GetParameter("texture"),mesh->GetDefaultTexture());
+	}
+
+	mesh->Draw(*currentVert, *currentFrag);
+
+	delete mesh; 
+	this->SetCurrentShader(*lightVert,*lightFrag);
+}
+void Renderer::drawMenu()
+{
+	ClearBuffer();
+	SetViewport();
+	projMatrix	= Matrix4::perspective(0.7853982, screenRatio, 1.0f, 20000.0f);
+	setCurrentCamera(camera1);
+	drawSkyBox();
+	DrawScene();
+	DrawText("Press SQUARE to Begin",Vector3(screenWidth/10, screenHeight/2, 0), 75.0f);
+	SwapBuffers();
+
+}
 void Renderer::drawSkyBox()
 {
 	
 	
 	cellGcmSetDepthMask(CELL_GCM_FALSE);
+
+	cellGcmSetDepthTestEnable(CELL_GCM_FALSE); //rich
+
+	cellGcmSetCullFaceEnable(CELL_GCM_FALSE); //rich
 
 	this->SetCurrentShader(*skyVert,*skyFrag);
 	if(currentCamera) {
@@ -211,10 +268,12 @@ void Renderer::drawSkyBox()
 		viewMatrix = Matrix4::identity();
 	}
 	projMatrix	= Matrix4::perspective(0.7853982, screenRatio, 1.0f, 20000.0f);
+
 	currentVert->UpdateShaderMatrices(modelMatrix, viewMatrix, projMatrix);
-	//SetTextureSampler(currentFrag->GetParameter("cubeTex"), cubeMap);
+	SetTextureSampler(currentFrag->GetParameter("cubeTex"), cubeMap);
 
 	quad->Draw(*currentVert,*currentFrag);
+	projMatrix	= Matrix4::perspective(0.7853982, halfScreenRatio, 1.0f, 20000.0f);
 
 	this->SetCurrentShader(*lightVert,*lightFrag);
 
@@ -259,41 +318,29 @@ void Renderer::DrawScene()
 
 void Renderer::DrawLoading(int i)
 {
-	/*printf("LOADING\n");
-
 	ClearBuffer();
 	SetViewport();
+
 	this->SetCurrentShader(*basicVert,*loadFrag);
 
+	modelMatrix = Matrix4::identity();//scale(Vector3(100,100,100))* Matrix4::translation(Vector3((float) (screenWidth/4), -50, 0));//translation(Vector3(position.getX(),screenHeight-position.getY(), position.getZ())) * Matrix4::scale(Vector3(size,size,1));
 	viewMatrix=Matrix4::identity();
-	projMatrix = Matrix4::orthographic(-5.0f,5.0,-5.0, 5.0f,5.0f, -5.0f);	
-	modelMatrix = Matrix4::identity();
 
+	projMatrix = Matrix4::orthographic(-1.0f,1.0,-1.0, 1.0f,1.0f, -1.0f);
 	
-
 	currentVert->UpdateShaderMatrices(modelMatrix, viewMatrix, projMatrix);
-	if(tempQuad->GetDefaultTexture())
-	{
-		printf("TEXTURE FOUND\n");
-		SetTextureSampler(currentFrag->GetParameter("texture"), tempQuad->GetDefaultTexture());
-	}
+	
+	SetTextureSampler(currentFrag->GetParameter("texture"),bkgd);
+	
 	tempQuad->Draw(*currentVert, *currentFrag);
-
-	SwapBuffers();
 	
-	projMatrix = Matrix4::perspective(0.7853982, screenRatio, 1.0f, 20000.0f);*/
 	
-
-
-	ClearBuffer();
-	SetViewport();
-	
-	DrawText("LOADING...", Vector3(screenWidth*0.1, screenHeight/2.5, 0), 160.0f);
+	DrawText("LOADING...", Vector3(screenWidth/2, screenHeight/1.9, 0), 75.0f);
 
 	std::stringstream ss;
 	ss<<i<<"%";
 
-	DrawText(ss.str(), Vector3(screenWidth/1.5, screenHeight/1.5, 0), 160.0f);
+	DrawText(ss.str(), Vector3(screenWidth/1.3, screenHeight/1.2, 0), 75.0f);
 	
 	
 	projMatrix	= Matrix4::perspective(0.7853982, screenRatio, 1.0f, 20000.0f);
@@ -344,13 +391,11 @@ void Renderer::ActivatePlayers() {
 	playersActive = true;
 }
 
-void Renderer::AddSphere() {
+void Renderer::AddSphere(Camera* c) {
 	PhysicsNode* newSphere = new PhysicsNode(25.0f);
 	newSphere->SetMesh(sphereOne);
-	newSphere->SetPosition(camera1->GetPosition());
-	
+	newSphere->SetPosition(c->GetPosition());
 	newSphere->SetLinearVelocity(camera1->GetLookDirection()/2.0f);
-	
 	root->AddChild(*newSphere);
 	worldObjects.push_back(newSphere);
 }
@@ -408,7 +453,8 @@ void Renderer::RenderArrow(Matrix4 transform)
 {
 	this->SetCurrentShader(*basicVert,*loadFrag);
 
-	modelMatrix = Matrix4::translation(Vector3(-2.5,4.5, 0)) * transform;//scale(Vector3(100,100,100))* Matrix4::translation(Vector3((float) (screenWidth/4), -50, 0));//translation(Vector3(position.getX(),screenHeight-position.getY(), position.getZ())) * Matrix4::scale(Vector3(size,size,1));
+	modelMatrix = Matrix4::translation(Vector3(0,4.5, 0)) * transform;//scale(Vector3(100,100,100))* Matrix4::translation(Vector3((float) (screenWidth/4), -50, 0));//translation(Vector3(position.getX(),screenHeight-position.getY(), position.getZ())) * Matrix4::scale(Vector3(size,size,1));
+
 	viewMatrix=Matrix4::identity();
 	projMatrix = Matrix4::orthographic(-5.0f,5.0,-10.0, 10.0f,10.0f, -10.0f);
 	
@@ -498,7 +544,51 @@ void Renderer::SetupGeometry()
 	
 	std::cout << "Loading arrow in renderer" << std::endl;
 	arrow = new OBJMesh(SYS_APP_HOME "/arrow.obj");
-	arrow->SetDefaultTexture(*GCMRenderer::LoadGTF("/FT_Logo2.gtf"));
+
+	arrow->SetDefaultTexture(*GCMRenderer::LoadGTF("/rainbow.gtf"));
 	percent+=10;//80
 	DrawLoading(percent);
+}
+void Renderer::drawWinner(int i)
+{
+	switch(i)
+	{
+	case 1:
+		SetHalfViewport1();	
+		setCurrentCamera(camera1);
+		this->SetCurrentShader(*basicVert,*basicFrag);
+
+		modelMatrix = Matrix4::identity();//scale(Vector3(100,100,100))* Matrix4::translation(Vector3((float) (screenWidth/4), -50, 0));//translation(Vector3(position.getX(),screenHeight-position.getY(), position.getZ())) * Matrix4::scale(Vector3(size,size,1));
+		viewMatrix=Matrix4::identity();
+		projMatrix = Matrix4::orthographic(-1.0f,1.0f,-0.5f, 0.5f,0.5f, -0.5f);
+
+		currentVert->UpdateShaderMatrices(modelMatrix, viewMatrix, projMatrix);
+		
+		SetTextureSampler(currentFrag->GetParameter("texture"), GCMRenderer::LoadGTF("/Textures/Winner.gtf"));
+		
+
+		tempQuad->Draw(*currentVert, *currentFrag);
+		SwapBuffers();
+
+		break;
+	case 2:
+		SetHalfViewport2();
+		setCurrentCamera(camera2);
+		this->SetCurrentShader(*basicVert,*basicFrag);
+
+		modelMatrix = Matrix4::identity();//scale(Vector3(100,100,100))* Matrix4::translation(Vector3((float) (screenWidth/4), -50, 0));//translation(Vector3(position.getX(),screenHeight-position.getY(), position.getZ())) * Matrix4::scale(Vector3(size,size,1));
+		viewMatrix=Matrix4::identity();
+		projMatrix = Matrix4::orthographic(-1.0f,1.0f,-0.5f, 0.5f,0.5f, -0.5f);
+		
+		currentVert->UpdateShaderMatrices(modelMatrix, viewMatrix, projMatrix);
+		
+		SetTextureSampler(currentFrag->GetParameter("texture"), GCMRenderer::LoadGTF("/Textures/Winner.gtf"));
+		
+
+		tempQuad->Draw(*currentVert, *currentFrag);
+		SwapBuffers();
+		break;
+	default:
+		break;
+	}
 }

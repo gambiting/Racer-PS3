@@ -79,7 +79,7 @@ Mesh* Mesh::GenerateQuad() {
 
 	m->vertexData =  (Vertex*)GCMRenderer::localMemoryAlign(128, sizeof(Vertex) * 4);
 
-	float size = 1.0f;
+	float size = 1.0f; 
 
 	m->vertexData[0].x = -size;			//Top left of our quad
 	m->vertexData[0].y = size; 
@@ -158,7 +158,7 @@ void	Mesh::Draw(VertexShader &vertex, FragmentShader &fragment)
 			(uint32_t)vertexOffsets[VERTEX_POSITION]
 		);
 
-		if(vertexOffsets[VERTEX_COLOUR])	{
+		if(vertexOffsets[VERTEX_COLOUR]&& (vertex.GetAttributeIndex(VERTEX_COLOUR)<350612))	{
 			cellGcmSetVertexDataArray(vertex.GetAttributeIndex(VERTEX_COLOUR),
 				0, 
 				sizeof(Vertex), 
@@ -168,7 +168,7 @@ void	Mesh::Draw(VertexShader &vertex, FragmentShader &fragment)
 				(uint32_t)vertexOffsets[VERTEX_COLOUR]
 			);
 		}
-		if(vertexOffsets[VERTEX_NORMAL])	{
+		if(vertexOffsets[VERTEX_NORMAL]&& (vertex.GetAttributeIndex(VERTEX_NORMAL)<350612))	{
 			cellGcmSetVertexDataArray(vertex.GetAttributeIndex(VERTEX_NORMAL),
 				0, 
 				sizeof(Vertex), 
@@ -183,7 +183,7 @@ void	Mesh::Draw(VertexShader &vertex, FragmentShader &fragment)
 		//	cellGcmSetVertexDataArray(vertex.GetAttributeIndex(VERTEX_COLOUR),0,0,0,CELL_GCM_VERTEX_UB,CELL_GCM_LOCATION_LOCAL,0);
 		//}
 
-		if(vertexOffsets[VERTEX_TEXCOORD])	{
+		if(vertexOffsets[VERTEX_TEXCOORD]&& (vertex.GetAttributeIndex(VERTEX_TEXCOORD)<350612))	{
 			cellGcmSetVertexDataArray(vertex.GetAttributeIndex(VERTEX_TEXCOORD),
 				0, 
 				sizeof(Vertex), 

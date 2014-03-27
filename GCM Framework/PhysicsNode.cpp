@@ -25,7 +25,6 @@ PhysicsNode::PhysicsNode(void)	{
 	gravity			= Vector3(0.0f, GRAVITY, 0.0f);
 	inAir = true;
 	atRest = false;
-
 	VectorToZero(m_force);
 
 }

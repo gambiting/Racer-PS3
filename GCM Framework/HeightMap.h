@@ -24,7 +24,11 @@ public:
 	HeightMap(std::string name);
 	~HeightMap(void){};
 
+//<<<<<<< HEAD
 	/*static const float getHeightAt(float X, float Y, Vector3 *normal) 
+=======
+	static const float getHeightAt(float X, float Y, Vector3 *normal) 
+>>>>>>> origin/Graphics_Branch
 	{
 
 		int x = X*RAW_WIDTH;
@@ -34,19 +38,27 @@ public:
 			
 			//std::cout<< "getting the normal now!" << std::endl;
 			int offset = (x * RAW_WIDTH) + y;
+<<<<<<< HEAD
 			int offset2 = (y * RAW_WIDTH) + x;
+=======
+>>>>>>> origin/Graphics_Branch
 			//std::cout<< "size of the normal vector: " << normals->size() << std::endl;
 			if(offset<0 || offset>(256*256))
 			{
 				std::cout<< "Wrong coorinate requested! x: " << x << ", y: " << y << ", X:" << X << ", Y:" << Y<< std::endl;
 				return 0.0f;
 			}
+<<<<<<< HEAD
 			*normal = normalize((normals->at(offset2)));
+=======
+			*normal = (normals->at(offset));
+>>>>>>> origin/Graphics_Branch
 			//std::cout<< "getting the height data now!" << std::endl;
 			return heightData[offset]*HEIGHTMAP_Y;
 		}
 
 		return 0.0f;
+<<<<<<< HEAD
 	}*/
 
 	static float getRawValue(int x, int y) {
