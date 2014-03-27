@@ -101,11 +101,9 @@ void PhysicsNode::UpdatePosition(float msec) {
 		m_position = m_position + m_linearVelocity * msec;
 
 		float totalV = m_linearVelocity.getX() + m_linearVelocity.getY() + m_linearVelocity.getZ();
-		std::cout << "Total V: " << totalV << std::endl;
 		
-		float minSpeed = MIN_SPEED;
-		if (totalV < minSpeed) {
-			atRest = true;
+		if (totalV > 0.005f) {
+			//atRest = true;
 		}
 
 	}

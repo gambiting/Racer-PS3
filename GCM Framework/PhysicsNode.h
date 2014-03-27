@@ -9,9 +9,8 @@
 
 using namespace Vectormath::Aos;
 
-#define GRAVITY				-0.0000098f
-#define DAMPING_FACTOR		0.98f;
-#define MIN_SPEED			-0.005f;
+#define GRAVITY				-0.000539f
+#define DAMPING_FACTOR		0.97005f;
 
 class PhysicsNode : public SceneNode {
 public:

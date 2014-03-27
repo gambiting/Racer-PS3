@@ -347,7 +347,7 @@ void Renderer::AddSphere() {
 	newSphere->SetMesh(sphereOne);
 	newSphere->SetPosition(camera1->GetPosition());
 	
-	newSphere->SetLinearVelocity(camera1->GetLookDirection()/10.0f);
+	newSphere->SetLinearVelocity(camera1->GetLookDirection()/2.0f);
 	
 	root->AddChild(*newSphere);
 	worldObjects.push_back(newSphere);
