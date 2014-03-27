@@ -50,7 +50,9 @@ public:
 	}*/
 
 	static float getRawValue(int x, int y) {
-		return heightData[x * RAW_WIDTH + y];
+
+		if(x>=0 && x<256 && y>=0 && y<=256)		return heightData[x * RAW_WIDTH + y];
+		else return 0.0f;
 	}
 
 	static float getHeightAt(float X, float Y, Vector3* out_normal) {

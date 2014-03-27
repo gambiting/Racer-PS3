@@ -84,31 +84,32 @@ void Renderer::CollisionTests() {
 	for(int i=0;i<worldObjects.size();i++)
 	{
 		CollisionData* cData = new CollisionData();
+
 		if(physics.TerrainCollision( *worldObjects.at(i), cData))
 		{
-			std::cout << "normal: " << cData->m_normal.getX() << ", " <<
+			/*std::cout << "normal: " << cData->m_normal.getX() << ", " <<
 				cData->m_normal.getY() << ", " <<
-				cData->m_normal.getZ() << std::endl;
+				cData->m_normal.getZ() << std::endl;*/
 
 			std::cout << "penetration: " << cData->m_penetration << std::endl;
-
+			worldObjects.at(i)->SetInAir(false);
 			PhysicsNode *temp = new PhysicsNode();
 			physics.AddCollisionImpulse(*worldObjects.at(i), (*temp), cData->m_point, cData->m_normal, cData->m_penetration);
 			delete temp;
 		}
 		
 
-		//if there is another node after this, check for collisions with it and following nodes
-		/*if(i < worldObjects.size()-1){			
+		/*if there is another node after this, check for collisions with it and following nodes
+		if(i < worldObjects.size()-1){			
 			for(int j = i+1; j<worldObjects.size(); j++){
 				if(physics.SphereSphereCollision(*worldObjects.at(i),*worldObjects.at(j), cData)){
 					std::cout << "SPHERE SPHERE" << std::endl;
 					physics.AddCollisionImpulse(*worldObjects.at(i), *worldObjects.at(j), cData->m_point, cData->m_normal, cData->m_penetration);
 				}
 			}
-		}
+		}*/
 
-		//is this node is a player, check for collisions with item boxes
+		/*is this node is a player, check for collisions with item boxes
 		if(worldObjects.at(i)->getIsPlayer()){
 			for(int j = 0; j < itemBoxes.size(); j++){
 				if(physics.SphereSphereCollision(*worldObjects.at(i),itemBoxes.at(j)->GetPhysicsNode(), cData)){
@@ -116,8 +117,8 @@ void Renderer::CollisionTests() {
 					//TODO item box logic
 				}
 			}
-		}
-*/
+		}*/
+
 		delete cData;
 	}
 }
@@ -250,8 +251,8 @@ void Renderer::DrawScene()
 	
 	currentVert->UpdateShaderMatrices(modelMatrix, viewMatrix, projMatrix);
 	
-	currentFrag->SetParameter("lightPosition1", (float*)&camera1->GetPosition());//.getX());
-	currentFrag->SetParameter("lightPosition2", (float*)&camera2->GetPosition());//.getX());
+	currentFrag->SetParameter("lightPosition1", (float*)&playerOne->GetPosition());//.getX());
+	currentFrag->SetParameter("lightPosition2", (float*)&playerTwo->GetPosition());//.getX());
 	currentFrag->SetParameter("cameraPos", (float*)&currentCamera->GetPosition());
 	currentFrag->SetParameter("lightRadius", &testRadius);
 	currentFrag->SetParameter("lightColour", (float*)&testColour);
@@ -312,27 +313,31 @@ void Renderer::DrawLoading(int i)
 void Renderer::SetupPlayers() {
 
 	playerOne = new PhysicsNode(25.0f);
-	playerOne->GravityOff(); //Turn gravity OFF
 	playerOne->SetMesh(sphereOne);
-	playerOne->SetPosition(Vector3(0, 500, 0));
+	playerOne->SetPosition(Vector3(950, 1500, 800));
+	playerOne->GravityOff();
+	camera1->SetPhysicsNode(playerOne);
+	worldObjects.push_back(playerOne);
 	root->AddChild(*playerOne);
 	
 
 	playerTwo = new PhysicsNode(25.0f);
-	playerTwo->GravityOff(); //Turn gravity OFF
 	playerTwo->SetMesh(sphereTwo);
-	playerTwo->SetPosition(Vector3(500, 500, 0));
+	playerTwo->SetPosition(Vector3(800, 1000, 800));
+	playerTwo->GravityOff();
+	camera2->SetPhysicsNode(playerTwo);
+	worldObjects.push_back(playerTwo);
 	root->AddChild(*playerTwo);
 	
 }
 
 //Something nice and basic to put the players back at the start.
 void Renderer::ResetPlayers() {
-	playerOne->GravityOff();
+	//playerOne->GravityOff();
 	playerOne->SetPosition(Vector3(0, 1000, 0));
 	playerOne->SetLinearVelocity(Vector3(0,0,0));
 	
-	playerTwo->GravityOff();
+	//playerTwo->GravityOff();
 	playerTwo->SetPosition(Vector3(500, 1000, 0));
 	playerTwo->SetLinearVelocity(Vector3(0,0,0));
 }
@@ -347,7 +352,7 @@ void Renderer::AddSphere() {
 	newSphere->SetMesh(sphereOne);
 	newSphere->SetPosition(camera1->GetPosition());
 	
-	newSphere->SetLinearVelocity(camera1->GetLookDirection()/10.0f);
+	newSphere->SetLinearVelocity(camera1->GetLookDirection()/2.0f);
 	
 	root->AddChild(*newSphere);
 	worldObjects.push_back(newSphere);

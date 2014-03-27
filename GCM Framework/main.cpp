@@ -19,11 +19,12 @@ SYS_PROCESS_PARAM(1001, 0x10000)
 
 bool done = false;
 int state = GAME_LOADING;
-Renderer renderer;
-SceneNode *root;
 
 Camera* camera1;
 Camera* camera2;
+
+Renderer renderer;
+SceneNode *root;
 
 
 void start_button()		{
@@ -59,7 +60,7 @@ void select_button()		{
 		break;
 	}
 		
-		std::cout << "Pressed select button!" << std::endl;
+	std::cout << "Pressed select button!" << std::endl;
 	
 }
 
@@ -122,27 +123,24 @@ int main(void)	{
 	//Create a new scenenode
 	root = new SceneNode();
 
-	
-
-
-	
-
 	renderer.SetRootNode(root); //Set our new SceneNode as the root for our Renderer
-	renderer.SetupPlayers();
+
 
 	//We need a new camera!
 	camera1 = new Camera();	
 	camera1->SetControllingPad(JOYPAD_A);	//Controlled via joypad A
-	camera1->SetPosition(Vector3(700, 450, 1200)); //And set back slightly so we can see the node at the origin
+	//camera1->SetPosition(Vector3(700, 450, 1200)); //And set back slightly so we can see the node at the origin
 
 	renderer.SetCamera1(camera1);	//Set the current renderer camera
 
 	//We need a new camera!
 	camera2 = new Camera();	
 	camera2->SetControllingPad(JOYPAD_B);	//Controlled via joypad A
-	camera2->SetPosition(Vector3(700, 450, 1200)); //And set back slightly so we can see the node at the origin
+	//camera2->SetPosition(Vector3(700, 450, 1200)); //And set back slightly so we can see the node at the origin
 
 	renderer.SetCamera2(camera2);	//Set the current renderer camera
+
+	renderer.SetupPlayers();
 
 	Timer gameTime;
 	GameLogic* logic = new GameLogic(&renderer);
@@ -161,28 +159,16 @@ int main(void)	{
 					renderer.DrawLoading();
 					root = new SceneNode();
 
-
 					renderer.SetRootNode(root); //Set our new SceneNode as the root for our Renderer
 					renderer.SetupGeometry();
 					renderer.SetupPlayers();
 					renderer.DrawLoading(90);
 
-					//We need a new camera!
-					camera1 = new Camera();	
-					camera1->SetControllingPad(JOYPAD_A);	//Controlled via joypad A
-					camera1->SetPosition(Vector3(700, 450, 1200)); //And set back slightly so we can see the node at the origin
-
-					renderer.SetCamera1(camera1);	//Set the current renderer camera
+					//renderer.SetCamera1(camera1);	//Set the current renderer camera
 					renderer.DrawLoading(95);
 
-					//We need a new camera!
-					camera2 = new Camera();	
-					camera2->SetControllingPad(JOYPAD_B);	//Controlled via joypad A
-					camera2->SetPosition(Vector3(700, 450, 1200)); //And set back slightly so we can see the node at the origin
-
-					renderer.SetCamera2(camera2);	//Set the current renderer camera
+					//renderer.SetCamera2(camera2);	//Set the current renderer camera
 					renderer.DrawLoading(100);
-
 					
 					state=GAME_MAIN;
 					break;

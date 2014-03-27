@@ -18,7 +18,6 @@ public:
 	float m_penetration;
 };
 
-
 class PhysicsSystem	{
 public:
 

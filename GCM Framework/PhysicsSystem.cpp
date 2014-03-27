@@ -17,6 +17,7 @@ bool PhysicsSystem::TerrainCollision(const PhysicsNode &p0,  CollisionData *d) c
 
 	Vector3 position = p0.GetPosition();
 	Vector3 velocity = p0.GetLinearVelocity();
+
 	float radius = p0.GetRadius();
 	Vector3 lowestPoint = Vector3(position.getX(), position.getY() - radius, position.getZ());
 	Vector3 tempVel = velocity;
@@ -155,12 +156,10 @@ void PhysicsSystem::AddCollisionImpulse(PhysicsNode &p0, PhysicsNode &p1, const 
 		jn = jn + (penetration * 0.75f);
 
 		p0.SetLinearVelocity(p0.GetLinearVelocity() + (normal * p0.GetInverseMass() * jn));
-		//p0.SetAngularVelocity(p0.GetAngularVelocity() + (worldInvInertia0 * cross(r0, normal * jn)).getXYZ() );
-
-
-	
+		p0.SetAngularVelocity(p0.GetAngularVelocity() + (worldInvInertia0 * cross(r0, normal * jn)).getXYZ() );
+		
 		p1.SetLinearVelocity(p1.GetLinearVelocity() + (normal * p1.GetInverseMass() * jn));
-		//p1.SetAngularVelocity(p1.GetAngularVelocity() + (worldInvInertia1 * cross(r1, normal * jn)).getXYZ() );
+		p1.SetAngularVelocity(p1.GetAngularVelocity() + (worldInvInertia1 * cross(r1, normal * jn)).getXYZ() );
 	}
 
 	//Tangent impulse

@@ -11,6 +11,10 @@ Camera::Camera(void)	{
 
 	ypSensitivity = 0.3f;
 	invertPitch = true;
+
+	std::cout << "Initialising a camera" << std::endl;
+
+	player = new PhysicsNode();
 }
 
 Camera::~Camera(void)	{
@@ -32,10 +36,12 @@ void Camera::Update(float msec) {
 		return;
 	}
 
+	position = player->GetPosition() + Vector3(100, 150, 500);
+
 	Input::GetJoypadMovement(y,p,pad);
 
-	yaw += y;// * ypSensitivity;
-	pitch -= p;// invertPitch ? -(p*ypSensitivity) : (p*ypSensitivity);
+	yaw += y * ypSensitivity;
+	pitch -= p * invertPitch ? -(p*ypSensitivity) : (p*ypSensitivity);
 	
 	pitch = min(pitch,90.0f);
 	pitch = max(pitch,-90.0f);
@@ -48,17 +54,22 @@ void Camera::Update(float msec) {
 	}
 
 	if(Input::ButtonDown(INPUT_UP,pad)) {
-		position += ((Matrix4::rotationY(DegToRad(-yaw)) * Vector3(0,0,-1) * msec).getXYZ());
+		//position += ((Matrix4::rotationY(DegToRad(-yaw)) * Vector3(0,0,-1) * msec).getXYZ());
+		//std::cout << "Setting camera pos to: " << player->GetPosition().getX() << ", " << player->GetPosition().getY() << ", " << player->GetPosition().getZ() << ")" << std::endl;
+		player->SetLinearVelocity(Vector3(0,0,-0.1));
 	}
 	if(Input::ButtonDown(INPUT_DOWN,pad)) {
-		position -= ((Matrix4::rotationY(DegToRad(-yaw)) * Vector3(0,0,-1) * msec).getXYZ());
+		player->SetLinearVelocity(Vector3(0,0,0.1));
+		//position -= ((Matrix4::rotationY(DegToRad(-yaw)) * Vector3(0,0,-1) * msec).getXYZ());
 	}
 
 	if(Input::ButtonDown(INPUT_LEFT,pad)) {
-		position += ((Matrix4::rotationY(DegToRad(-yaw)) * Vector3(-1,0,0) * msec).getXYZ());
+		player->SetLinearVelocity(Vector3(-0.1,0,0));
+		//position += ((Matrix4::rotationY(DegToRad(-yaw)) * Vector3(-1,0,0) * msec).getXYZ());
 	}
 	if(Input::ButtonDown(INPUT_RIGHT,pad)) {
-		position -= ((Matrix4::rotationY(DegToRad(-yaw)) * Vector3(-1,0,0) * msec).getXYZ());
+		player->SetLinearVelocity(Vector3(0.1,0,0));
+		//position -= ((Matrix4::rotationY(DegToRad(-yaw)) * Vector3(-1,0,0) * msec).getXYZ());
 	}
 
 	//Go up and down using the shoulder buttons!
@@ -90,4 +101,9 @@ Vector3 Camera::GetLookDirection() {
 	Vector3 forward = ((mat1 * mat2) * fwd).getXYZ();
 	
 	return forward;
+}
+
+void Camera::SetPhysicsNode(PhysicsNode* n) {
+	this->player = n; 
+	this->position = player->GetPosition();
 }
