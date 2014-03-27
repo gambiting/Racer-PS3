@@ -21,7 +21,7 @@ Renderer::Renderer(void)	{
 	printf("Text Shader\n");
 	basicVert		= new VertexShader("/Shaders/vertex.vpo");
 	basicFrag		= new FragmentShader("/Shaders/fragment.fpo");
-	
+	printf("LOADFRAG SHADER\n");
 	loadFrag		= new FragmentShader("/Shaders/fragmentLoad.fpo");
 	
 
@@ -315,7 +315,7 @@ void Renderer::RenderPausedScene() {
 }
 void Renderer::RenderArrow(Matrix4 transform)
 {
-	this->SetCurrentShader(*basicVert,*basicFrag);
+	this->SetCurrentShader(*basicVert,*loadFrag);
 
 	modelMatrix = Matrix4::translation(Vector3(-2.5,4.5, 0)) * transform;//scale(Vector3(100,100,100))* Matrix4::translation(Vector3((float) (screenWidth/4), -50, 0));//translation(Vector3(position.getX(),screenHeight-position.getY(), position.getZ())) * Matrix4::scale(Vector3(size,size,1));
 	viewMatrix=Matrix4::identity();
@@ -335,7 +335,7 @@ void Renderer::RenderArrow(Matrix4 transform)
 void Renderer::SetupGeometry()
 {
 	int percent = 0;
-	HeightMap* h = new HeightMap(SYS_APP_HOME "/terrain.raw");
+	HeightMap* h = new HeightMap(SYS_APP_HOME "/doodle.raw");
 	h->SetDefaultTexture(*GCMRenderer::LoadGTF("/Sand.gtf"));
 	percent+=10;//10
 	DrawLoading(percent);
@@ -366,11 +366,11 @@ void Renderer::SetupGeometry()
 	
 	SceneNode* thing_node2 = new SceneNode();
 	thing_node2->SetMesh(thing2);
-	thing_node2->SetTransform(Matrix4::translation(Vector3(700,300,1500)) * Matrix4::scale(Vector3(10,10,10)) * Matrix4::rotationY(DegToRad(180)));
+	thing_node2->SetTransform(Matrix4::translation(Vector3(700,50,1500)) * Matrix4::scale(Vector3(10,10,10)) * Matrix4::rotationY(DegToRad(180)));
 	
 	SceneNode* tree_node1 = new SceneNode();
 	tree_node1->SetMesh(tree);
-	tree_node1->SetTransform(Matrix4::translation(Vector3(200,400,200)) * Matrix4::scale(Vector3(30,30,30)));
+	tree_node1->SetTransform(Matrix4::translation(Vector3(200,50,200)) * Matrix4::scale(Vector3(30,30,30)));
 
 	SceneNode* tree_node2 = new SceneNode();
 	tree_node2->SetMesh(tree);

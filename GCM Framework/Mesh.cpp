@@ -2,7 +2,7 @@
 
 Mesh::Mesh(void)	{
 	vertexData		= 0;
-	type			= CELL_GCM_PRIMITIVE_LINE_STRIP;//TRIANGLES;	//named constant for triangles, oddly enough
+	type			= CELL_GCM_PRIMITIVE_TRIANGLES;	//named constant for triangles, oddly enough
 	numVertices		= 0;
 	defaultTexture  = NULL;
 
