@@ -39,6 +39,9 @@ void start_button()		{
 	case GAME_PAUSED:
 		state=GAME_MAIN;
 		break;
+	case GAME_MENU:
+		state=GAME_MAIN;
+		break;
 	default: break;
 	}
 	std::cout << "Pressed start button!" << std::endl;
@@ -226,7 +229,7 @@ int main(void)	{
 					renderer.DrawLoading(100);
 					
 
-					state=GAME_MAIN;
+					state=GAME_MENU;
 					break;
 				
 			case GAME_MAIN:
@@ -244,6 +247,9 @@ int main(void)	{
 					break;
 				
 			case GAME_PAUSED: break;
+			case GAME_MENU:
+				renderer.drawMenu();
+				break;
 
 			default: break;
 		}
