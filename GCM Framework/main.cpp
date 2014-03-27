@@ -41,6 +41,9 @@ void start_button()		{
 		break;
 	case GAME_MENU:
 		state=GAME_MAIN;
+	case GAME_OVER:
+		renderer.ResetPlayers();
+		state=GAME_MAIN;
 		break;
 	default: break;
 	}
@@ -79,29 +82,45 @@ void select_button2()		{
 }
 
 void cross_button1() {
-	if(state!=GAME_PAUSED)
+	switch(state)
 	{
+	case GAME_MAIN:
 		renderer.AddSphere(camera1);
-		std::cout << "Pressed X button!" << std::endl; 
+		break;
+	case GAME_PAUSED:
+		done=true;
+		break;
+	case GAME_OVER:
+		done=true;
+		break;
+	default:
+		break;
+		 
 		//it's an X button, not cross. Sony should know this, crazy bastards.
 	}
-	else
-	{
-		done = true;
-	}
+	
+	std::cout << "Pressed X button!" << std::endl;
 }
 
 void cross_button2() {
-	if(state!=GAME_PAUSED)
+	switch(state)
 	{
+	case GAME_MAIN:
 		renderer.AddSphere(camera2);
-		std::cout << "Pressed X button!" << std::endl; 
+		break;
+	case GAME_PAUSED:
+		done=true;
+		break;
+	case GAME_OVER:
+		done=true;
+		break;
+	default:
+		break;
+		 
 		//it's an X button, not cross. Sony should know this, crazy bastards.
 	}
-	else
-	{
-		done = true;
-	}
+	
+	std::cout << "Pressed X button!" << std::endl;
 }
 
 void square_button() {
