@@ -32,7 +32,18 @@ void start_button()		{
 }
 
 void triangle_button() {
-	renderer.ActivatePlayers();
+	if(state!=GAME_PAUSED)
+	{
+		renderer.AddSphere();
+		std::cout << "Pressed X button!" << std::endl; 
+		//it's an X button, not cross. Sony should know this, crazy bastards.
+	}
+	else
+	{
+		done = true;
+	}
+	
+	/*renderer.ActivatePlayers();
 	//done = true;
 	switch(state)
 	{
@@ -45,7 +56,7 @@ void triangle_button() {
 		break;
 	default: break;
 	}
-	std::cout << "Pressed start button!" << std::endl;
+	std::cout << "Pressed start button!" << std::endl;*/
 }
 
 void select_button()		{
@@ -64,18 +75,6 @@ void select_button()		{
 	
 }
 
-void cross_button() {
-	if(state!=GAME_PAUSED)
-	{
-		renderer.AddSphere();
-		std::cout << "Pressed X button!" << std::endl; 
-		//it's an X button, not cross. Sony should know this, crazy bastards.
-	}
-	else
-	{
-		done = true;
-	}
-}
 
 void square_button() {
 	if(state!=GAME_PAUSED)
@@ -112,7 +111,7 @@ int main(void)	{
 	Input::SetPadFunction(INPUT_START,	start_button);
 	Input::SetPadFunction(INPUT_SELECT,	select_button);
 	Input::SetPadFunction(INPUT_SQUARE, square_button);
-	Input::SetPadFunction(INPUT_CROSS, cross_button);
+	//Input::SetPadFunction(INPUT_CROSS, cross_button);
 	Input::SetPadFunction(INPUT_TRIANGLE, triangle_button);
 	Input::SetPadFunction(INPUT_CIRCLE, circle_button);
 
@@ -170,6 +169,8 @@ int main(void)	{
 					//renderer.SetCamera2(camera2);	//Set the current renderer camera
 					renderer.DrawLoading(100);
 					
+					
+
 					state=GAME_MAIN;
 					break;
 				
@@ -182,6 +183,7 @@ int main(void)	{
 					renderer.RenderScene(msec);	//Render the scene
 					
 					renderer.CollisionTests();
+					renderer.ActivatePlayers();
 					break;
 				
 			case GAME_PAUSED: break;

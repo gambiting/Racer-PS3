@@ -54,6 +54,13 @@ public:
 	bool			isInAir()							{ return inAir; }
 	void			SetInAir(bool a)					{ inAir = a; }
 
+	void			AddForce(Vector3 f, Vector3 d)		{
+															m_force = f;
+															//distance = d;
+															//m_torque = CalculateTorque(distance, m_force);
+														}
+
+
 	void UpdatePosition(float msec);
 
 	void GravityOn();

@@ -312,7 +312,7 @@ void Renderer::DrawLoading(int i)
 
 void Renderer::SetupPlayers() {
 
-	playerOne = new PhysicsNode(25.0f);
+	playerOne = new PhysicsNode(15.0f);
 	playerOne->SetMesh(sphereOne);
 	playerOne->SetPosition(Vector3(950, 1500, 800));
 	playerOne->GravityOff();
@@ -321,7 +321,7 @@ void Renderer::SetupPlayers() {
 	root->AddChild(*playerOne);
 	
 
-	playerTwo = new PhysicsNode(25.0f);
+	playerTwo = new PhysicsNode(15.0f);
 	playerTwo->SetMesh(sphereTwo);
 	playerTwo->SetPosition(Vector3(800, 1000, 800));
 	playerTwo->GravityOff();
