@@ -84,44 +84,42 @@ void Renderer::CollisionTests() {
 	for(int i=0;i<worldObjects.size();i++)
 	{
 		CollisionData* cData = new CollisionData();
-		std::cout << "worldObjects.size = " << worldObjects.size() << std::endl;
 		if(physics.TerrainCollision( *worldObjects.at(i), cData))
 		{
-			
+			std::cout << "normal: " << cData->m_normal.getX() << ", " <<
+				cData->m_normal.getY() << ", " <<
+				cData->m_normal.getZ() << std::endl;
+
+			std::cout << "penetration: " << cData->m_penetration << std::endl;
+
 			PhysicsNode *temp = new PhysicsNode();
 			physics.AddCollisionImpulse(*worldObjects.at(i), (*temp), cData->m_point, cData->m_normal, cData->m_penetration);
 			delete temp;
 		}
-	}
-
-	//To start just check spheres against the two players, it's all we need to test sphere/sphere collision anyway.
-	/*for(std::vector<PhysicsNode*>::iterator i = worldObjects.begin(); i != worldObjects.end(); ++i) {
-		CollisionData* cData = new CollisionData();
-		if (physics.SphereSphereCollision( *(*i), *playerOne, cData) ) {
-			//playerOne->GravityOn();
-			std::cout << "cdata mpoint: " << 
-				cData->m_penetration << std::endl;
-			physics.AddCollisionImpulse(*(*i), *playerOne, cData->m_point, cData->m_normal, cData->m_penetration);
-		}
-
-		std::cout << "X position of the node I am about to check: " << (*i)->GetPosition().getX() << std::endl;
-		if(physics.TerrainCollision( *(*i), cData))
-		{
-			std::cout << "collided with terrain" << std::endl;
-			PhysicsNode *temp = new PhysicsNode();
-			physics.AddCollisionImpulse(*(*i), (*temp), cData->m_point, cData->m_normal, cData->m_penetration);
-			delete temp;
-		}
-
 		
 
-		if (physics.SphereSphereCollision( *(*i), *playerTwo, cData) ) {
-			
-			//playerTwo->GravityOn();
-			//physics.AddCollisionImpulse(*(*i), *playerTwo, cData->m_point, cData->m_normal, cData->m_penetration);
+		//if there is another node after this, check for collisions with it and following nodes
+		/*if(i < worldObjects.size()-1){			
+			for(int j = i+1; j<worldObjects.size(); j++){
+				if(physics.SphereSphereCollision(*worldObjects.at(i),*worldObjects.at(j), cData)){
+					std::cout << "SPHERE SPHERE" << std::endl;
+					physics.AddCollisionImpulse(*worldObjects.at(i), *worldObjects.at(j), cData->m_point, cData->m_normal, cData->m_penetration);
+				}
+			}
 		}
-	}*/
 
+		//is this node is a player, check for collisions with item boxes
+		if(worldObjects.at(i)->getIsPlayer()){
+			for(int j = 0; j < itemBoxes.size(); j++){
+				if(physics.SphereSphereCollision(*worldObjects.at(i),itemBoxes.at(j)->GetPhysicsNode(), cData)){
+					std::cout << "ITEM BOX COLLISION" << std::endl;
+					//TODO item box logic
+				}
+			}
+		}
+*/
+		delete cData;
+	}
 }
 
 /*
@@ -318,12 +316,14 @@ void Renderer::SetupPlayers() {
 	playerOne->SetMesh(sphereOne);
 	playerOne->SetPosition(Vector3(0, 500, 0));
 	root->AddChild(*playerOne);
+	
 
 	playerTwo = new PhysicsNode(25.0f);
 	playerTwo->GravityOff(); //Turn gravity OFF
 	playerTwo->SetMesh(sphereTwo);
 	playerTwo->SetPosition(Vector3(500, 500, 0));
 	root->AddChild(*playerTwo);
+	
 }
 
 //Something nice and basic to put the players back at the start.
