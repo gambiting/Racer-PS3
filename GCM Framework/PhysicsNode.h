@@ -2,14 +2,13 @@
 
 #include "Defines.h"
 #include "SceneNode.h"
-#include "Camera.h"
 
 #include <vector>
 #include <vectormath/cpp/vectormath_aos.h>
 
 using namespace Vectormath::Aos;
 
-#define GRAVITY				-0.000539f
+#define GRAVITY				-0.000098f
 #define DAMPING_FACTOR		0.97005f;
 
 class PhysicsNode : public SceneNode {

@@ -252,8 +252,8 @@ void Renderer::DrawScene()
 	
 	currentVert->UpdateShaderMatrices(modelMatrix, viewMatrix, projMatrix);
 	
-	currentFrag->SetParameter("lightPosition1", (float*)&camera1->GetPosition());//.getX());
-	currentFrag->SetParameter("lightPosition2", (float*)&camera2->GetPosition());//.getX());
+	currentFrag->SetParameter("lightPosition1", (float*)&playerOne->GetPosition());//.getX());
+	currentFrag->SetParameter("lightPosition2", (float*)&playerTwo->GetPosition());//.getX());
 	currentFrag->SetParameter("cameraPos", (float*)&currentCamera->GetPosition());
 	currentFrag->SetParameter("lightRadius", &testRadius);
 	currentFrag->SetParameter("lightColour", (float*)&testColour);
@@ -314,25 +314,27 @@ void Renderer::DrawLoading(int i)
 void Renderer::SetupPlayers() {
 
 	playerOne = new PhysicsNode(25.0f);
-	playerOne->GravityOff(); //Turn gravity OFF
 	playerOne->SetMesh(sphereOne);
-	playerOne->SetPosition(Vector3(0, 500, 0));
+	playerOne->SetPosition(Vector3(0, 1500, 500));
+	camera1->SetPhysicsNode(playerOne);
+	worldObjects.push_back(playerOne);
 	root->AddChild(*playerOne);
 
 	playerTwo = new PhysicsNode(25.0f);
-	playerTwo->GravityOff(); //Turn gravity OFF
 	playerTwo->SetMesh(sphereTwo);
-	playerTwo->SetPosition(Vector3(500, 500, 0));
+	playerTwo->SetPosition(Vector3(500, 1500, 500));
+	camera2->SetPhysicsNode(playerTwo);
+	worldObjects.push_back(playerTwo);
 	root->AddChild(*playerTwo);
 }
 
 //Something nice and basic to put the players back at the start.
 void Renderer::ResetPlayers() {
-	playerOne->GravityOff();
+	//playerOne->GravityOff();
 	playerOne->SetPosition(Vector3(0, 1000, 0));
 	playerOne->SetLinearVelocity(Vector3(0,0,0));
 	
-	playerTwo->GravityOff();
+	//playerTwo->GravityOff();
 	playerTwo->SetPosition(Vector3(500, 1000, 0));
 	playerTwo->SetLinearVelocity(Vector3(0,0,0));
 }
