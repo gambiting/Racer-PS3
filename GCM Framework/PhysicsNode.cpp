@@ -17,7 +17,8 @@ PhysicsNode::PhysicsNode(void)	{
 		Vector4(0.0f,0.0f,0.0f,1.0f));
 
 	gravity			= Vector3(0.0f, GRAVITY, 0.0f);
-	
+	inAir = true;
+	atRest = false;
 
 	VectorToZero(m_force);
 
@@ -45,6 +46,8 @@ PhysicsNode::PhysicsNode(float r) {
 		Vector4(0.0f,0.0f,0.0f,1.0f));
 
 	gravity			= Vector3(0.0f, GRAVITY, 0.0f);
+	inAir = true;
+	atRest = false;
 
 	VectorToZero(m_force);
 }
@@ -69,6 +72,8 @@ PhysicsNode::PhysicsNode(float r, Vector3 p) {
 		Vector4(0.0f,0.0f,0.0f,1.0f));
 
 	gravity			= Vector3(0.0f, GRAVITY, 0.0f);
+	inAir = true;
+	atRest = false;
 
 	VectorToZero(m_force);
 }
@@ -78,19 +83,34 @@ PhysicsNode::~PhysicsNode(void) {
 
 void PhysicsNode::UpdatePosition(float msec) {
 
-	//Linear movement
-	Vector3 acceleration;
+	if (!atRest) {
 
-	if (ignoringGravity) {
-		acceleration = m_force * m_invMass;
-	} else {
-		acceleration = m_force * m_invMass + gravity;
+		//Linear movement
+		Vector3 acceleration;
+
+		if (ignoringGravity) {
+			acceleration = m_force * m_invMass;
+		} else {
+			acceleration = m_force * m_invMass + gravity;
+		}
+
+		m_linearVelocity = m_linearVelocity + acceleration * msec;
+		if (!inAir) {
+			m_linearVelocity = m_linearVelocity * DAMPING_FACTOR;
+		}
+		m_position = m_position + m_linearVelocity * msec;
+
+		float totalV = m_linearVelocity.getX() + m_linearVelocity.getY() + m_linearVelocity.getZ();
+		std::cout << "Total V: " << totalV << std::endl;
+		
+		float minSpeed = MIN_SPEED;
+		if (totalV < minSpeed) {
+			atRest = true;
+		}
+
 	}
 
-	m_linearVelocity = m_linearVelocity + acceleration * msec;
-	m_position = m_position + m_linearVelocity * msec;
 	SetPosition(m_position);
-
 	VectorToZero(m_force);
 
 }

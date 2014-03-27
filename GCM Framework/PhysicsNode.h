@@ -9,7 +9,9 @@
 
 using namespace Vectormath::Aos;
 
-#define GRAVITY -0.0000098f
+#define GRAVITY				-0.0000098f
+#define DAMPING_FACTOR		0.98f;
+#define MIN_SPEED			-0.005f;
 
 class PhysicsNode : public SceneNode {
 public:
@@ -49,6 +51,9 @@ public:
 	bool			getAtRest()							{return atRest;}
 	void			SetAtRest(bool b)					{atRest = b;}
 
+	bool			isInAir()							{ return inAir; }
+	void			SetInAir(bool a)					{ inAir = a; }
+
 	void UpdatePosition(float msec);
 
 	void GravityOn();
@@ -78,6 +83,7 @@ protected:
 	
 	SceneNode*	target;
 	bool		atRest;
+	bool		inAir;
 
 	//for assassination game mode
 	PhysicsNode* collidedWith;

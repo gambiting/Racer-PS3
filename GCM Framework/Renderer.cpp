@@ -90,11 +90,11 @@ void Renderer::CollisionTests() {
 	for(int i=0;i<worldObjects.size();i++)
 	{
 		CollisionData* cData = new CollisionData();
-		std::cout << "worldObjects.size = " << worldObjects.size() << std::endl;
+		//std::cout << "worldObjects.size = " << worldObjects.size() << std::endl;
 		if(physics.TerrainCollision( *worldObjects.at(i), cData))
-		{
-			
+		{	
 			PhysicsNode *temp = new PhysicsNode();
+			worldObjects.at(i)->SetInAir(false);
 			physics.AddCollisionImpulse(*worldObjects.at(i), (*temp), cData->m_point, cData->m_normal, cData->m_penetration);
 			delete temp;
 		}
