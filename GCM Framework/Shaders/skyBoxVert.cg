@@ -1,7 +1,7 @@
 struct VertOut
 {
-	out float4 oPosition : POSITION;
-	out float3 oNormal : TEXCOORD1;
+	float4 oPosition : POSITION;
+	float3 oNormal : TEXCOORD1;
 	
 };
 
@@ -20,7 +20,7 @@ VertOut main
 	VertOut OUT;
 	
 	float3 tempPos = float3(position.x, position.y, position.z);
-	tempPos -= float3(0,0,1);
+	tempPos = tempPos - float3(0,0,1);
 		
 	float3x3 tempMat = transpose((float3x3)viewMat);
 	

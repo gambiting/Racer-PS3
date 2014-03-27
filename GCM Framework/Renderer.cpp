@@ -149,9 +149,9 @@ void Renderer::RenderScene(float msec) {
 	drawSkyBox();
 	DrawScene();
 
-	DrawText("Player 1", Vector3(0, screenHeight/9, 0), 26.0f);
+	DrawSplitScreenText("Player 1", Vector3(0, screenHeight/9, 0), 26.0f);
 	RenderArrow(player1Trans);
-	DrawText(fpsText, Vector3(0, screenHeight/1.1 + 50, 0), 26.0f);
+	DrawSplitScreenText(fpsText, Vector3(0, screenHeight/1.1 + 50, 0), 26.0f);
 	projMatrix	= Matrix4::perspective(0.7853982, screenRatio, 1.0f, 20000.0f);
 
 	/*Render Right Viewport*/
@@ -160,7 +160,7 @@ void Renderer::RenderScene(float msec) {
 	setCurrentCamera(camera2);
 	drawSkyBox();
 	DrawScene();
-	DrawText("Player 2", Vector3(0, screenHeight/9, 0), 26.0f);
+	DrawSplitScreenText("Player 2", Vector3(0, screenHeight/9, 0), 26.0f);
 
 	RenderArrow(player2Trans);
 
@@ -205,6 +205,37 @@ void Renderer::DrawText(const std::string &text, const Vector3 &position, const 
 	delete mesh; 
 	this->SetCurrentShader(*lightVert,*lightFrag);
 }
+void Renderer::DrawSplitScreenText(const std::string &text, const Vector3 &position, const float size, const bool perspective)
+{
+	this->SetCurrentShader(*basicVert,*basicFrag);
+
+	TextMesh* mesh = new TextMesh(text,*basicFont);
+
+	
+	if(perspective) {
+		modelMatrix = Matrix4::translation(position) * Matrix4::scale(Vector3(size,size,1));
+		viewMatrix = currentCamera->BuildViewMatrix();
+		projMatrix = Matrix4::perspective(0.7853982, screenRatio, 1.0f, 20000.0f);
+	}
+	else{	
+		
+		modelMatrix = Matrix4::translation(Vector3(position.getX(),screenHeight-position.getY(), position.getZ())) * Matrix4::scale(Vector3(size,size,1));
+		viewMatrix=Matrix4::identity();
+		projMatrix = Matrix4::orthographic(0.0f,(float)screenWidth/2,0.0f,(float)screenHeight, 1.0f, -1.0f);
+	}
+	
+	currentVert->UpdateShaderMatrices(modelMatrix, viewMatrix, projMatrix);
+	
+	if(mesh->GetDefaultTexture())
+	{
+		SetTextureSampler(currentFrag->GetParameter("texture"),mesh->GetDefaultTexture());
+	}
+
+	mesh->Draw(*currentVert, *currentFrag);
+
+	delete mesh; 
+	this->SetCurrentShader(*lightVert,*lightFrag);
+}
 void Renderer::drawSkyBox()
 {
 	
@@ -219,6 +250,7 @@ void Renderer::drawSkyBox()
 		viewMatrix = Matrix4::identity();
 	}
 	projMatrix	= Matrix4::perspective(0.7853982, halfScreenRatio, 1.0f, 20000.0f);
+
 	currentVert->UpdateShaderMatrices(modelMatrix, viewMatrix, projMatrix);
 	SetTextureSampler(currentFrag->GetParameter("cubeTex"), cubeMap);
 
@@ -343,12 +375,12 @@ void Renderer::ActivatePlayers() {
 	playerTwo->GravityOn();
 }
 
-void Renderer::AddSphere() {
+void Renderer::AddSphere(Camera* c) {
 	PhysicsNode* newSphere = new PhysicsNode(25.0f);
 	newSphere->SetMesh(sphereOne);
-	newSphere->SetPosition(camera1->GetPosition());
+	newSphere->SetPosition(c->GetPosition());
 	
-	newSphere->SetLinearVelocity(camera1->GetLookDirection()/10.0f);
+	newSphere->SetLinearVelocity(c->GetLookDirection()/10.0f);
 	
 	root->AddChild(*newSphere);
 	worldObjects.push_back(newSphere);

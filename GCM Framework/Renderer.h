@@ -42,7 +42,7 @@ public:
 	void ResetPlayers();
 	void ActivatePlayers();
 	
-	void AddSphere();
+	void AddSphere(Camera* c);
 
 	//add and remove item boxes from the game world
 	void AddItemBox(Item* item);
@@ -55,6 +55,7 @@ public:
 
 protected:
 	void DrawText(const std::string &text, const Vector3 &position, const float size, const bool perspective=false);
+	void Renderer::DrawSplitScreenText(const std::string &text, const Vector3 &position, const float size, const bool perspective=false);
 	
 	Font* basicFont;
 	CellGcmTexture* FontTex;

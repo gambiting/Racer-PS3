@@ -28,8 +28,7 @@ Camera* camera2;
 
 void start_button()		{
 	
-	renderer.ActivatePlayers();
-	//done = true;
+	
 	switch(state)
 	{
 	case GAME_MAIN:
@@ -44,7 +43,7 @@ void start_button()		{
 	std::cout << "Pressed start button!" << std::endl;
 }
 
-void select_button()		{
+void select_button1()		{
 	switch(state)
 	{
 	case GAME_MAIN:
@@ -59,11 +58,39 @@ void select_button()		{
 		std::cout << "Pressed select button!" << std::endl;
 	
 }
+void select_button2()		{
+	switch(state)
+	{
+	case GAME_MAIN:
+		camera2->SetPosition(Vector3(0,0,10));
+		camera2->SetPitch(0.0f);
+		camera2->SetYaw(0.0f);
+		break;
+	default:
+		break;
+	}
+		
+		std::cout << "Pressed select button!" << std::endl;
+	
+}
 
-void cross_button() {
+void cross_button1() {
 	if(state!=GAME_PAUSED)
 	{
-		renderer.AddSphere();
+		renderer.AddSphere(camera1);
+		std::cout << "Pressed X button!" << std::endl; 
+		//it's an X button, not cross. Sony should know this, crazy bastards.
+	}
+	else
+	{
+		done = true;
+	}
+}
+
+void cross_button2() {
+	if(state!=GAME_PAUSED)
+	{
+		renderer.AddSphere(camera2);
 		std::cout << "Pressed X button!" << std::endl; 
 		//it's an X button, not cross. Sony should know this, crazy bastards.
 	}
@@ -98,7 +125,21 @@ void circle_button()
 		std::cout << "Pressed circle button!" << std::endl;
 }
 
-void triangle_button() {};
+void triangle_button() {
+
+	
+	
+	//done = true;
+	switch(state)
+	{
+	case GAME_MAIN:
+		renderer.ActivatePlayers();
+		break;
+	case GAME_PAUSED: break;
+	default: break;
+	}
+	std::cout << "Pressed triangle button!" << std::endl;
+};
 
 
 int main(void)	{
@@ -107,12 +148,19 @@ int main(void)	{
 	Input::Initialise();
 	renderer.DrawLoading();
 	//Button functions
-	Input::SetPadFunction(INPUT_START,	start_button);
-	Input::SetPadFunction(INPUT_SELECT,	select_button);
-	Input::SetPadFunction(INPUT_SQUARE, square_button);
-	Input::SetPadFunction(INPUT_CROSS, cross_button);
-	Input::SetPadFunction(INPUT_TRIANGLE, triangle_button);
-	Input::SetPadFunction(INPUT_CIRCLE, circle_button);
+	Input::SetPadFunction(INPUT_START,	start_button, JOYPAD_A);
+	Input::SetPadFunction(INPUT_SELECT,	select_button1, JOYPAD_A);
+	Input::SetPadFunction(INPUT_SQUARE, square_button, JOYPAD_A);
+	Input::SetPadFunction(INPUT_CROSS, cross_button1, JOYPAD_A);
+	Input::SetPadFunction(INPUT_TRIANGLE, triangle_button, JOYPAD_A);
+	Input::SetPadFunction(INPUT_CIRCLE, circle_button, JOYPAD_A);
+
+	Input::SetPadFunction(INPUT_START,	start_button, JOYPAD_B);
+	Input::SetPadFunction(INPUT_SELECT,	select_button2, JOYPAD_B);
+	Input::SetPadFunction(INPUT_SQUARE, square_button, JOYPAD_B);
+	Input::SetPadFunction(INPUT_CROSS, cross_button2, JOYPAD_B);
+	Input::SetPadFunction(INPUT_TRIANGLE, triangle_button, JOYPAD_B);
+	Input::SetPadFunction(INPUT_CIRCLE, circle_button, JOYPAD_B);
 
 	
 

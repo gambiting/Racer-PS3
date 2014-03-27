@@ -1,6 +1,6 @@
 void main
 (
-	float3 oNormal : TEXCOORD1,
+	float3 oNormal : TEXCOORD0,
 	uniform samplerCUBE cubeTex,
 	
 	
