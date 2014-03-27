@@ -276,15 +276,27 @@ void VertexShader::SetDefaultAttributes() {
 		attributes[VERTEX_COLOUR]	= cellGcmCgGetParameterResource(program, colour_param)  - CG_ATTR0;
 		printf("Shader:- Colours usable\n");
 	}
+	else
+	{
+		attributes[VERTEX_COLOUR] = 350613;
+	}
 
 	if(tex_param) {
 		attributes[VERTEX_TEXCOORD]	= cellGcmCgGetParameterResource(program, tex_param)		- CG_ATTR0;
 		printf("Shader:- Textures usable\n");	
 	}
+	else
+	{
+		attributes[VERTEX_TEXCOORD] = 350613;
+	}
 	if(normal_param)
 	{
 		attributes[VERTEX_NORMAL] = cellGcmCgGetParameterResource(program, normal_param)	- CG_ATTR0;
 		printf("Shader:- Normals usable\n");
+	}
+	else
+	{
+		attributes[VERTEX_NORMAL] = 350613;
 	}
 }
 
