@@ -27,6 +27,7 @@ _-_-_-_-_-_-_-""  ""
 #include "PhysicsNode.h"
 #include "Item.h"
 #include "Player.h"
+#include "HeightMap.h"
 
 class Renderer : public GCMRenderer	{
 public:
@@ -36,7 +37,7 @@ public:
 	virtual void RenderScene(float msec);
 	virtual void UpdateScene(float msec);
 	void DrawScene();
-	void DrawLoading();
+	void DrawLoading(int i = 0);
 	void SetupPlayers(); //Only for testing of physics and whatnot.
 	void ResetPlayers();
 	void ActivatePlayers();
@@ -48,10 +49,13 @@ public:
 	void RemoveItemBox(Item* item);
 
 	void CollisionTests();
+	void RenderPausedScene();
+	void RenderArrow(Matrix4 transform);//TODO
+	void SetupGeometry();
 
 protected:
 	void DrawText(const std::string &text, const Vector3 &position, const float size, const bool perspective=false);
-
+	
 	Font* basicFont;
 	CellGcmTexture* FontTex;
 	CellGcmTexture* cubeMap;
@@ -71,6 +75,8 @@ protected:
 	VertexShader* basicVert;
 	FragmentShader* basicFrag;
 
+	FragmentShader* loadFrag;
+
 	Mesh* tempQuad;
 	CellGcmTexture* tempTex;
 
@@ -78,6 +84,10 @@ protected:
 
 	PhysicsNode* playerOne;
 	PhysicsNode* playerTwo;
+
+	Mesh* arrow;
+	Matrix4 player1Trans;
+	Matrix4 player2Trans;
 
 	Mesh* sphereOne;
 	Mesh* sphereTwo;
