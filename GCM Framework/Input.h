@@ -105,7 +105,8 @@ public:
 	static void GetPointerPosition(float &x, float &y, JoyPadNum num = JOYPAD_A);
 	static void GetJoypadMovement( float &x, float &y, JoyPadNum num = JOYPAD_A); 
 	static void SetPadFunction(PadButtons button, InputFunction function, JoyPadNum num = JOYPAD_A);
-
+	static bool ButtonTriggered(PadButtons button, JoyPadNum num);
+	static bool ButtonHeld(PadButtons button, JoyPadNum num);
 	static bool	ButtonDown(PadButtons button, JoyPadNum num = JOYPAD_A );
 protected:
 	/*
@@ -118,6 +119,11 @@ protected:
 	itself, protected, so it can't be instantiated, or otherwise messed around
 	with.
 	*/
+
+	static bool keyStates[JOYPAD_SIZE][INPUT_SIZE];		//Is the key down?
+	static bool holdStates[JOYPAD_SIZE][INPUT_SIZE];		//Has the key been down for multiple updates?
+	static bool releaseStates[JOYPAD_SIZE][INPUT_SIZE];
+
 	struct JoyPad {
 		InputFunction functions[INPUT_SIZE];
 

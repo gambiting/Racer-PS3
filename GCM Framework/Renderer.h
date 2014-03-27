@@ -52,6 +52,8 @@ public:
 	void RenderPausedScene();
 	void RenderArrow(Matrix4 transform);//TODO
 	void SetupGeometry();
+
+	bool PlayersActive() { return playersActive; }
 	void drawMenu();
 	void drawWinner(int i);
 
@@ -104,6 +106,8 @@ protected:
 
 	PhysicsSystem physics;
 
+	bool playersActive;
 	float halfScreenRatio;
+
 	
 };

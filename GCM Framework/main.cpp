@@ -19,12 +19,12 @@ SYS_PROCESS_PARAM(1001, 0x10000)
 
 bool done = false;
 int state = GAME_LOADING;
+
 Renderer renderer;
 SceneNode *root;
 
 Camera* camera1;
 Camera* camera2;
-
 
 void start_button()		{
 	
@@ -48,10 +48,10 @@ void select_button1()		{
 	switch(state)
 	{
 	case GAME_MAIN:
-		camera1->SetPosition(Vector3(0,0,10));
+		/*camera1->SetPosition(Vector3(0,0,10));
 		camera1->SetPitch(0.0f);
 		camera1->SetYaw(0.0f);
-		break;
+		break;*/
 	default:
 		break;
 	}
@@ -63,10 +63,10 @@ void select_button2()		{
 	switch(state)
 	{
 	case GAME_MAIN:
-		camera2->SetPosition(Vector3(0,0,10));
+		/*camera2->SetPosition(Vector3(0,0,10));
 		camera2->SetPitch(0.0f);
 		camera2->SetYaw(0.0f);
-		break;
+		break;*/
 	default:
 		break;
 	}
@@ -170,36 +170,32 @@ int main(void)	{
 	Input::SetPadFunction(INPUT_SQUARE, square_button, JOYPAD_B);
 	Input::SetPadFunction(INPUT_CROSS, cross_button2, JOYPAD_B);
 	Input::SetPadFunction(INPUT_TRIANGLE, triangle_button, JOYPAD_B);
-	Input::SetPadFunction(INPUT_CIRCLE, circle_button, JOYPAD_B);
-
-	
+	Input::SetPadFunction(INPUT_CIRCLE, circle_button, JOYPAD_B);	
 
 	printf("OBJ Mesh Loading Complete\n");
 
 	//Create a new scenenode
 	root = new SceneNode();
 
-	
-
-
-	
-
 	renderer.SetRootNode(root); //Set our new SceneNode as the root for our Renderer
-	renderer.SetupPlayers();
+
 
 	//We need a new camera!
 	camera1 = new Camera();	
 	camera1->SetControllingPad(JOYPAD_A);	//Controlled via joypad A
-	camera1->SetPosition(Vector3(700, 450, 1200)); //And set back slightly so we can see the node at the origin
+	//camera1->SetPosition(Vector3(700, 450, 1200)); //And set back slightly so we can see the node at the origin
 
 	renderer.SetCamera1(camera1);	//Set the current renderer camera
 
 	//We need a new camera!
 	camera2 = new Camera();	
 	camera2->SetControllingPad(JOYPAD_B);	//Controlled via joypad A
-	camera2->SetPosition(Vector3(700, 450, 1200)); //And set back slightly so we can see the node at the origin
+	//camera2->SetPosition(Vector3(700, 450, 1200)); //And set back slightly so we can see the node at the origin
 
 	renderer.SetCamera2(camera2);	//Set the current renderer camera
+
+	renderer.SetupPlayers();
+
 
 	Timer gameTime;
 	GameLogic* logic = new GameLogic(&renderer);
@@ -218,35 +214,19 @@ int main(void)	{
 					renderer.DrawLoading();
 					root = new SceneNode();
 
-
 					renderer.SetRootNode(root); //Set our new SceneNode as the root for our Renderer
 					renderer.SetupGeometry();
 					renderer.SetupPlayers();
 					renderer.DrawLoading(90);
 
-					//We need a new camera!
-					camera1 = new Camera();	
-					camera1->SetControllingPad(JOYPAD_A);	//Controlled via joypad A
-					camera1->SetPosition(Vector3(700, 450, 1200)); //And set back slightly so we can see the node at the origin
-
-					renderer.SetCamera1(camera1);	//Set the current renderer camera
+					//renderer.SetCamera1(camera1);	//Set the current renderer camera
 					renderer.DrawLoading(95);
 
-					//We need a new camera!
-					camera2 = new Camera();	
-					camera2->SetControllingPad(JOYPAD_B);	//Controlled via joypad A
-					camera2->SetPosition(Vector3(700, 450, 1200)); //And set back slightly so we can see the node at the origin
-
-					renderer.SetCamera2(camera2);	//Set the current renderer camera
+					//renderer.SetCamera2(camera2);	//Set the current renderer camera
 					renderer.DrawLoading(100);
-
 					
-					state=GAME_MENU;
-					break;
 
-			case GAME_MENU: 
-					renderer.drawMenu();
-					
+					state=GAME_MAIN;
 					break;
 				
 			case GAME_MAIN:
@@ -258,6 +238,9 @@ int main(void)	{
 					renderer.RenderScene(msec);	//Render the scene
 					
 					renderer.CollisionTests();
+					if (!renderer.PlayersActive()) {
+						renderer.ActivatePlayers();
+					}
 					break;
 				
 			case GAME_PAUSED: break;

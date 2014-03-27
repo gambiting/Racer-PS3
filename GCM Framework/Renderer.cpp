@@ -3,6 +3,7 @@
 Renderer::Renderer(void)	{
 
 	quad = Mesh::GenerateQuad();
+
 	halfScreenRatio = (float)((screenWidth/2)/ screenHeight);
 	player1Trans= Matrix4::rotationZYX(Vector3(DegToRad(15),DegToRad(-30),DegToRad(-10)));
 	player2Trans= Matrix4::rotationZYX(Vector3(0.0f,DegToRad(115),DegToRad(30)));
@@ -10,6 +11,7 @@ Renderer::Renderer(void)	{
 	tempQuad = Mesh::GenerateQuad();
 	//tempTex = GCMRenderer::LoadGTF("/sand.gtf");
 	//tempQuad->SetDefaultTexture(*tempTex);
+
 
 	testColour = Vector4(1.0,1.0,1.0,1.0);
 	printf("SkyBox Shader\n");
@@ -29,12 +31,16 @@ Renderer::Renderer(void)	{
 
 	testRadius = 1000.0f;
 
+	playersActive = false;
+
 	bkgd = GCMRenderer::LoadGTF("/Textures/splashbg.gtf");
+
 
 	FontTex = GCMRenderer::LoadGTF("/tahoma.gtf");
 	basicFont = new Font(FontTex, 16, 16);
 	
 	cubeMap = GCMRenderer::LoadGTF("/cubemap.gtf");
+
 	cubeMap->cubemap	= CELL_GCM_TRUE;
 	
 	/*
@@ -86,43 +92,42 @@ void Renderer::CollisionTests() {
 	for(int i=0;i<worldObjects.size();i++)
 	{
 		CollisionData* cData = new CollisionData();
-		//std::cout << "worldObjects.size = " << worldObjects.size() << std::endl;
+
 		if(physics.TerrainCollision( *worldObjects.at(i), cData))
 		{
-			
+			/*std::cout << "normal: " << cData->m_normal.getX() << ", " <<
+				cData->m_normal.getY() << ", " <<
+				cData->m_normal.	getZ() << std::endl;*/
+
+			worldObjects.at(i)->SetInAir(false);
+
 			PhysicsNode *temp = new PhysicsNode();
 			physics.AddCollisionImpulse(*worldObjects.at(i), (*temp), cData->m_point, cData->m_normal, cData->m_penetration);
 			delete temp;
 		}
-	}
-
-	//To start just check spheres against the two players, it's all we need to test sphere/sphere collision anyway.
-	/*for(std::vector<PhysicsNode*>::iterator i = worldObjects.begin(); i != worldObjects.end(); ++i) {
-		CollisionData* cData = new CollisionData();
-		if (physics.SphereSphereCollision( *(*i), *playerOne, cData) ) {
-			//playerOne->GravityOn();
-			std::cout << "cdata mpoint: " << 
-				cData->m_penetration << std::endl;
-			physics.AddCollisionImpulse(*(*i), *playerOne, cData->m_point, cData->m_normal, cData->m_penetration);
-		}
-
-		std::cout << "X position of the node I am about to check: " << (*i)->GetPosition().getX() << std::endl;
-		if(physics.TerrainCollision( *(*i), cData))
-		{
-			std::cout << "collided with terrain" << std::endl;
-			PhysicsNode *temp = new PhysicsNode();
-			physics.AddCollisionImpulse(*(*i), (*temp), cData->m_point, cData->m_normal, cData->m_penetration);
-			delete temp;
-		}
-
 		
+		/*if there is another node after this, check for collisions with it and following nodes
+		if(i < worldObjects.size()-1){			
+			for(int j = i+1; j<worldObjects.size(); j++){
+				if(physics.SphereSphereCollision(*worldObjects.at(i),*worldObjects.at(j), cData)){
+					std::cout << "SPHERE SPHERE" << std::endl;
+					physics.AddCollisionImpulse(*worldObjects.at(i), *worldObjects.at(j), cData->m_point, cData->m_normal, cData->m_penetration);
+				}
+			}
+		}*/
 
-		if (physics.SphereSphereCollision( *(*i), *playerTwo, cData) ) {
-			
-			//playerTwo->GravityOn();
-			//physics.AddCollisionImpulse(*(*i), *playerTwo, cData->m_point, cData->m_normal, cData->m_penetration);
-		}
-	}*/
+		/*is this node is a player, check for collisions with item boxes
+		if(worldObjects.at(i)->getIsPlayer()){
+			for(int j = 0; j < itemBoxes.size(); j++){
+				if(physics.SphereSphereCollision(*worldObjects.at(i),itemBoxes.at(j)->GetPhysicsNode(), cData)){
+					std::cout << "ITEM BOX COLLISION" << std::endl;
+					//TODO item box logic
+				}
+			}
+		}*/
+
+		delete cData;
+	}
 
 }
 
@@ -138,7 +143,6 @@ void Renderer::RenderScene(float msec) {
 
 	ClearBuffer();
 
-
 	float fps = floor(1000.0f/msec);
 	std::stringstream ss (std::stringstream::in | std::stringstream::out);
 	ss << fps << " fps";
@@ -153,6 +157,7 @@ void Renderer::RenderScene(float msec) {
 	DrawSplitScreenText("Player 1", Vector3(0, screenHeight/9, 0), 26.0f);
 	RenderArrow(player1Trans);
 	DrawSplitScreenText(fpsText, Vector3(0, screenHeight/1.1 + 50, 0), 26.0f);
+
 	projMatrix	= Matrix4::perspective(0.7853982, screenRatio, 1.0f, 20000.0f);
 
 	/*Render Right Viewport*/
@@ -161,6 +166,7 @@ void Renderer::RenderScene(float msec) {
 	setCurrentCamera(camera2);
 	drawSkyBox();
 	DrawScene();
+
 	DrawSplitScreenText("Player 2", Vector3(0, screenHeight/9, 0), 26.0f);
 
 	RenderArrow(player2Trans);
@@ -303,8 +309,8 @@ void Renderer::DrawScene()
 	
 	currentVert->UpdateShaderMatrices(modelMatrix, viewMatrix, projMatrix);
 	
-	currentFrag->SetParameter("lightPosition1", (float*)&camera1->GetPosition());//.getX());
-	currentFrag->SetParameter("lightPosition2", (float*)&camera2->GetPosition());//.getX());
+	currentFrag->SetParameter("lightPosition1", (float*)&playerOne->GetPosition());//.getX());
+	currentFrag->SetParameter("lightPosition2", (float*)&playerTwo->GetPosition());//.getX());
 	currentFrag->SetParameter("cameraPos", (float*)&currentCamera->GetPosition());
 	currentFrag->SetParameter("lightRadius", &testRadius);
 	currentFrag->SetParameter("lightColour", (float*)&testColour);
@@ -324,13 +330,13 @@ void Renderer::DrawLoading(int i)
 
 	modelMatrix = Matrix4::identity();//scale(Vector3(100,100,100))* Matrix4::translation(Vector3((float) (screenWidth/4), -50, 0));//translation(Vector3(position.getX(),screenHeight-position.getY(), position.getZ())) * Matrix4::scale(Vector3(size,size,1));
 	viewMatrix=Matrix4::identity();
+
 	projMatrix = Matrix4::orthographic(-1.0f,1.0,-1.0, 1.0f,1.0f, -1.0f);
 	
 	currentVert->UpdateShaderMatrices(modelMatrix, viewMatrix, projMatrix);
 	
 	SetTextureSampler(currentFrag->GetParameter("texture"),bkgd);
 	
-
 	tempQuad->Draw(*currentVert, *currentFrag);
 	
 	
@@ -352,26 +358,32 @@ void Renderer::DrawLoading(int i)
 
 void Renderer::SetupPlayers() {
 
-	playerOne = new PhysicsNode(25.0f);
-	playerOne->GravityOff(); //Turn gravity OFF
+	playerOne = new PhysicsNode(15.0f);
 	playerOne->SetMesh(sphereOne);
-	playerOne->SetPosition(Vector3(0, 500, 0));
+	playerOne->SetPosition(Vector3(2000, 500, 2000));
+	playerOne->GravityOff();
+	camera1->SetPhysicsNode(playerOne);
+	worldObjects.push_back(playerOne);
 	root->AddChild(*playerOne);
+	
 
-	playerTwo = new PhysicsNode(25.0f);
-	playerTwo->GravityOff(); //Turn gravity OFF
+	playerTwo = new PhysicsNode(15.0f);
 	playerTwo->SetMesh(sphereTwo);
-	playerTwo->SetPosition(Vector3(500, 500, 0));
+	playerTwo->SetPosition(Vector3(2096, 500, 2096));
+	playerTwo->GravityOff();
+	camera2->SetPhysicsNode(playerTwo);
+	worldObjects.push_back(playerTwo);
 	root->AddChild(*playerTwo);
+	
 }
 
 //Something nice and basic to put the players back at the start.
 void Renderer::ResetPlayers() {
-	playerOne->GravityOff();
+	//playerOne->GravityOff();
 	playerOne->SetPosition(Vector3(0, 1000, 0));
 	playerOne->SetLinearVelocity(Vector3(0,0,0));
 	
-	playerTwo->GravityOff();
+	//playerTwo->GravityOff();
 	playerTwo->SetPosition(Vector3(500, 1000, 0));
 	playerTwo->SetLinearVelocity(Vector3(0,0,0));
 }
@@ -379,15 +391,14 @@ void Renderer::ResetPlayers() {
 void Renderer::ActivatePlayers() {
 	playerOne->GravityOn();
 	playerTwo->GravityOn();
+	playersActive = true;
 }
 
 void Renderer::AddSphere(Camera* c) {
 	PhysicsNode* newSphere = new PhysicsNode(25.0f);
 	newSphere->SetMesh(sphereOne);
 	newSphere->SetPosition(c->GetPosition());
-	
-	newSphere->SetLinearVelocity(c->GetLookDirection()/10.0f);
-	
+	newSphere->SetLinearVelocity(camera1->GetLookDirection()/2.0f);
 	root->AddChild(*newSphere);
 	worldObjects.push_back(newSphere);
 }
@@ -433,6 +444,7 @@ void Renderer::RenderArrow(Matrix4 transform)
 	this->SetCurrentShader(*basicVert,*loadFrag);
 
 	modelMatrix = Matrix4::translation(Vector3(0,4.5, 0)) * transform;//scale(Vector3(100,100,100))* Matrix4::translation(Vector3((float) (screenWidth/4), -50, 0));//translation(Vector3(position.getX(),screenHeight-position.getY(), position.getZ())) * Matrix4::scale(Vector3(size,size,1));
+
 	viewMatrix=Matrix4::identity();
 	projMatrix = Matrix4::orthographic(-5.0f,5.0,-10.0, 10.0f,10.0f, -10.0f);
 	
@@ -521,6 +533,7 @@ void Renderer::SetupGeometry()
 	
 	std::cout << "Loading arrow in renderer" << std::endl;
 	arrow = new OBJMesh(SYS_APP_HOME "/arrow.obj");
+
 	arrow->SetDefaultTexture(*GCMRenderer::LoadGTF("/rainbow.gtf"));
 	percent+=10;//80
 	DrawLoading(percent);
@@ -567,5 +580,4 @@ void Renderer::drawWinner(int i)
 	default:
 		break;
 	}
-
 }

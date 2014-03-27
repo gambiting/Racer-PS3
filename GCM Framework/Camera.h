@@ -17,7 +17,8 @@ _-_-_-_-_-_-_-""  ""
 
 
 #pragma once
-#include "scenenode.h"
+#include "SceneNode.h"
+#include "PhysicsNode.h"
 #include "Input.h"
 #include "common.h"
 #include <vectormath/cpp/vectormath_aos.h>
@@ -52,12 +53,18 @@ public:
 
 	void	SetControllingPad(JoyPadNum p) {pad = p;}
 
+	void			SetPhysicsNode(PhysicsNode* n);
+	PhysicsNode*	GetPhysicsNode()				{ return this->player; }
+
 protected:
 	JoyPadNum	pad;
 	float		yaw;
 	float		pitch;
 	Vector3		position;
 
+	PhysicsNode* player;
+
 	float ypSensitivity;
 	bool invertPitch;
+
 };

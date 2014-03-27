@@ -17,6 +17,7 @@ bool PhysicsSystem::TerrainCollision(const PhysicsNode &p0,  CollisionData *d) c
 
 	Vector3 position = p0.GetPosition();
 	Vector3 velocity = p0.GetLinearVelocity();
+
 	float radius = p0.GetRadius();
 	Vector3 lowestPoint = Vector3(position.getX(), position.getY() - radius, position.getZ());
 	Vector3 tempVel = velocity;
@@ -51,9 +52,7 @@ bool PhysicsSystem::TerrainCollision(const PhysicsNode &p0,  CollisionData *d) c
 	position_y = terrain_y;
 	if(position_y > lowestPoint.getY()){
 		if(forward_y > forwardPoint.getY()){
-			normal = Vector3(0,1,0) + normalForward;
-
-
+			normal = normalForward;
 		}
 		if(d){
 
@@ -65,7 +64,7 @@ bool PhysicsSystem::TerrainCollision(const PhysicsNode &p0,  CollisionData *d) c
 		return true;
 	}else if (forward_y > forwardPoint.getY()){
 		if(d){
-			normalForward += Vector3(0,1,0);
+
 			normalForward =normalize(normalForward);
 
 			d->m_penetration = forward_y - lowestPoint.getY();
@@ -117,6 +116,8 @@ void PhysicsSystem::AddCollisionImpulse(PhysicsNode &p0, PhysicsNode &p1, const 
 	Matrix4 worldInvInertia0 = p0.GetInvInertia();
 	Matrix4 worldInvInertia1 = p1.GetInvInertia();
 
+	worldInvInertia0 = worldInvInertia0.identity();
+	worldInvInertia1 = worldInvInertia1.identity();
 	Vector3 r0 = hitPoint - p0.GetPosition();
 	Vector3 r1 = hitPoint - p1.GetPosition();
 
@@ -150,7 +151,8 @@ void PhysicsSystem::AddCollisionImpulse(PhysicsNode &p0, PhysicsNode &p1, const 
 
 
 		float jn = -1*(1+e)*dot(dv, normal) / normDiv;
-		jn = jn + (penetration * .05f);
+		jn = jn + (penetration * 0.75f);
+
 
 		p0.SetLinearVelocity(p0.GetLinearVelocity() + (normal * p0.GetInverseMass() * jn));
 		//p0.SetAngularVelocity(p0.GetAngularVelocity() + (worldInvInertia0 * cross(r0, normal * jn)).getXYZ() );

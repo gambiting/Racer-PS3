@@ -46,6 +46,9 @@ public:
 	void			AddChild(SceneNode& s);
 	void			MurderChildGruesomely(SceneNode& s);
 
+	bool			getIsPlayer()						{return isPlayer;}
+	void			setIsPlayer(bool p)					{ isPlayer= p;}
+
 	std::vector<SceneNode*>::const_iterator GetChildIteratorStart()	{return children.begin();}
 	std::vector<SceneNode*>::const_iterator GetChildIteratorEnd()	{return children.end();}
 
@@ -54,6 +57,8 @@ protected:
 	SceneNode*	parent;
 	Matrix4		worldTransform;
 	Matrix4		transform;
+	
+	bool		isPlayer;
 
 	std::vector<SceneNode*>		children;
 };

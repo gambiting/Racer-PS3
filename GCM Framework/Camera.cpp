@@ -5,12 +5,16 @@ Set useful default values!
 */
 Camera::Camera(void)	{
 	yaw		= 0.0f;
-	pitch	= 0.0f;
+	pitch	= -10.0f;
 	pad		= JOYPAD_A;
 	position = Vector3(0,0,0);
 
 	ypSensitivity = 0.3f;
 	invertPitch = true;
+
+	std::cout << "Initialising a camera" << std::endl;
+
+	player = new PhysicsNode();
 }
 
 Camera::~Camera(void)	{
@@ -32,10 +36,12 @@ void Camera::Update(float msec) {
 		return;
 	}
 
+	position = player->GetPosition() + Vector3(0, 200, 600);
+
 	Input::GetJoypadMovement(y,p,pad);
 
-	yaw += y;// * ypSensitivity;
-	pitch -= p;// invertPitch ? -(p*ypSensitivity) : (p*ypSensitivity);
+	//yaw += y * ypSensitivity;
+	pitch -= p * invertPitch ? -(p*ypSensitivity) : (p*ypSensitivity);
 	
 	pitch = min(pitch,90.0f);
 	pitch = max(pitch,-90.0f);
@@ -46,19 +52,25 @@ void Camera::Update(float msec) {
 	if(yaw > 360.0f) {
 		yaw -= 360.0f;
 	}
+	if(Input::ButtonTriggered(INPUT_CROSS,pad)) {
+		player->AddForce(Vector3(0,0.5,0), Vector3(0,0,0));
+	}
 
 	if(Input::ButtonDown(INPUT_UP,pad)) {
-		position += ((Matrix4::rotationY(DegToRad(-yaw)) * Vector3(0,0,-1) * msec).getXYZ());
+		player->AddForce(Vector3(0,0,-0.01), Vector3(0,0,0));
 	}
 	if(Input::ButtonDown(INPUT_DOWN,pad)) {
-		position -= ((Matrix4::rotationY(DegToRad(-yaw)) * Vector3(0,0,-1) * msec).getXYZ());
+		player->AddForce(Vector3(0,0,0.01), Vector3(0,0,0));
 	}
 
 	if(Input::ButtonDown(INPUT_LEFT,pad)) {
-		position += ((Matrix4::rotationY(DegToRad(-yaw)) * Vector3(-1,0,0) * msec).getXYZ());
+		player->AddForce(Vector3(-0.01,0,0), Vector3(0,0,0));
 	}
 	if(Input::ButtonDown(INPUT_RIGHT,pad)) {
-		position -= ((Matrix4::rotationY(DegToRad(-yaw)) * Vector3(-1,0,0) * msec).getXYZ());
+		player->AddForce(Vector3(0.01,0,0), Vector3(0,0,0));
+	}
+	if(Input::ButtonDown(INPUT_SELECT,pad)) {
+		invertPitch = !invertPitch;
 	}
 
 	//Go up and down using the shoulder buttons!
@@ -90,4 +102,9 @@ Vector3 Camera::GetLookDirection() {
 	Vector3 forward = ((mat1 * mat2) * fwd).getXYZ();
 	
 	return forward;
+}
+
+void Camera::SetPhysicsNode(PhysicsNode* n) {
+	this->player = n; 
+	this->position = player->GetPosition();
 }
