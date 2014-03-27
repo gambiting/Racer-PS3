@@ -42,21 +42,6 @@ void triangle_button() {
 	{
 		done = true;
 	}
-	
-	/*renderer.ActivatePlayers();
-	//done = true;
-	switch(state)
-	{
-	case GAME_MAIN:
-		state = GAME_PAUSED;
-		renderer.RenderPausedScene();
-		break;
-	case GAME_PAUSED:
-		state=GAME_MAIN;
-		break;
-	default: break;
-	}
-	std::cout << "Pressed start button!" << std::endl;*/
 }
 
 void select_button()		{
@@ -109,7 +94,7 @@ int main(void)	{
 	renderer.DrawLoading();
 	//Button functions
 	Input::SetPadFunction(INPUT_START,	start_button);
-	Input::SetPadFunction(INPUT_SELECT,	select_button);
+	//Input::SetPadFunction(INPUT_SELECT,	select_button);
 	Input::SetPadFunction(INPUT_SQUARE, square_button);
 	//Input::SetPadFunction(INPUT_CROSS, cross_button);
 	Input::SetPadFunction(INPUT_TRIANGLE, triangle_button);

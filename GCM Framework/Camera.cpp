@@ -36,11 +36,11 @@ void Camera::Update(float msec) {
 		return;
 	}
 
-	position = player->GetPosition() + Vector3(100, 150, 500);
+	position = player->GetPosition() + Vector3(200, 150 , 500);
 
 	Input::GetJoypadMovement(y,p,pad);
 
-	yaw += y * ypSensitivity;
+	//yaw += y * ypSensitivity;
 	pitch -= p * invertPitch ? -(p*ypSensitivity) : (p*ypSensitivity);
 	
 	pitch = min(pitch,90.0f);
@@ -57,22 +57,20 @@ void Camera::Update(float msec) {
 	}
 
 	if(Input::ButtonDown(INPUT_UP,pad)) {
-		//position += ((Matrix4::rotationY(DegToRad(-yaw)) * Vector3(0,0,-1) * msec).getXYZ());
-		//std::cout << "Setting camera pos to: " << player->GetPosition().getX() << ", " << player->GetPosition().getY() << ", " << player->GetPosition().getZ() << ")" << std::endl;
-		player->AddForce(Vector3(0,0,-0.007), Vector3(0,0,0));
+		player->AddForce(Vector3(0,0,-0.01), Vector3(0,0,0));
 	}
 	if(Input::ButtonDown(INPUT_DOWN,pad)) {
-		player->AddForce(Vector3(0,0,0.007), Vector3(0,0,0));
-		//position -= ((Matrix4::rotationY(DegToRad(-yaw)) * Vector3(0,0,-1) * msec).getXYZ());
+		player->AddForce(Vector3(0,0,0.01), Vector3(0,0,0));
 	}
 
 	if(Input::ButtonDown(INPUT_LEFT,pad)) {
-		player->AddForce(Vector3(-0.007,0,0), Vector3(0,0,0));
-		//position += ((Matrix4::rotationY(DegToRad(-yaw)) * Vector3(-1,0,0) * msec).getXYZ());
+		player->AddForce(Vector3(-0.01,0,0), Vector3(0,0,0));
 	}
 	if(Input::ButtonDown(INPUT_RIGHT,pad)) {
-		player->AddForce(Vector3(0.007,0,0), Vector3(0,0,0));
-		//position -= ((Matrix4::rotationY(DegToRad(-yaw)) * Vector3(-1,0,0) * msec).getXYZ());
+		player->AddForce(Vector3(0.01,0,0), Vector3(0,0,0));
+	}
+	if(Input::ButtonDown(INPUT_SELECT,pad)) {
+		invertPitch = !invertPitch;
 	}
 
 	//Go up and down using the shoulder buttons!
