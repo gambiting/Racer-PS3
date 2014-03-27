@@ -208,8 +208,9 @@ void	Mesh::Draw(VertexShader &vertex, FragmentShader &fragment)
 }
 
 
-void Mesh::GenerateNormals(unsigned short* indices)
+std::vector<Vector3> *Mesh::GenerateNormals(unsigned short* indices)
 {
+	std::vector<Vector3> *normals = new std::vector<Vector3>();
 	for(int i = 0; i<numVertices; i++)
 	{
 		vertexData[i].nx = 0;
@@ -236,6 +237,7 @@ void Mesh::GenerateNormals(unsigned short* indices)
 			unsigned int c = indices[i+2];
 
 			Vector3 normal = cross((MakeTempVec3(vertexData[b]) - MakeTempVec3(vertexData[a])), (MakeTempVec3(vertexData[c]) - MakeTempVec3(vertexData[a])));
+			normals->push_back(normal);
 			//normal=normalize(normal);
 			
 			/*out<<"Indices:- "<<a<<", "<<b<<", "<<c<<"\n";
@@ -268,6 +270,7 @@ void Mesh::GenerateNormals(unsigned short* indices)
 			Vector3 c = MakeTempVec3(vertexData[i+2]);
 
 			Vector3 normal = cross((b-a), (c-a));
+			normals->push_back(normal);
 			//normal=normalize(normal);
 			/*out<<"VectorA:- "<<a.getX()<<", "<<a.getY()<<", "<<a.getZ();
 			out<<", VectorB:- "<<b.getX()<<", "<<b.getY()<<", "<<b.getZ();
@@ -303,6 +306,7 @@ void Mesh::GenerateNormals(unsigned short* indices)
 	printf("Mesh:- Normals Generated\n");
 	cellGcmAddressToOffset(&vertexData->nx, &vertexOffsets[VERTEX_NORMAL]);
 	
+	return normals;
 }
 
 /*Vector3 Mesh::NormaliseVec3(Vector3& inp)

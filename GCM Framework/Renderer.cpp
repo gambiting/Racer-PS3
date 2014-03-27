@@ -87,9 +87,21 @@ void Renderer::CollisionTests() {
 
 	}*/
 
+	for(int i=0;i<worldObjects.size();i++)
+	{
+		CollisionData* cData = new CollisionData();
+		std::cout << "worldObjects.size = " << worldObjects.size() << std::endl;
+		if(physics.TerrainCollision( *worldObjects.at(i), cData))
+		{
+			
+			PhysicsNode *temp = new PhysicsNode();
+			physics.AddCollisionImpulse(*worldObjects.at(i), (*temp), cData->m_point, cData->m_normal, cData->m_penetration);
+			delete temp;
+		}
+	}
 
 	//To start just check spheres against the two players, it's all we need to test sphere/sphere collision anyway.
-	for(std::vector<PhysicsNode*>::iterator i = worldObjects.begin(); i != worldObjects.end(); ++i) {
+	/*for(std::vector<PhysicsNode*>::iterator i = worldObjects.begin(); i != worldObjects.end(); ++i) {
 		CollisionData* cData = new CollisionData();
 		if (physics.SphereSphereCollision( *(*i), *playerOne, cData) ) {
 			//playerOne->GravityOn();
@@ -97,12 +109,24 @@ void Renderer::CollisionTests() {
 				cData->m_penetration << std::endl;
 			physics.AddCollisionImpulse(*(*i), *playerOne, cData->m_point, cData->m_normal, cData->m_penetration);
 		}
+
+		std::cout << "X position of the node I am about to check: " << (*i)->GetPosition().getX() << std::endl;
+		if(physics.TerrainCollision( *(*i), cData))
+		{
+			std::cout << "collided with terrain" << std::endl;
+			PhysicsNode *temp = new PhysicsNode();
+			physics.AddCollisionImpulse(*(*i), (*temp), cData->m_point, cData->m_normal, cData->m_penetration);
+			delete temp;
+		}
+
+		
+
 		if (physics.SphereSphereCollision( *(*i), *playerTwo, cData) ) {
 			
 			//playerTwo->GravityOn();
 			//physics.AddCollisionImpulse(*(*i), *playerTwo, cData->m_point, cData->m_normal, cData->m_penetration);
 		}
-	}
+	}*/
 
 }
 
@@ -300,7 +324,7 @@ void Renderer::AddSphere() {
 	newSphere->SetMesh(sphereOne);
 	newSphere->SetPosition(camera1->GetPosition());
 	
-	newSphere->SetLinearVelocity(camera1->GetLookDirection());
+	newSphere->SetLinearVelocity(camera1->GetLookDirection()/10.0f);
 	
 	root->AddChild(*newSphere);
 	worldObjects.push_back(newSphere);
