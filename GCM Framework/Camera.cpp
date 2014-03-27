@@ -52,23 +52,26 @@ void Camera::Update(float msec) {
 	if(yaw > 360.0f) {
 		yaw -= 360.0f;
 	}
+	if(Input::ButtonTriggered(INPUT_CROSS,pad)) {
+		player->AddForce(Vector3(0,0.5,0), Vector3(0,0,0));
+	}
 
 	if(Input::ButtonDown(INPUT_UP,pad)) {
 		//position += ((Matrix4::rotationY(DegToRad(-yaw)) * Vector3(0,0,-1) * msec).getXYZ());
 		//std::cout << "Setting camera pos to: " << player->GetPosition().getX() << ", " << player->GetPosition().getY() << ", " << player->GetPosition().getZ() << ")" << std::endl;
-		player->SetLinearVelocity(Vector3(0,0,-0.1));
+		player->AddForce(Vector3(0,0,-0.07), Vector3(0,0,0));
 	}
 	if(Input::ButtonDown(INPUT_DOWN,pad)) {
-		player->SetLinearVelocity(Vector3(0,0,0.1));
+		player->AddForce(Vector3(0,0,0.007), Vector3(0,0,0));
 		//position -= ((Matrix4::rotationY(DegToRad(-yaw)) * Vector3(0,0,-1) * msec).getXYZ());
 	}
 
 	if(Input::ButtonDown(INPUT_LEFT,pad)) {
-		player->SetLinearVelocity(Vector3(-0.1,0,0));
+		player->AddForce(Vector3(-0.007,0,0), Vector3(0,0,0));
 		//position += ((Matrix4::rotationY(DegToRad(-yaw)) * Vector3(-1,0,0) * msec).getXYZ());
 	}
 	if(Input::ButtonDown(INPUT_RIGHT,pad)) {
-		player->SetLinearVelocity(Vector3(0.1,0,0));
+		player->AddForce(Vector3(0.007,0,0), Vector3(0,0,0));
 		//position -= ((Matrix4::rotationY(DegToRad(-yaw)) * Vector3(-1,0,0) * msec).getXYZ());
 	}
 

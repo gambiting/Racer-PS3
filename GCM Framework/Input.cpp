@@ -3,6 +3,10 @@
 //Static member variables need defining!
 Input::JoyPad Input::joypads[JOYPAD_SIZE];
 
+ bool Input::keyStates[JOYPAD_SIZE][INPUT_SIZE];		
+ bool Input::holdStates[JOYPAD_SIZE][INPUT_SIZE];	
+ bool Input::releaseStates[JOYPAD_SIZE][INPUT_SIZE];
+
 /*
 Even if we're only assuming a single joypad is to be connected,
 we may as well initialise enough for a multiplayer game
@@ -10,6 +14,16 @@ we may as well initialise enough for a multiplayer game
 void Input::Initialise() {
 	if(cellPadInit(JOYPAD_SIZE) != CELL_PAD_OK) {
 		std::cout << "cellPadInit failed!" << std::endl;	
+	}
+
+	for(int i=0; i < JOYPAD_SIZE; ++i)
+	{
+		for(int j = 0; j < INPUT_SIZE; ++j)
+		{
+			keyStates[i][j] = false;		
+			holdStates[i][j] = false;	
+			releaseStates[i][j] = false;
+		}
 	}
 }
 
@@ -66,6 +80,10 @@ void Input::UpdateJoypad() {
 	data.len = 0;
 
 	for(int p = 0; p < JOYPAD_SIZE; ++p) {
+
+		memcpy(holdStates[p],	keyStates[p],	INPUT_SIZE * sizeof(bool));
+		memcpy(releaseStates[p],holdStates[p],	INPUT_SIZE * sizeof(bool));
+
 		cellPadGetData(p,&data);
 
 		int halfInput = INPUT_SIZE / 2;
@@ -163,8 +181,19 @@ void Input::UpdateJoypad() {
 		else if(joypads[p].pointerPosY > SCREENY) {
 			joypads[p].pointerPosY = SCREENY;
 		}
-
+		memcpy(keyStates[p], joypads[p].buttons, 	INPUT_SIZE * sizeof(bool));
 		cellPadClearBuf(p);
 	}
 };
 
+bool Input::ButtonTriggered(PadButtons button, JoyPadNum num)	 {
+	return (ButtonDown(button,num) && !ButtonHeld(button,num));
+}
+
+bool Input::ButtonHeld(PadButtons button, JoyPadNum num)	{
+
+	if(ButtonDown(button,num) && holdStates[num][button]) {
+		return true;
+	}
+	return false;
+}
