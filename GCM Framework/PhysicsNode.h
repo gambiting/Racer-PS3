@@ -9,7 +9,7 @@
 
 using namespace Vectormath::Aos;
 
-#define GRAVITY -0.0000098f
+#define GRAVITY -0.00048f
 
 class PhysicsNode : public SceneNode {
 public:
