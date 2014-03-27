@@ -1,5 +1,7 @@
 #include "HeightMap.h"
 
+unsigned char *HeightMap::heightData;
+std::vector<Vector3> *HeightMap::normals;
 
 HeightMap::HeightMap(std::string name)
 {
@@ -16,8 +18,8 @@ HeightMap::HeightMap(std::string name)
 	
 
 	
-	unsigned char* data = new unsigned char[numVertices];
-	file.read((char*) data, numVertices * sizeof(unsigned char));
+	heightData = new unsigned char[numVertices];
+	file.read((char*) heightData, numVertices * sizeof(unsigned char));
 	file.close();
 
 
@@ -30,14 +32,13 @@ HeightMap::HeightMap(std::string name)
 		{
 			int offset = (x * RAW_WIDTH) + z;
 			vertexData[offset].x = x * HEIGHTMAP_X; 
-			vertexData[offset].y = data[offset] * HEIGHTMAP_Y;
+			vertexData[offset].y = heightData[offset] * HEIGHTMAP_Y;
 			vertexData[offset].z = z * HEIGHTMAP_Z;
 			vertexData[offset].u = x * HEIGHTMAP_TEX_X;
 			vertexData[offset].v = z * HEIGHTMAP_TEX_Z;
 			vertexData[offset].rgba = 0xff0000ff;// Vector4(data[offset] * HEIGHTMAP_Y/256, data[offset] * HEIGHTMAP_Y/256, data[offset] * HEIGHTMAP_Y/256, 1.0f);
 		}
 	}
-	delete data;
 
 	numIndices = 0;
 	
@@ -106,7 +107,7 @@ HeightMap::HeightMap(std::string name)
 	cellGcmAddressToOffset(&vertexData->u, &vertexOffsets[VERTEX_TEXCOORD]);
 	//Normals A20 in the Gen Normals Method
 	cellGcmAddressToOffset(indices, &vertexOffsets[VERTEX_INDEX]);
-	GenerateNormals(indices);
+	normals = GenerateNormals(indices);
 	
 
 }

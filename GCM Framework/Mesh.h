@@ -58,7 +58,7 @@ protected:
 
 
 	//Bellow contains my hatred
-	void GenerateNormals(unsigned short* indices);
+	std::vector<Vector3> *GenerateNormals(unsigned short* indices);
 	//Vector3 NormaliseVec3(Vector3& inp);
 	//Vector3 CrossVec3(Vector3 a, Vector3 b);
 	Vector3 MakeTempVec3(Vertex a);

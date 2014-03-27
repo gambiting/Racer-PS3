@@ -6,6 +6,78 @@ PhysicsSystem::PhysicsSystem(void) {
 PhysicsSystem::~PhysicsSystem(void) {
 }
 
+bool PhysicsSystem::TerrainCollision(const PhysicsNode &p0,  CollisionData *d) const {
+	//finds the lowest point of the object being compared to the highest point on the terrain and sees if they collide
+
+	//if(p0)
+	//{
+	//	std::cout << "null node" << std::endl;
+	//}
+
+
+	Vector3 position = p0.GetPosition();
+	Vector3 velocity = p0.GetLinearVelocity();
+	float radius = p0.GetRadius();
+	Vector3 lowestPoint = Vector3(position.getX(), position.getY() - radius, position.getZ());
+	Vector3 tempVel = velocity;
+	tempVel = normalize(tempVel);
+	Vector3 forwardPoint = Vector3(position.getX() + (tempVel.getX() * radius), position.getY() + (tempVel.getY() * radius), position.getZ() + (tempVel.getZ() * radius));
+
+	float position_y = lowestPoint.getY();
+	Vector3 normal = Vector3(0, 1, 0);
+	Vector3 normalForward = Vector3(0, 1, 0);
+
+	//MapChunk* chunk = n1.GetMapTarget();
+	//bottom point
+	float low_obj_x = lowestPoint.getX() / (float)(HEIGHTMAP_X*RAW_WIDTH) ;
+	float low_obj_z = lowestPoint.getZ() / (float)(HEIGHTMAP_Z*RAW_HEIGHT);
+	//forward point
+	float for_obj_x = forwardPoint.getX() / (float)(HEIGHTMAP_X*RAW_WIDTH) ;
+	float for_obj_z = forwardPoint.getZ() / (float)(HEIGHTMAP_Z*RAW_HEIGHT) ;
+//std::cout<< "low_obj_x: " << low_obj_x << ", low_obj_z: " << low_obj_z << std::endl;
+
+	if(low_obj_x < 0.f || low_obj_x > 1.f || low_obj_z < 0.f || low_obj_z > 1.f )
+		{
+			return false;
+
+	}
+	if(for_obj_x < 0.f || for_obj_x > 1.f || for_obj_z < 0.f || for_obj_z > 1.f )
+		{
+			return false;
+
+	}
+	float terrain_y = HeightMap::getHeightAt(low_obj_x, low_obj_z, &normal); //TODO remember the normal was requested here
+	float forward_y = HeightMap::getHeightAt(for_obj_x, for_obj_z, &normalForward); //TODO add forwardNormal request here
+	position_y = terrain_y;
+	if(position_y > lowestPoint.getY()){
+		if(forward_y > forwardPoint.getY()){
+			normal = Vector3(0,1,0) + normalForward;
+
+
+		}
+		if(d){
+
+			normal = normalize(normal);
+			d->m_penetration = position_y - lowestPoint.getY();
+			d->m_normal = normal;
+			d->m_point = position - normal * radius;
+		}
+		return true;
+	}else if (forward_y > forwardPoint.getY()){
+		if(d){
+			normalForward += Vector3(0,1,0);
+			normalForward =normalize(normalForward);
+
+			d->m_penetration = forward_y - lowestPoint.getY();
+			d->m_normal = normalForward;
+			d->m_point = lowestPoint - normalForward * radius;
+		}
+		return true;
+	}
+	return false;
+}
+
+
 bool PhysicsSystem::SphereSphereCollision(const PhysicsNode &p0, const PhysicsNode &p1, CollisionData *collisionData) const {
 
 	Vector3 pos0 = p0.GetPosition();
