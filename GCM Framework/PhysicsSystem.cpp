@@ -53,8 +53,6 @@ bool PhysicsSystem::TerrainCollision(const PhysicsNode &p0,  CollisionData *d) c
 	if(position_y > lowestPoint.getY()){
 		if(forward_y > forwardPoint.getY()){
 			normal = normalForward;
-
-
 		}
 		if(d){
 
@@ -66,7 +64,7 @@ bool PhysicsSystem::TerrainCollision(const PhysicsNode &p0,  CollisionData *d) c
 		return true;
 	}else if (forward_y > forwardPoint.getY()){
 		if(d){
-			//normalForward += Vector3(0,1,0);
+
 			normalForward =normalize(normalForward);
 
 			d->m_penetration = forward_y - lowestPoint.getY();
@@ -155,11 +153,14 @@ void PhysicsSystem::AddCollisionImpulse(PhysicsNode &p0, PhysicsNode &p1, const 
 		float jn = -1*(1+e)*dot(dv, normal) / normDiv;
 		jn = jn + (penetration * 0.75f);
 
+
 		p0.SetLinearVelocity(p0.GetLinearVelocity() + (normal * p0.GetInverseMass() * jn));
-		p0.SetAngularVelocity(p0.GetAngularVelocity() + (worldInvInertia0 * cross(r0, normal * jn)).getXYZ() );
-		
+		//p0.SetAngularVelocity(p0.GetAngularVelocity() + (worldInvInertia0 * cross(r0, normal * jn)).getXYZ() );
+
+
+	
 		p1.SetLinearVelocity(p1.GetLinearVelocity() + (normal * p1.GetInverseMass() * jn));
-		p1.SetAngularVelocity(p1.GetAngularVelocity() + (worldInvInertia1 * cross(r1, normal * jn)).getXYZ() );
+		//p1.SetAngularVelocity(p1.GetAngularVelocity() + (worldInvInertia1 * cross(r1, normal * jn)).getXYZ() );
 	}
 
 	//Tangent impulse

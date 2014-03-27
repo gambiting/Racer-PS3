@@ -14,27 +14,71 @@
 #include "OBJMesh.h"
 #include "GameLogic.h"
 
-enum GAME_STATE{GAME_LOADING, GAME_MAIN, GAME_PAUSED};
+enum GAME_STATE{GAME_LOADING, GAME_MENU, GAME_MAIN, GAME_PAUSED, GAME_OVER};
 SYS_PROCESS_PARAM(1001, 0x10000)
 
 bool done = false;
 int state = GAME_LOADING;
 
-Camera* camera1;
-Camera* camera2;
-
 Renderer renderer;
 SceneNode *root;
 
+Camera* camera1;
+Camera* camera2;
 
 void start_button()		{
-	done = true;
+	
+	
+	switch(state)
+	{
+	
+	case GAME_MAIN:
+		state = GAME_PAUSED;
+		renderer.RenderPausedScene();
+		break;
+	case GAME_PAUSED:
+		state=GAME_MAIN;
+		break;
+	default: break;
+	}
+	std::cout << "Pressed start button!" << std::endl;
 }
 
-void triangle_button() {
+void select_button1()		{
+	switch(state)
+	{
+	case GAME_MAIN:
+		/*camera1->SetPosition(Vector3(0,0,10));
+		camera1->SetPitch(0.0f);
+		camera1->SetYaw(0.0f);
+		break;*/
+	default:
+		break;
+	}
+		
+		std::cout << "Pressed select button!" << std::endl;
+	
+}
+void select_button2()		{
+	switch(state)
+	{
+	case GAME_MAIN:
+		/*camera2->SetPosition(Vector3(0,0,10));
+		camera2->SetPitch(0.0f);
+		camera2->SetYaw(0.0f);
+		break;*/
+	default:
+		break;
+	}
+		
+		std::cout << "Pressed select button!" << std::endl;
+	
+}
+
+void cross_button1() {
 	if(state!=GAME_PAUSED)
 	{
-		renderer.AddSphere();
+		renderer.AddSphere(camera1);
 		std::cout << "Pressed X button!" << std::endl; 
 		//it's an X button, not cross. Sony should know this, crazy bastards.
 	}
@@ -44,27 +88,29 @@ void triangle_button() {
 	}
 }
 
-void select_button()		{
+void cross_button2() {
+	if(state!=GAME_PAUSED)
+	{
+		renderer.AddSphere(camera2);
+		std::cout << "Pressed X button!" << std::endl; 
+		//it's an X button, not cross. Sony should know this, crazy bastards.
+	}
+	else
+	{
+		done = true;
+	}
+}
+
+void square_button() {
 	switch(state)
 	{
 	case GAME_MAIN:
-		camera1->SetPosition(Vector3(0,0,10));
-		camera1->SetPitch(0.0f);
-		camera1->SetYaw(0.0f);
-		break;
-	default:
-		break;
-	}
-		
-	std::cout << "Pressed select button!" << std::endl;
-	
-}
-
-
-void square_button() {
-	if(state!=GAME_PAUSED)
-	{
 		renderer.ResetPlayers();
+		break;
+	case GAME_MENU: 
+		state = GAME_MAIN;
+		break;
+		default: break;
 		std::cout << "Pressed square button!" << std::endl;
 	}
 }
@@ -86,6 +132,25 @@ void circle_button()
 		std::cout << "Pressed circle button!" << std::endl;
 }
 
+void triangle_button() {
+
+	
+	
+	//done = true;
+	switch(state)
+	{
+	case GAME_MAIN:
+		renderer.ActivatePlayers();
+		break;
+	case GAME_PAUSED: 
+		state = GAME_OVER;
+		renderer.drawWinner(1);
+		break;
+	default: break;
+	}
+	std::cout << "Pressed triangle button!" << std::endl;
+};
+
 
 int main(void)	{
 	std::cout << "FG-RACER!!! :- PS3 Version\n" << std::endl;
@@ -93,14 +158,19 @@ int main(void)	{
 	Input::Initialise();
 	renderer.DrawLoading();
 	//Button functions
-	Input::SetPadFunction(INPUT_START,	start_button);
-	//Input::SetPadFunction(INPUT_SELECT,	select_button);
-	Input::SetPadFunction(INPUT_SQUARE, square_button);
-	//Input::SetPadFunction(INPUT_CROSS, cross_button);
-	Input::SetPadFunction(INPUT_TRIANGLE, triangle_button);
-	Input::SetPadFunction(INPUT_CIRCLE, circle_button);
+	Input::SetPadFunction(INPUT_START,	start_button, JOYPAD_A);
+	Input::SetPadFunction(INPUT_SELECT,	select_button1, JOYPAD_A);
+	Input::SetPadFunction(INPUT_SQUARE, square_button, JOYPAD_A);
+	Input::SetPadFunction(INPUT_CROSS, cross_button1, JOYPAD_A);
+	Input::SetPadFunction(INPUT_TRIANGLE, triangle_button, JOYPAD_A);
+	Input::SetPadFunction(INPUT_CIRCLE, circle_button, JOYPAD_A);
 
-	
+	Input::SetPadFunction(INPUT_START,	start_button, JOYPAD_B);
+	Input::SetPadFunction(INPUT_SELECT,	select_button2, JOYPAD_B);
+	Input::SetPadFunction(INPUT_SQUARE, square_button, JOYPAD_B);
+	Input::SetPadFunction(INPUT_CROSS, cross_button2, JOYPAD_B);
+	Input::SetPadFunction(INPUT_TRIANGLE, triangle_button, JOYPAD_B);
+	Input::SetPadFunction(INPUT_CIRCLE, circle_button, JOYPAD_B);	
 
 	printf("OBJ Mesh Loading Complete\n");
 
@@ -125,6 +195,7 @@ int main(void)	{
 	renderer.SetCamera2(camera2);	//Set the current renderer camera
 
 	renderer.SetupPlayers();
+
 
 	Timer gameTime;
 	GameLogic* logic = new GameLogic(&renderer);
