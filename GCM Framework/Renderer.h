@@ -53,10 +53,11 @@ public:
 	void RenderArrow(Matrix4 transform);//TODO
 	void SetupGeometry();
 	void drawMenu();
+	void drawWinner(int i);
 
 protected:
 	void DrawText(const std::string &text, const Vector3 &position, const float size, const bool perspective=false);
-	void Renderer::DrawSplitScreenText(const std::string &text, const Vector3 &position, const float size, const bool perspective=false);
+	void DrawSplitScreenText(const std::string &text, const Vector3 &position, const float size, const bool perspective=false);
 	
 	Font* basicFont;
 	CellGcmTexture* FontTex;
@@ -82,6 +83,7 @@ protected:
 
 	Mesh* tempQuad;
 	CellGcmTexture* tempTex;
+	CellGcmTexture* bkgd;
 
 	Mesh* quad;
 

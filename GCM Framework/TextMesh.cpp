@@ -103,4 +103,5 @@ more elegant)
 */
 TextMesh::~TextMesh(void)	{
 	defaultTexture = 0;
+	//delete vertexData;
 }
