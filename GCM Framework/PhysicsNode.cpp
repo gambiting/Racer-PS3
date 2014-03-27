@@ -2,14 +2,20 @@
 
 PhysicsNode::PhysicsNode(void)	{
 
-	ignoringGravity = false;
+	float r = 25.0f;
+	radius = r;
+	scale = Vector3(r,r,r);
 	m_position = Vector3(0,0,0);
+
+	ignoringGravity = false;
+
 	target			= NULL;
 	collidedWith	= NULL;
+
 	float inertia = (2 * 10.f * pow(50.f, 2)) / 5;
-	radius			= 50.0f;
+
 	m_linearVelocity	= Vector3(0.0f, 0.0f, 0.0f);
-	m_invMass			= 0.0f;
+	m_invMass			= 1.0f / r;
 	m_invInertia		= Matrix4(
 		Vector4(1/inertia,0.0f,0.0f,0.0f),
 		Vector4(0.0f,1/inertia,0.0f,0.0f),

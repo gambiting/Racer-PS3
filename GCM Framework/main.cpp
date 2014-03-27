@@ -34,9 +34,8 @@ void start_button()		{
 void triangle_button() {
 	if(state!=GAME_PAUSED)
 	{
-		renderer.AddSphere();
-		std::cout << "Pressed X button!" << std::endl; 
-		//it's an X button, not cross. Sony should know this, crazy bastards.
+		renderer.AddItemBox();
+		std::cout << "Pressed Triangle button!" << std::endl; 
 	}
 	else
 	{

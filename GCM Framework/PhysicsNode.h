@@ -54,6 +54,9 @@ public:
 	bool			isInAir()							{ return inAir; }
 	void			SetInAir(bool a)					{ inAir = a; }
 
+	bool			isCollidable()						{ return collidable;}
+	void			setCollidable(bool b)				{ collidable = b; }
+
 	void			AddForce(Vector3 f, Vector3 d)		{
 															m_force = f;
 															//distance = d;
@@ -69,6 +72,7 @@ public:
 protected:
 
 	bool ignoringGravity;
+	bool collidable;
 
 	Vector3		scale;
 	Vector3		gravity;

@@ -49,6 +49,8 @@ public:
 	bool			getIsPlayer()						{return isPlayer;}
 	void			setIsPlayer(bool p)					{ isPlayer= p;}
 
+	int				getNumChildren()					{return children.size();}
+
 	std::vector<SceneNode*>::const_iterator GetChildIteratorStart()	{return children.begin();}
 	std::vector<SceneNode*>::const_iterator GetChildIteratorEnd()	{return children.end();}
 

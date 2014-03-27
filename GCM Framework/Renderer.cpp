@@ -98,15 +98,15 @@ void Renderer::CollisionTests() {
 		}
 		
 
-		/*if there is another node after this, check for collisions with it and following nodes
-		if(i < worldObjects.size()-1){			
+		//if there is another node after this, check for collisions with it and following nodes
+		if(i < worldObjects.size()-1 && worldObjects.at(i)->isCollidable()){			
 			for(int j = i+1; j<worldObjects.size(); j++){
-				if(physics.SphereSphereCollision(*worldObjects.at(i),*worldObjects.at(j), cData)){
-					std::cout << "SPHERE SPHERE" << std::endl;
-					physics.AddCollisionImpulse(*worldObjects.at(i), *worldObjects.at(j), cData->m_point, cData->m_normal, cData->m_penetration);
+				if(worldObjects.at(j)->isCollidable() && physics.SphereSphereCollision(*worldObjects.at(i),*worldObjects.at(j), cData)){
+					std::cout << "World objects length: "<< worldObjects.size() << std::endl;
+					//physics.AddCollisionImpulse(*worldObjects.at(i), *worldObjects.at(j), cData->m_point, cData->m_normal, cData->m_penetration);
 				}
 			}
-		}*/
+		}
 
 		/*is this node is a player, check for collisions with item boxes
 		if(worldObjects.at(i)->getIsPlayer()){
@@ -162,13 +162,8 @@ void Renderer::RenderScene(float msec) {
 	RenderArrow(player2Trans);
 
 	projMatrix	= Matrix4::perspective(0.7853982, screenRatio, 1.0f, 20000.0f);
-	/*if(root) {
-		DrawNode(root);
-	}*/
 	
-	SwapBuffers();
-
-	
+	SwapBuffers();	
 }
 
 void Renderer::DrawText(const std::string &text, const Vector3 &position, const float size, const bool perspective)
@@ -315,6 +310,7 @@ void Renderer::SetupPlayers() {
 	playerOne->SetMesh(sphereOne);
 	playerOne->SetPosition(Vector3(2000, 500, 2000));
 	playerOne->GravityOff();
+	playerOne->setCollidable(true);
 	camera1->SetPhysicsNode(playerOne);
 	worldObjects.push_back(playerOne);
 	root->AddChild(*playerOne);
@@ -325,6 +321,7 @@ void Renderer::SetupPlayers() {
 	playerTwo->SetPosition(Vector3(2096, 500, 2096));
 	playerTwo->GravityOff();
 	camera2->SetPhysicsNode(playerTwo);
+	playerOne->setCollidable(true);
 	worldObjects.push_back(playerTwo);
 	root->AddChild(*playerTwo);
 	
@@ -360,11 +357,24 @@ void Renderer::AddSphere() {
 
 void Renderer::AddItemBox(Item* item){
 	itemBoxes.push_back(item);
-	item->GetPhysicsNode().SetMesh(sphereOne);
-	item->GetPhysicsNode().SetPosition(Vector3(1000, 1000, 0));
-	item->GetPhysicsNode().GravityOff();
-	item->GetPhysicsNode().setRadius(25.f);
+	item->GetPhysicsNode().SetMesh(android);
+	item->GetPhysicsNode().setRadius(25.0f);
 	root->AddChild(item->GetPhysicsNode());
+	worldObjects.push_back(item->GetPhysicsNodePtr());
+	std::cout << "Added item box. Number of children in scene root node: "<< root->getNumChildren() << std::endl;
+}
+
+void Renderer::AddItemBox(){
+	Trap* item	= new Trap();		
+	//set item's position 
+	item->GetPhysicsNode().SetPosition(camera1->GetPosition());
+	//item->setItemID(ServerInterface::AddGameEntity(WEAPONS_CRATE, item->GetPhysicsNode().GetPosition()));
+	itemBoxes.push_back(item);
+	item->GetPhysicsNode().SetMesh(android);
+	item->GetPhysicsNode().setRadius(25.0f);
+	root->AddChild(item->GetPhysicsNode());
+	worldObjects.push_back(item->GetPhysicsNodePtr());
+	std::cout << "Added item box. Number of children in scene root node: "<< root->getNumChildren() << std::endl;
 }
 
 void Renderer::RemoveItemBox(Item* item){
@@ -473,16 +483,17 @@ void Renderer::SetupGeometry()
 	percent+=10;//60
 	DrawLoading(percent);
 
-	//Sphere One
-	std::cout << "Loading sphere ONE in renderer" << std::endl;
-		sphereOne = new OBJMesh(SYS_APP_HOME "/sphere.obj");
-	std::cout << "Renderer sphere ONE load success!" << std::endl;
+	//Android mesh
+	std::cout << "Loading meshes in renderer" << std::endl;
+	android = new OBJMesh(SYS_APP_HOME "/android.obj");
+
+	
+	sphereOne = new OBJMesh(SYS_APP_HOME "/sphere.obj");
 	sphereOne->SetDefaultTexture(*GCMRenderer::LoadGTF("/Textures/checkerboard.gtf"));
 
 	//SphereTwo
-	std::cout << "Loading sphere TWO in renderer" << std::endl;
-		sphereTwo = new OBJMesh(SYS_APP_HOME "/sphere.obj");
-	std::cout << "Renderer sphere TWO load success!" << std::endl;
+	
+	sphereTwo = new OBJMesh(SYS_APP_HOME "/sphere.obj");
 	sphereTwo->SetDefaultTexture(*GCMRenderer::LoadGTF("/FT_Logo2.gtf"));
 	
 	std::cout << "Loading arrow in renderer" << std::endl;

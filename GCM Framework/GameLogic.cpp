@@ -24,13 +24,15 @@ GameLogic::GameLogic(Renderer* passedRenderer){
 	std::cout << "Race event created!" << std::endl;
 
 
-	//testing object creation....*****************************
-	Item* item	= new Trap();		
-	//set item's position 
-	item->GetPhysicsNode().SetPosition(Vector3(0,100,100));
-	//item->setItemID(ServerInterface::AddGameEntity(WEAPONS_CRATE, item->GetPhysicsNode().GetPosition()));
-	gamePowerUps.push_back(item);
-	renderer->AddItemBox(item);
+	for(int i = 0; i < 10; i++){
+		//testing object creation....*****************************
+		Item* item	= new Trap();		
+		//set item's position 
+		item->GetPhysicsNode().SetPosition(Vector3(100*i,100,100*i));
+		//item->setItemID(ServerInterface::AddGameEntity(WEAPONS_CRATE, item->GetPhysicsNode().GetPosition()));
+		gamePowerUps.push_back(item);
+		renderer->AddItemBox(item);
+	}
 	//renderer->RemoveItemBox(item);
 }
 
