@@ -7,7 +7,7 @@ struct VertOut
 
 VertOut main
 (
-	float4 position	: POSITION,
+	float3 position	: POSITION,
 	
 		
     uniform float4x4 modelMat,// : C0,
@@ -20,15 +20,16 @@ VertOut main
 	VertOut OUT;
 	
 	float3 tempPos = float3(position.x, position.y, position.z);
-	tempPos = tempPos - float3(0,0,1);
+	tempPos.z = tempPos.z - 1;
 		
-	float3x3 tempMat = transpose((float3x3)viewMat);
+	float3x3 tempMat = transpose(viewMat);
 	
 	OUT.oNormal = mul(tempMat, normalize(tempPos));
 	
 		
-	OUT.oPosition 	 = mul(projMat, float4(tempPos, 1.0));
+	OUT.oPosition 	 = mul(projMat, float4(position, 1.0));
 		
+	OUT.oPosition 	 =  float4(position, 1);// - float4(1,0,0,0);
 	
 	return OUT;
 }

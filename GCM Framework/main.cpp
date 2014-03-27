@@ -14,7 +14,7 @@
 #include "OBJMesh.h"
 #include "GameLogic.h"
 
-enum GAME_STATE{GAME_LOADING, GAME_MAIN, GAME_PAUSED};
+enum GAME_STATE{GAME_LOADING, GAME_MENU, GAME_MAIN, GAME_PAUSED};
 SYS_PROCESS_PARAM(1001, 0x10000)
 
 bool done = false;
@@ -31,6 +31,7 @@ void start_button()		{
 	
 	switch(state)
 	{
+	
 	case GAME_MAIN:
 		state = GAME_PAUSED;
 		renderer.RenderPausedScene();
@@ -101,9 +102,15 @@ void cross_button2() {
 }
 
 void square_button() {
-	if(state!=GAME_PAUSED)
+	switch(state)
 	{
+	case GAME_MAIN:
 		renderer.ResetPlayers();
+		break;
+	case GAME_MENU: 
+		state = GAME_MAIN;
+		break;
+		default: break;
 		std::cout << "Pressed square button!" << std::endl;
 	}
 }
@@ -231,7 +238,12 @@ int main(void)	{
 					renderer.DrawLoading(100);
 
 					
-					state=GAME_MAIN;
+					state=GAME_MENU;
+					break;
+
+			case GAME_MENU: 
+					renderer.drawMenu();
+					
 					break;
 				
 			case GAME_MAIN:

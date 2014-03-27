@@ -35,6 +35,7 @@ Renderer::Renderer(void)	{
 	basicFont = new Font(FontTex, 16, 16);
 	
 	cubeMap = GCMRenderer::LoadGTF("/cubemap.gtf");
+	cubeMap->cubemap	= CELL_GCM_TRUE;
 	
 	/*
 	Projection matrix...0.7853982 is 45 degrees in radians.
@@ -85,7 +86,7 @@ void Renderer::CollisionTests() {
 	for(int i=0;i<worldObjects.size();i++)
 	{
 		CollisionData* cData = new CollisionData();
-		std::cout << "worldObjects.size = " << worldObjects.size() << std::endl;
+		//std::cout << "worldObjects.size = " << worldObjects.size() << std::endl;
 		if(physics.TerrainCollision( *worldObjects.at(i), cData))
 		{
 			
@@ -236,11 +237,27 @@ void Renderer::DrawSplitScreenText(const std::string &text, const Vector3 &posit
 	delete mesh; 
 	this->SetCurrentShader(*lightVert,*lightFrag);
 }
+void Renderer::drawMenu()
+{
+	ClearBuffer();
+	SetViewport();
+	projMatrix	= Matrix4::perspective(0.7853982, screenRatio, 1.0f, 20000.0f);
+	setCurrentCamera(camera1);
+	drawSkyBox();
+	DrawScene();
+	DrawText("Press SQUARE to Begin",Vector3(screenWidth/10, screenHeight/2, 0), 75.0f);
+	SwapBuffers();
+
+}
 void Renderer::drawSkyBox()
 {
 	
 	
 	cellGcmSetDepthMask(CELL_GCM_FALSE);
+
+	cellGcmSetDepthTestEnable(CELL_GCM_FALSE); //rich
+
+	cellGcmSetCullFaceEnable(CELL_GCM_FALSE); //rich
 
 	this->SetCurrentShader(*skyVert,*skyFrag);
 	if(currentCamera) {
@@ -249,12 +266,13 @@ void Renderer::drawSkyBox()
 	else{
 		viewMatrix = Matrix4::identity();
 	}
-	projMatrix	= Matrix4::perspective(0.7853982, halfScreenRatio, 1.0f, 20000.0f);
+	projMatrix	= Matrix4::perspective(0.7853982, screenRatio, 1.0f, 20000.0f);
 
 	currentVert->UpdateShaderMatrices(modelMatrix, viewMatrix, projMatrix);
 	SetTextureSampler(currentFrag->GetParameter("cubeTex"), cubeMap);
 
 	quad->Draw(*currentVert,*currentFrag);
+	projMatrix	= Matrix4::perspective(0.7853982, halfScreenRatio, 1.0f, 20000.0f);
 
 	this->SetCurrentShader(*lightVert,*lightFrag);
 

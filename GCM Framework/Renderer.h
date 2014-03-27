@@ -52,6 +52,7 @@ public:
 	void RenderPausedScene();
 	void RenderArrow(Matrix4 transform);//TODO
 	void SetupGeometry();
+	void drawMenu();
 
 protected:
 	void DrawText(const std::string &text, const Vector3 &position, const float size, const bool perspective=false);
@@ -66,6 +67,7 @@ protected:
 	Vector4 testColour;
 
 	void drawSkyBox();
+	
 
 	VertexShader* skyVert;
 	FragmentShader* skyFrag;

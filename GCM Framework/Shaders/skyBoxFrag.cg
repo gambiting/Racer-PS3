@@ -1,6 +1,6 @@
 void main
 (
-	float3 oNormal : TEXCOORD0,
+	float3 oNormal : TEXCOORD1,
 	uniform samplerCUBE cubeTex,
 	
 	
@@ -8,5 +8,10 @@ void main
 )
 {
 	color_out = texCUBE(cubeTex, normalize(oNormal));
+	//color_out = float4(1.0,0.1,1.0,1.0);
 		
+		
+		color_out.a = 1.0f;
+		
+		//color_out.r = 1.0f;
 }
