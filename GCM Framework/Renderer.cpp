@@ -1,47 +1,41 @@
 #include "Renderer.h"
 
 Renderer::Renderer(void)	{
-	/*
-	You're provided with a very basic vertex / fragment shader, to get you started
-	with Cg, and drawing textured objects. 
-	*/
 
 	quad = Mesh::GenerateQuad();
-	testColour = Vector4(1.0,1.0,1.0,1.0);
 
+	player1Trans= Matrix4::rotationZYX(Vector3(DegToRad(15),DegToRad(-30),DegToRad(-10)));
+	player2Trans= Matrix4::rotationZYX(Vector3(0.0f,DegToRad(115),DegToRad(30)));
+
+	tempQuad = Mesh::GenerateQuad();
+	tempTex = GCMRenderer::LoadGTF("/sand.gtf");
+	tempQuad->SetDefaultTexture(*tempTex);
+
+	testColour = Vector4(1.0,1.0,1.0,1.0);
+	printf("SkyBox Shader\n");
 	skyVert			= new VertexShader("/Shaders/skyBoxVert.vpo");
 	skyFrag			= new FragmentShader("/Shaders/skyBoxFrag.fpo");
-
+	printf("PerPixel Shader\n");
 	lightVert		= new VertexShader("/Shaders/TerrainVert.vpo");
 	lightFrag		= new FragmentShader("/Shaders/TerrainFrag.fpo");
-
+	printf("Text Shader\n");
 	basicVert		= new VertexShader("/Shaders/vertex.vpo");
 	basicFrag		= new FragmentShader("/Shaders/fragment.fpo");
+	printf("LOADFRAG SHADER\n");
+	loadFrag		= new FragmentShader("/Shaders/fragmentLoad.fpo");
+	
 
 	this->SetCurrentShader(*lightVert,*lightFrag);
 
-	//DrawLoading();
-
-	CellGcmTexture* g = LoadGTF("/OutputCube.gtf");
 	testRadius = 1000.0f;
 
-	//Sphere One
-	std::cout << "Loading sphere ONE in renderer" << std::endl;
-		sphereOne = new OBJMesh(SYS_APP_HOME "/sphere.obj");
-	std::cout << "Renderer sphere ONE load success!" << std::endl;
-	sphereOne->SetDefaultTexture(*GCMRenderer::LoadGTF("/Textures/checkerboard.gtf"));
-
-	//SphereTwo
-	std::cout << "Loading sphere TWO in renderer" << std::endl;
-		sphereTwo = new OBJMesh(SYS_APP_HOME "/sphere.obj");
-	std::cout << "Renderer sphere TWO load success!" << std::endl;
-	sphereTwo->SetDefaultTexture(*GCMRenderer::LoadGTF("/FT_Logo2.gtf"));
+	
 
 	FontTex = GCMRenderer::LoadGTF("/tahoma.gtf");
 	basicFont = new Font(FontTex, 16, 16);
 	
 	cubeMap = GCMRenderer::LoadGTF("/cubemap.gtf");
-	quad->SetDefaultTexture(*GCMRenderer::LoadGTF("/FT_Logo2.gtf"));
+	
 	/*
 	Projection matrix...0.7853982 is 45 degrees in radians.
 	*/
@@ -142,28 +136,35 @@ void Renderer::RenderScene(float msec) {
 
 	ClearBuffer();
 
-	SetViewport();
-	//SetHalfViewport1();
+
+	SetHalfViewport1();
 	float fps = floor(1000.0f/msec);
 	std::stringstream ss (std::stringstream::in | std::stringstream::out);
 	ss << fps << " fps";
 	std::string fpsText = ss.str();
-	
+
+	/*Render Left Viewport*/
+	SetHalfViewport1();	
 	setCurrentCamera(camera1);
 	drawSkyBox();
 	DrawScene();
+
 	DrawText("Player 1", Vector3(0, screenHeight/1.1, 0), 26.0f);
 	DrawText(fpsText, Vector3(0, screenHeight/1.1 + 50, 0), 26.0f);
 	projMatrix	= Matrix4::perspective(0.7853982, screenRatio, 1.0f, 20000.0f);
 
-	/*SetHalfViewport2();
+	/*Render Right Viewport*/
+	SetHalfViewport2();
 	
 	setCurrentCamera(camera2);
 	drawSkyBox();
 	DrawScene();
 	DrawText("Player 2", Vector3(0, screenHeight/1.1, 0), 26.0f);
+
+	RenderArrow(player2Trans);
+
 	projMatrix	= Matrix4::perspective(0.7853982, screenRatio, 1.0f, 20000.0f);
-	if(root) {
+	/*if(root) {
 		DrawNode(root);
 	}*/
 	
@@ -188,7 +189,7 @@ void Renderer::DrawText(const std::string &text, const Vector3 &position, const 
 		
 		modelMatrix = Matrix4::translation(Vector3(position.getX(),screenHeight-position.getY(), position.getZ())) * Matrix4::scale(Vector3(size,size,1));
 		viewMatrix=Matrix4::identity();
-		projMatrix = Matrix4::orthographic(0.0f,(float)screenWidth,(float)screenHeight, 0.0f,1.0f, -1.0f);
+		projMatrix = Matrix4::orthographic(0.0f,(float)screenWidth,0.0f,(float)screenHeight, 1.0f, -1.0f);
 	}
 	
 	currentVert->UpdateShaderMatrices(modelMatrix, viewMatrix, projMatrix);
@@ -216,8 +217,9 @@ void Renderer::drawSkyBox()
 	else{
 		viewMatrix = Matrix4::identity();
 	}
+	projMatrix	= Matrix4::perspective(0.7853982, screenRatio, 1.0f, 20000.0f);
 	currentVert->UpdateShaderMatrices(modelMatrix, viewMatrix, projMatrix);
-	SetTextureSampler(currentFrag->GetParameter("cubeTex"), cubeMap);
+	//SetTextureSampler(currentFrag->GetParameter("cubeTex"), cubeMap);
 
 	quad->Draw(*currentVert,*currentFrag);
 
@@ -229,7 +231,7 @@ void Renderer::drawSkyBox()
 
 void Renderer::DrawScene()
 {
-	
+
 	this->SetCurrentShader(*currentVert,*currentFrag);
 	
 	cellGcmSetDepthTestEnable(CELL_GCM_TRUE);
@@ -259,32 +261,53 @@ void Renderer::DrawScene()
 	if(root) {
 		DrawNode(root);
 	}
-	//DrawText("BLOODY PS3", Vector3(0, screenHeight/1.1, 0), 16.0f);
-	//projMatrix	= Matrix4::perspective(0.7853982, screenRatio, 1.0f, 20000.0f);	//CHANGED TO THIS!!
-
-	
+		
 }
 
-void Renderer::DrawLoading()
+void Renderer::DrawLoading(int i)
 {
+	/*printf("LOADING\n");
+
 	ClearBuffer();
+	SetViewport();
+	this->SetCurrentShader(*basicVert,*loadFrag);
 
 	viewMatrix=Matrix4::identity();
-	projMatrix = Matrix4::orthographic(-1.0f,1.0f,(float)screenWidth, 0.0f,(float)screenHeight, 0.0f);
-	
+	projMatrix = Matrix4::orthographic(-5.0f,5.0,-5.0, 5.0f,5.0f, -5.0f);	
 	modelMatrix = Matrix4::identity();
 
-	tempQuad = Mesh::GenerateQuad();
-	tempTex = GCMRenderer::LoadGTF("/loading512.gtf");
-	tempQuad->SetDefaultTexture(*tempTex);
+	
 
 	currentVert->UpdateShaderMatrices(modelMatrix, viewMatrix, projMatrix);
+	if(tempQuad->GetDefaultTexture())
+	{
+		printf("TEXTURE FOUND\n");
+		SetTextureSampler(currentFrag->GetParameter("texture"), tempQuad->GetDefaultTexture());
+	}
 	tempQuad->Draw(*currentVert, *currentFrag);
 
 	SwapBuffers();
+	
+	projMatrix = Matrix4::perspective(0.7853982, screenRatio, 1.0f, 20000.0f);*/
+	
 
 
-	projMatrix = Matrix4::perspective(0.7853982, screenRatio, 1.0f, 20000.0f);
+	ClearBuffer();
+	SetViewport();
+	
+	DrawText("LOADING...", Vector3(screenWidth*0.1, screenHeight/2.5, 0), 160.0f);
+
+	std::stringstream ss;
+	ss<<i<<"%";
+
+	DrawText(ss.str(), Vector3(screenWidth/1.5, screenHeight/1.5, 0), 160.0f);
+	
+	
+	projMatrix	= Matrix4::perspective(0.7853982, screenRatio, 1.0f, 20000.0f);
+
+	SwapBuffers();
+	//printf("LOADING DRAWN\n");
+
 }
 
 
@@ -350,4 +373,116 @@ void Renderer::RemoveItemBox(Item* item){
 		}
 	}
 	std::cout << "Failed to remove item. Awkward..."<< std::endl;
+	//firedSpheres.push_back(newSphere);
+}
+
+void Renderer::RenderPausedScene() {
+
+	SetViewport();
+	
+	DrawText("PAUSED", Vector3(screenWidth*0.1, screenHeight/4, 0), 260.0f);
+	DrawText("Press X to Quit", Vector3(screenWidth*0.2, screenHeight/2.2, 0), 75.0f);
+	DrawText("Press O to Reset", Vector3(screenWidth*0.19, screenHeight/1.8, 0), 75.0f);
+	projMatrix	= Matrix4::perspective(0.7853982, screenRatio, 1.0f, 20000.0f);
+
+	SwapBuffers();
+
+	
+}
+void Renderer::RenderArrow(Matrix4 transform)
+{
+	this->SetCurrentShader(*basicVert,*loadFrag);
+
+	modelMatrix = Matrix4::translation(Vector3(-2.5,4.5, 0)) * transform;//scale(Vector3(100,100,100))* Matrix4::translation(Vector3((float) (screenWidth/4), -50, 0));//translation(Vector3(position.getX(),screenHeight-position.getY(), position.getZ())) * Matrix4::scale(Vector3(size,size,1));
+	viewMatrix=Matrix4::identity();
+	projMatrix = Matrix4::orthographic(-5.0f,5.0,-10.0, 10.0f,10.0f, -10.0f);
+	
+	currentVert->UpdateShaderMatrices(modelMatrix, viewMatrix, projMatrix);
+	
+	if(arrow->GetDefaultTexture())
+	{
+		SetTextureSampler(currentFrag->GetParameter("texture"),arrow->GetDefaultTexture());
+	}
+
+	arrow->Draw(*currentVert, *currentFrag);
+	projMatrix	= Matrix4::perspective(0.7853982, screenRatio, 1.0f, 20000.0f);
+
+}
+void Renderer::SetupGeometry()
+{
+	int percent = 0;
+	HeightMap* h = new HeightMap(SYS_APP_HOME "/doodle.raw");
+	h->SetDefaultTexture(*GCMRenderer::LoadGTF("/Sand.gtf"));
+	percent+=10;//10
+	DrawLoading(percent);
+
+	//.OBJ files are ignored by git! New OBJs will have to be shared manually between folks
+	printf("Beginning OBJ Mesh Loading\n");
+	Mesh* thing1 = new OBJMesh(SYS_APP_HOME "/BR_Kyogre.obj");
+	thing1->SetDefaultTexture(*GCMRenderer::LoadGTF("/kyogre_0_0.gtf"));
+	percent+=10;//20
+	DrawLoading(percent);
+
+	Mesh* thing2 = new OBJMesh(SYS_APP_HOME "/Groudon.obj");
+	thing2->SetDefaultTexture(*GCMRenderer::LoadGTF("/groudon_0_0.gtf"));
+	percent+=10;//30
+	DrawLoading(percent);
+
+	Mesh* tree = new OBJMesh(SYS_APP_HOME "/tree.obj");// this is issue takes ages to load
+	tree->SetDefaultTexture(*GCMRenderer::LoadGTF("/grass.gtf"));
+	percent+=10;//40
+	DrawLoading(percent);
+
+	SceneNode* h_map = new SceneNode();
+	h_map->SetMesh(h);
+	
+	SceneNode* thing_node1 = new SceneNode();
+	thing_node1->SetMesh(thing1);
+	thing_node1->SetTransform(Matrix4::translation(Vector3(700,300,500)) * Matrix4::scale(Vector3(10,10,10)) * Matrix4::rotationX(DegToRad(90)));
+	
+	SceneNode* thing_node2 = new SceneNode();
+	thing_node2->SetMesh(thing2);
+	thing_node2->SetTransform(Matrix4::translation(Vector3(700,50,1500)) * Matrix4::scale(Vector3(10,10,10)) * Matrix4::rotationY(DegToRad(180)));
+	
+	SceneNode* tree_node1 = new SceneNode();
+	tree_node1->SetMesh(tree);
+	tree_node1->SetTransform(Matrix4::translation(Vector3(200,50,200)) * Matrix4::scale(Vector3(30,30,30)));
+
+	SceneNode* tree_node2 = new SceneNode();
+	tree_node2->SetMesh(tree);
+	tree_node2->SetTransform(Matrix4::translation(Vector3(1000,50 ,600)) * Matrix4::scale(Vector3(30,90,30)));
+
+	SceneNode* tree_node3 = new SceneNode();
+	tree_node3->SetMesh(tree);
+	tree_node3->SetTransform(Matrix4::translation(Vector3(750, 50 ,550)) * Matrix4::scale(Vector3(40,30,40)));
+	percent+=10;//50
+	DrawLoading(percent);
+
+	root->AddChild(*h_map);
+	root->AddChild(*thing_node1);
+	root->AddChild(*thing_node2);
+	root->AddChild(*tree_node1);
+	root->AddChild(*tree_node2);
+	root->AddChild(*tree_node3);
+
+	percent+=10;//60
+	DrawLoading(percent);
+
+	//Sphere One
+	std::cout << "Loading sphere ONE in renderer" << std::endl;
+		sphereOne = new OBJMesh(SYS_APP_HOME "/sphere.obj");
+	std::cout << "Renderer sphere ONE load success!" << std::endl;
+	sphereOne->SetDefaultTexture(*GCMRenderer::LoadGTF("/Textures/checkerboard.gtf"));
+
+	//SphereTwo
+	std::cout << "Loading sphere TWO in renderer" << std::endl;
+		sphereTwo = new OBJMesh(SYS_APP_HOME "/sphere.obj");
+	std::cout << "Renderer sphere TWO load success!" << std::endl;
+	sphereTwo->SetDefaultTexture(*GCMRenderer::LoadGTF("/FT_Logo2.gtf"));
+	
+	std::cout << "Loading arrow in renderer" << std::endl;
+	arrow = new OBJMesh(SYS_APP_HOME "/arrow.obj");
+	arrow->SetDefaultTexture(*GCMRenderer::LoadGTF("/FT_Logo2.gtf"));
+	percent+=10;//80
+	DrawLoading(percent);
 }

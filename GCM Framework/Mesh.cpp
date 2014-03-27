@@ -86,6 +86,7 @@ Mesh* Mesh::GenerateQuad() {
 	m->vertexData[0].z = 0.0f; 
 	m->vertexData[0].u = 0.0f;
 	m->vertexData[0].v = 1.0f;
+
 	m->vertexData[0].nx = 0.0f;			
 	m->vertexData[0].ny = 0.0f; 
 	m->vertexData[0].nz = -1.0f; 
@@ -96,6 +97,7 @@ Mesh* Mesh::GenerateQuad() {
 	m->vertexData[1].z = 0.0f; 
 	m->vertexData[1].u = 0.0f;
 	m->vertexData[1].v = 0.0f;
+
 	m->vertexData[1].nx = 0.0f;
 	m->vertexData[1].ny = 0.0f; 
 	m->vertexData[1].nz = -1.0f; 
@@ -105,6 +107,7 @@ Mesh* Mesh::GenerateQuad() {
 	m->vertexData[2].z = 0.0f; 
 	m->vertexData[2].u = 1.0f;
 	m->vertexData[2].v = 0.0f;
+
 	m->vertexData[2].nx = 0.0f;
 	m->vertexData[2].ny = 0.0f; 
 	m->vertexData[2].nz = -1.0f; 
@@ -115,6 +118,7 @@ Mesh* Mesh::GenerateQuad() {
 	m->vertexData[3].z = 0.0f; 
 	m->vertexData[3].u = 1.0f;
 	m->vertexData[3].v = 1.0f;
+
 	m->vertexData[3].nx = 0.0f;
 	m->vertexData[3].ny = 0.0f; 
 	m->vertexData[3].nz = -1.0f; 
