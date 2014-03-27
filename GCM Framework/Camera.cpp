@@ -53,11 +53,12 @@ void Camera::Update(float msec) {
 		yaw -= 360.0f;
 	}
 	if(Input::ButtonTriggered(INPUT_CROSS,pad)) {
-		player->AddForce(Vector3(0,0.5,0), Vector3(0,0,0));
+		player->AddForce(Vector3(0,0.3,0), Vector3(0,0,0));
 	}
 
 	if(Input::ButtonDown(INPUT_UP,pad)) {
 		player->AddForce(Vector3(0,0,-0.01), Vector3(0,0,0));
+		player->SetAngularVelocity(Vector3(0, 0, 0.1));
 	}
 	if(Input::ButtonDown(INPUT_DOWN,pad)) {
 		player->AddForce(Vector3(0,0,0.01), Vector3(0,0,0));

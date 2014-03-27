@@ -304,7 +304,6 @@ void Renderer::DrawLoading(int i)
 	projMatrix	= Matrix4::perspective(0.7853982, screenRatio, 1.0f, 20000.0f);
 
 	SwapBuffers();
-	//printf("LOADING DRAWN\n");
 
 }
 
@@ -322,7 +321,7 @@ void Renderer::SetupPlayers() {
 
 	playerTwo = new PhysicsNode(15.0f);
 	playerTwo->SetMesh(sphereTwo);
-	playerTwo->SetPosition(Vector3(2096, 500, 2096));
+	playerTwo->SetPosition(Vector3(2096, 500, 2000));
 	playerTwo->GravityOff();
 	camera2->SetPhysicsNode(playerTwo);
 	worldObjects.push_back(playerTwo);
@@ -332,11 +331,9 @@ void Renderer::SetupPlayers() {
 
 //Something nice and basic to put the players back at the start.
 void Renderer::ResetPlayers() {
-	//playerOne->GravityOff();
 	playerOne->SetPosition(Vector3(0, 1000, 0));
 	playerOne->SetLinearVelocity(Vector3(0,0,0));
-	
-	//playerTwo->GravityOff();
+
 	playerTwo->SetPosition(Vector3(500, 1000, 0));
 	playerTwo->SetLinearVelocity(Vector3(0,0,0));
 }
@@ -378,7 +375,6 @@ void Renderer::RemoveItemBox(Item* item){
 		}
 	}
 	std::cout << "Failed to remove item. Awkward..."<< std::endl;
-	//firedSpheres.push_back(newSphere);
 }
 
 void Renderer::RenderPausedScene() {

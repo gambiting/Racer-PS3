@@ -25,7 +25,12 @@ public:
 	void			SetScale(Vector3 s)					{ scale = s; }
 	void			SetPosition(Vector3 pos)			{ 
 		m_position = pos;
-		SetTransform(Matrix4::translation(m_position) * Matrix4::scale(scale));
+		SetTransform( Matrix4::translation(m_position) * Matrix4::scale(scale) );
+	}
+
+	void			SetOrientation(Quat orient)			{ 
+		m_orientation = orient;
+		SetTransform( Matrix4::translation(m_position) * Matrix4::scale(scale) * Matrix4::rotation(m_orientation)); 
 	}
 	void			SetLinearVelocity(Vector3 vel)		{ m_linearVelocity = vel; }
 	void			SetAngularVelocity(Vector3 ang)		{ m_angularVelocity = ang; }
@@ -41,6 +46,8 @@ public:
 	Vector3			GetLinearVelocity() const			{ return m_linearVelocity; }
 	Vector3			GetAngularVelocity() const			{ return m_angularVelocity; }
 	float			GetInverseMass() const				{ return m_invMass; }
+
+	Quat			QuatByVector3(const Quat &b, const Vector3 &v);
 
 	//record a collision with a sphere for use by Objective logic
 	void			SetCollidedWith(PhysicsNode* sphere){ collidedWith = sphere; }

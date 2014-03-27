@@ -9,6 +9,7 @@ PhysicsNode::PhysicsNode(void)	{
 	float inertia = (2 * 10.f * pow(50.f, 2)) / 5;
 	radius			= 50.0f;
 	m_linearVelocity	= Vector3(0.0f, 0.0f, 0.0f);
+	m_angularVelocity	= Vector3(0.0f, 0.0f, 0.0f);
 	m_invMass			= 0.0f;
 	m_invInertia		= Matrix4(
 		Vector4(1/inertia,0.0f,0.0f,0.0f),
@@ -38,6 +39,7 @@ PhysicsNode::PhysicsNode(float r) {
 	float inertia = (2 * 10.f * pow(50.f, 2)) / 5;
 
 	m_linearVelocity	= Vector3(0.0f, 0.0f, 0.0f);
+	m_angularVelocity	= Vector3(0.0f, 0.0f, 0.0f);
 	m_invMass			= 1.0f / r;
 	m_invInertia		= Matrix4(
 		Vector4(1/inertia,0.0f,0.0f,0.0f),
@@ -64,6 +66,7 @@ PhysicsNode::PhysicsNode(float r, Vector3 p) {
 	float inertia = (2 * 10.f * pow(50.f, 2)) / 5;
 
 	m_linearVelocity	= Vector3(0.0f, 0.0f, 0.0f);
+	m_angularVelocity	= Vector3(0.0f, 0.0f, 0.0f);
 	m_invMass			= 1.0f / r;
 	m_invInertia		= Matrix4(
 		Vector4(1/inertia,0.0f,0.0f,0.0f),
@@ -95,9 +98,7 @@ void PhysicsNode::UpdatePosition(float msec) {
 		}
 
 		m_linearVelocity = m_linearVelocity + acceleration * msec;
-		//if (!inAir) {
-			m_linearVelocity = m_linearVelocity * DAMPING_FACTOR;
-		//}
+		m_linearVelocity = m_linearVelocity * DAMPING_FACTOR;
 		m_position = m_position + m_linearVelocity * msec;
 
 		float totalV = m_linearVelocity.getX() + m_linearVelocity.getY() + m_linearVelocity.getZ();
@@ -121,10 +122,21 @@ void PhysicsNode::UpdatePosition(float msec) {
 		m_position.setZ(4096 - radius) ;
 	}
 
-	//std::cout << "X: " << m_position.getX() << ". Z: " << m_position.getZ() << std::endl;
+	/*	 Angle Fun    */
+	//float inertia = 2 * m_invMass * (radius * radius);
+	//Matrix4 inertiaMat = Matrix4::rotation(inertia, Vector3(1,1,1));
+
+	Vector3 angularAcceleration = (m_invInertia * m_torque).getXYZ();
+	m_angularVelocity = m_angularVelocity + angularAcceleration * msec;
+	m_orientation = m_orientation + QuatByVector3(m_orientation, (m_angularVelocity * msec * 0.5f));
+	m_orientation = normalize(m_orientation);
+
+	/* No Fun Allowed */
 
 	SetPosition(m_position);
+	//SetOrientation(m_orientation);
 	VectorToZero(m_force);
+	VectorToZero(m_torque);
 
 }
 
@@ -134,4 +146,15 @@ void PhysicsNode::GravityOn() {
 
 void PhysicsNode::GravityOff() {
 	ignoringGravity = true;
+}
+
+Quat PhysicsNode::QuatByVector3(const Quat &q, const Vector3 &v) {
+	Quat ans;
+
+	ans.setW( -(q.getX() * v.getX()) - (q.getY() * v.getY()) - (q.getZ() * v.getZ()) );
+	ans.setX(  (q.getW() * v.getX()) + (q.getY() * v.getZ()) - (q.getZ() * v.getY()) );
+	ans.setY(  (q.getW() * v.getY()) + (q.getZ() * v.getX()) - (q.getX() * v.getZ()) );
+	ans.setZ(  (q.getW() * v.getZ()) + (q.getX() * v.getY()) - (q.getY() * v.getX()) );
+
+	return ans;
 }
