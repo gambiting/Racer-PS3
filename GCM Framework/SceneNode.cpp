@@ -29,3 +29,15 @@ void	SceneNode::AddChild(SceneNode& s) {
 	children.push_back(&s);
 	s.parent = this;
 }
+
+void	SceneNode::MurderChildGruesomely(SceneNode& s){
+	//stabby stabby
+	for(int j= 0; j < children.size(); j++){
+		if(children[j] == &s) {
+			children.erase(children.begin() + j);
+			std::cout << "Child disposed of." << std::endl;
+			return;
+		}
+	}
+	std::cout << "Child escaped the dungeon."<< std::endl;
+}

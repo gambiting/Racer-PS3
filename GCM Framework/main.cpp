@@ -12,6 +12,8 @@
 #include "camera.h"
 #include "HeightMap.h"
 #include "OBJMesh.h"
+#include "GameLogic.h"
+
 enum GAME_STATE{GAME_LOADING, GAME_MAIN, GAME_PAUSED};
 SYS_PROCESS_PARAM(1001, 0x10000)
 
@@ -25,6 +27,8 @@ Camera* camera2;
 
 
 void start_button()		{
+	
+	renderer.ActivatePlayers();
 	//done = true;
 	switch(state)
 	{
@@ -77,13 +81,6 @@ void square_button() {
 	}
 }
 
-void triangle_button() {
-	if(state!=GAME_PAUSED)
-	{
-		renderer.ActivatePlayers();
-		std::cout << "Pressed triangle button!" << std::endl;
-	}
-}
 void circle_button()
 {
 	switch(state)
@@ -99,9 +96,9 @@ void circle_button()
 		break;
 	}
 		std::cout << "Pressed circle button!" << std::endl;
-	
-	
 }
+
+void triangle_button() {};
 
 
 int main(void)	{
@@ -147,13 +144,15 @@ int main(void)	{
 	renderer.SetCamera2(camera2);	//Set the current renderer camera
 
 	Timer gameTime;
+	GameLogic* logic = new GameLogic(&renderer);
 
 	while(!done) 
 	{
 		
 		Input::UpdateJoypad();	//Receive latest joypad input for all joypads
 		
-		float msec = (float)gameTime.GetTimedMS();
+		float msec = (float)gameTime.GetTimedMS();	
+
 		switch(state)
 		{
 			case GAME_LOADING: 
@@ -192,7 +191,7 @@ int main(void)	{
 					camera2->Update(msec);
 					renderer.UpdateScene(msec);
 					root->Update(msec);	//Update our scene hierarchy. This bit is new (previously the renderer handled it)
-
+					logic->updateWorld(msec);// gameplay logic...
 					renderer.RenderScene(msec);	//Render the scene
 					
 					renderer.CollisionTests();
@@ -202,13 +201,10 @@ int main(void)	{
 
 			default: break;
 		}
-		
-
-		
 	}
 
 	//If we get here, joypad A has had its start button pressed
-
+	delete logic;
 	std::cout << "Quitting..." << std::endl;
 
 	delete root;

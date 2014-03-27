@@ -1,5 +1,6 @@
 #pragma once
 
+#include <stdlib.h>
 #include "SceneNode.h"
 #include "PhysicsNode.h"
 
@@ -14,6 +15,7 @@ public:
 
 	SceneNode&		GetRenderNode()		{ return *renderNode;}
 	PhysicsNode&	GetPhysicsNode()	{ return *physicsNode;}
+	PhysicsNode*	GetPhysicsNodePtr() { return this->physicsNode; }
 
 	void			ConnectToSystems();
 	void			DisconnectFromSystems();

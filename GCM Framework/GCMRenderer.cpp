@@ -267,7 +267,7 @@ void GCMRenderer::SetHalfViewport1() {
 	min = 0.0f;
 	max = 1.0f;
 	//Scale our NDC coordinates to the size of the screen
-	scale[0] = screenWidth * 0.5f;
+	scale[0] = screenWidth/2 * 0.5f;
 	scale[1] = h * -0.5f;
 	scale[2] = (max - min) * 0.5f;
 	scale[3] = 0.0f;
@@ -312,7 +312,7 @@ void GCMRenderer::SetHalfViewport2() {
 
 	x = screenWidth/2;	//starting position of the viewport (left of screen)
 	y = 0;  //starting position of the viewport (top of screen)
-	w = screenWidth;
+	w = screenWidth/2;
 	h = screenHeight;
 	min = 0.0f;
 	max = 1.0f;

@@ -17,6 +17,7 @@ _-_-_-_-_-_-_-""  ""
 
 #include <vector>
 #include <vectormath/cpp/vectormath_aos.h>
+#include <iostream>
 
 class Mesh; 
 
@@ -43,6 +44,7 @@ public:
 	}
 
 	void			AddChild(SceneNode& s);
+	void			MurderChildGruesomely(SceneNode& s);
 
 	std::vector<SceneNode*>::const_iterator GetChildIteratorStart()	{return children.begin();}
 	std::vector<SceneNode*>::const_iterator GetChildIteratorEnd()	{return children.end();}

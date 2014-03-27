@@ -3,7 +3,7 @@
 Renderer::Renderer(void)	{
 
 	quad = Mesh::GenerateQuad();
-
+	halfScreenRatio = (float)((screenWidth/2)/ screenHeight);
 	player1Trans= Matrix4::rotationZYX(Vector3(DegToRad(15),DegToRad(-30),DegToRad(-10)));
 	player2Trans= Matrix4::rotationZYX(Vector3(0.0f,DegToRad(115),DegToRad(30)));
 
@@ -39,7 +39,9 @@ Renderer::Renderer(void)	{
 	/*
 	Projection matrix...0.7853982 is 45 degrees in radians.
 	*/
+	halfScreenRatio = (float)(screenWidth / 2) / (float)screenHeight;
 	projMatrix	= Matrix4::perspective(0.7853982, screenRatio, 1.0f, 20000.0f);	//CHANGED TO THIS!!
+
 }
 
 Renderer::~Renderer(void)	{
@@ -57,7 +59,7 @@ void Renderer::UpdateScene(float msec) {
 	playerOne->UpdatePosition(msec);
 	playerTwo->UpdatePosition(msec);
 
-	for(std::vector<PhysicsNode*>::iterator i = firedSpheres.begin(); i != firedSpheres.end(); ++i) {
+	for(std::vector<PhysicsNode*>::iterator i = worldObjects.begin(); i != worldObjects.end(); ++i) {
 		(*i)->UpdatePosition(msec);
 	}
 
@@ -66,19 +68,60 @@ void Renderer::UpdateScene(float msec) {
 //We should also move this!!!
 void Renderer::CollisionTests() {
 
-	//To start just check spheres against the two players, it's all we need to test sphere/sphere collision anyway.
-	for(std::vector<PhysicsNode*>::iterator i = firedSpheres.begin(); i != firedSpheres.end(); ++i) {
-		if (physics.SphereSphereCollision( *(*i), *playerOne) ) {
-			CollisionData cData;
-			std::cout << "Sphere hitting player ONE" << std::endl;
-			physics.AddCollisionImpulse(*(*i), *playerOne, cData.m_point, cData.m_normal, cData.m_penetration);
+	/*players will be the only objects that move, so just need to check if they collide with other objects
+	for(int i = 0; i < players.size(); i++){
+		//check against all world objects
+		for(int j = 0; j < worldObjects.size(); j++{
+			if(physics.SphereSphereCollision(players[i]->GetPhysicsNode(), worldObjects[j]){
+				CollisionData cData;
+				physics.AddCollisionImpulse(
+			}
 		}
-		if (physics.SphereSphereCollision( *(*i), *playerTwo) ) {
-			CollisionData cData;
-			std::cout << "Sphere hitting player TWO" << std::endl;
-			physics.AddCollisionImpulse(*(*i), *playerTwo, cData.m_point, cData.m_normal, cData.m_penetration);
+		//check against item boxes
+		//check against players (except THIS player)
+
+	}*/
+
+	for(int i=0;i<worldObjects.size();i++)
+	{
+		CollisionData* cData = new CollisionData();
+		std::cout << "worldObjects.size = " << worldObjects.size() << std::endl;
+		if(physics.TerrainCollision( *worldObjects.at(i), cData))
+		{
+			
+			PhysicsNode *temp = new PhysicsNode();
+			physics.AddCollisionImpulse(*worldObjects.at(i), (*temp), cData->m_point, cData->m_normal, cData->m_penetration);
+			delete temp;
 		}
 	}
+
+	//To start just check spheres against the two players, it's all we need to test sphere/sphere collision anyway.
+	/*for(std::vector<PhysicsNode*>::iterator i = worldObjects.begin(); i != worldObjects.end(); ++i) {
+		CollisionData* cData = new CollisionData();
+		if (physics.SphereSphereCollision( *(*i), *playerOne, cData) ) {
+			//playerOne->GravityOn();
+			std::cout << "cdata mpoint: " << 
+				cData->m_penetration << std::endl;
+			physics.AddCollisionImpulse(*(*i), *playerOne, cData->m_point, cData->m_normal, cData->m_penetration);
+		}
+
+		std::cout << "X position of the node I am about to check: " << (*i)->GetPosition().getX() << std::endl;
+		if(physics.TerrainCollision( *(*i), cData))
+		{
+			std::cout << "collided with terrain" << std::endl;
+			PhysicsNode *temp = new PhysicsNode();
+			physics.AddCollisionImpulse(*(*i), (*temp), cData->m_point, cData->m_normal, cData->m_penetration);
+			delete temp;
+		}
+
+		
+
+		if (physics.SphereSphereCollision( *(*i), *playerTwo, cData) ) {
+			
+			//playerTwo->GravityOn();
+			//physics.AddCollisionImpulse(*(*i), *playerTwo, cData->m_point, cData->m_normal, cData->m_penetration);
+		}
+	}*/
 
 }
 
@@ -94,15 +137,21 @@ void Renderer::RenderScene(float msec) {
 
 	ClearBuffer();
 
+
+	float fps = floor(1000.0f/msec);
+	std::stringstream ss (std::stringstream::in | std::stringstream::out);
+	ss << fps << " fps";
+	std::string fpsText = ss.str();
+
 	/*Render Left Viewport*/
-	SetHalfViewport1();
-	
+	SetHalfViewport1();	
 	setCurrentCamera(camera1);
 	drawSkyBox();
 	DrawScene();
-	
+
 	DrawText("Player 1", Vector3(0, screenHeight/9, 0), 26.0f);
 	RenderArrow(player1Trans);
+	DrawText(fpsText, Vector3(0, screenHeight/1.1 + 50, 0), 26.0f);
 	projMatrix	= Matrix4::perspective(0.7853982, screenRatio, 1.0f, 20000.0f);
 
 	/*Render Right Viewport*/
@@ -112,9 +161,14 @@ void Renderer::RenderScene(float msec) {
 	drawSkyBox();
 	DrawScene();
 	DrawText("Player 2", Vector3(0, screenHeight/9, 0), 26.0f);
-	RenderArrow(player2Trans);
-	projMatrix	= Matrix4::perspective(0.7853982, screenRatio, 1.0f, 20000.0f);
 
+	RenderArrow(player2Trans);
+
+	projMatrix	= Matrix4::perspective(0.7853982, screenRatio, 1.0f, 20000.0f);
+	/*if(root) {
+		DrawNode(root);
+	}*/
+	
 	SwapBuffers();
 
 	
@@ -164,9 +218,9 @@ void Renderer::drawSkyBox()
 	else{
 		viewMatrix = Matrix4::identity();
 	}
-	projMatrix	= Matrix4::perspective(0.7853982, screenRatio, 1.0f, 20000.0f);
+	projMatrix	= Matrix4::perspective(0.7853982, halfScreenRatio, 1.0f, 20000.0f);
 	currentVert->UpdateShaderMatrices(modelMatrix, viewMatrix, projMatrix);
-	//SetTextureSampler(currentFrag->GetParameter("cubeTex"), cubeMap);
+	SetTextureSampler(currentFrag->GetParameter("cubeTex"), cubeMap);
 
 	quad->Draw(*currentVert,*currentFrag);
 
@@ -263,13 +317,13 @@ void Renderer::SetupPlayers() {
 	playerOne = new PhysicsNode(25.0f);
 	playerOne->GravityOff(); //Turn gravity OFF
 	playerOne->SetMesh(sphereOne);
-	playerOne->SetPosition(Vector3(0, 1500, 0));
+	playerOne->SetPosition(Vector3(0, 500, 0));
 	root->AddChild(*playerOne);
 
 	playerTwo = new PhysicsNode(25.0f);
 	playerTwo->GravityOff(); //Turn gravity OFF
 	playerTwo->SetMesh(sphereTwo);
-	playerTwo->SetPosition(Vector3(500, 1500, 0));
+	playerTwo->SetPosition(Vector3(500, 500, 0));
 	root->AddChild(*playerTwo);
 }
 
@@ -294,10 +348,33 @@ void Renderer::AddSphere() {
 	newSphere->SetMesh(sphereOne);
 	newSphere->SetPosition(camera1->GetPosition());
 	
-	newSphere->SetLinearVelocity(camera1->GetLookDirection());
+	newSphere->SetLinearVelocity(camera1->GetLookDirection()/10.0f);
 	
 	root->AddChild(*newSphere);
-	firedSpheres.push_back(newSphere);
+	worldObjects.push_back(newSphere);
+}
+
+void Renderer::AddItemBox(Item* item){
+	itemBoxes.push_back(item);
+	item->GetPhysicsNode().SetMesh(sphereOne);
+	item->GetPhysicsNode().SetPosition(Vector3(1000, 1000, 0));
+	item->GetPhysicsNode().GravityOff();
+	item->GetPhysicsNode().setRadius(25.f);
+	root->AddChild(item->GetPhysicsNode());
+}
+
+void Renderer::RemoveItemBox(Item* item){
+	//search through itembox vector for match, remove it if found
+	//This does NOT delete the item object, only stop it from rendering and being collidable
+	for(int j= 0; j < itemBoxes.size(); j++){
+		if(itemBoxes[j] == item) {
+			itemBoxes.erase(itemBoxes.begin() + j);
+			std::cout << "Item box removed from world" << std::endl;
+			return;
+		}
+	}
+	std::cout << "Failed to remove item. Awkward..."<< std::endl;
+	//firedSpheres.push_back(newSphere);
 }
 
 void Renderer::RenderPausedScene() {
@@ -317,7 +394,7 @@ void Renderer::RenderArrow(Matrix4 transform)
 {
 	this->SetCurrentShader(*basicVert,*loadFrag);
 
-	modelMatrix = Matrix4::translation(Vector3(-2.5,4.5, 0)) * transform;//scale(Vector3(100,100,100))* Matrix4::translation(Vector3((float) (screenWidth/4), -50, 0));//translation(Vector3(position.getX(),screenHeight-position.getY(), position.getZ())) * Matrix4::scale(Vector3(size,size,1));
+	modelMatrix = Matrix4::translation(Vector3(0,4.5, 0)) * transform;//scale(Vector3(100,100,100))* Matrix4::translation(Vector3((float) (screenWidth/4), -50, 0));//translation(Vector3(position.getX(),screenHeight-position.getY(), position.getZ())) * Matrix4::scale(Vector3(size,size,1));
 	viewMatrix=Matrix4::identity();
 	projMatrix = Matrix4::orthographic(-5.0f,5.0,-10.0, 10.0f,10.0f, -10.0f);
 	
@@ -406,7 +483,7 @@ void Renderer::SetupGeometry()
 	
 	std::cout << "Loading arrow in renderer" << std::endl;
 	arrow = new OBJMesh(SYS_APP_HOME "/arrow.obj");
-	arrow->SetDefaultTexture(*GCMRenderer::LoadGTF("/FT_Logo2.gtf"));
+	arrow->SetDefaultTexture(*GCMRenderer::LoadGTF("/rainbow.gtf"));
 	percent+=10;//80
 	DrawLoading(percent);
 }

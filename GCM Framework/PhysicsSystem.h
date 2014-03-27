@@ -1,6 +1,6 @@
 #include <vectormath/cpp/vectormath_aos.h>
 #include "PhysicsNode.h"
-
+#include "HeightMap.h"
 using namespace Vectormath::Aos;
 
 class CollisionSphere {
@@ -48,7 +48,7 @@ public:
 	void	RemoveNode(PhysicsNode* n);
 	
 	bool SphereSphereCollision(const PhysicsNode &p0, const PhysicsNode &p1, CollisionData *collisionData = NULL) const;
-	
+	bool TerrainCollision(const PhysicsNode &p0, CollisionData *d) const;
 	bool AABBCollision(const CollisionAABB &cube0, const CollisionAABB &cube1) const;
 
 	void AddCollisionImpulse(PhysicsNode &p0, PhysicsNode &p1, const Vector3 &hitPoint, const Vector3 &normal, float penetration);

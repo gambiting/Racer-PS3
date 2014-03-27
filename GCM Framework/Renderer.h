@@ -15,6 +15,9 @@ _-_-_-_-_-_-_-""  ""
 
 #pragma once
 
+#include <sstream>
+#include <string>
+
 #include "PhysicsSystem.h"
 #include "GCMRenderer.h"
 #include "Mesh.h"
@@ -22,6 +25,8 @@ _-_-_-_-_-_-_-""  ""
 #include "TextMesh.h"
 #include "timer.h"
 #include "PhysicsNode.h"
+#include "Item.h"
+#include "Player.h"
 #include "HeightMap.h"
 
 class Renderer : public GCMRenderer	{
@@ -38,6 +43,10 @@ public:
 	void ActivatePlayers();
 	
 	void AddSphere();
+
+	//add and remove item boxes from the game world
+	void AddItemBox(Item* item);
+	void RemoveItemBox(Item* item);
 
 	void CollisionTests();
 	void RenderPausedScene();
@@ -82,10 +91,14 @@ protected:
 
 	Mesh* sphereOne;
 	Mesh* sphereTwo;
+	Mesh* sphereThree;
 
-	std::vector<PhysicsNode*> firedSpheres;
+	std::vector<PhysicsNode*> worldObjects;
+	std::vector<Item*> itemBoxes;
+	std::vector<Player*> players;
 
 	PhysicsSystem physics;
 
-
+	float halfScreenRatio;
+	
 };
