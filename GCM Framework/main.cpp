@@ -43,6 +43,7 @@ void start_button()		{
 		break;
 	case GAME_MENU:
 		state=GAME_MAIN;
+		renderer.setTimer();
 	case GAME_OVER:
 		
 		camera1->SetScore(0);
