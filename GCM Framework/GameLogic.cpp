@@ -28,10 +28,23 @@ GameLogic::GameLogic(Renderer* passedRenderer){
 void GameLogic::updateWorld(float dt){
 
 	mPhysicsAccumulator += dt;
+	int num = renderer->getNumCoins();
+	if(num < 25){
+		//4096 * 4096
+		//drop coins randomly over the map if the vector is too small
+		for(int i = 0; i < 25-num; i++){
+			std::cout << "Coin dropped!" << std::endl;
+			int x = (rand() % 4000 + 45);
+			int z = (rand() % 4000 + 45);
+			renderer->AddCoin(x,z);
+		}
+	}
+
 
 	//Test Calls for Arrow Orientation Method 
-	renderer->calcArrowOrientation(Vector3(-10,0,-10), 1);
-	renderer->calcArrowOrientation(Vector3(-10,0,-10), 2);
+	//point to closest coin for each
+	renderer->calcArrowOrientation(renderer->getClosestCoin(1), 1);
+	renderer->calcArrowOrientation(renderer->getClosestCoin(2), 2);
 	
 	//update the physics system
 	while(mPhysicsAccumulator >= PHYSICS_TIMESTEP){
@@ -42,98 +55,11 @@ void GameLogic::updateWorld(float dt){
 		renderer->UpdateScene(dt);
 		renderer->CollisionTests();
 
-		//remove item boxes that have been collided with
-		for(unsigned int i = 0; i < powerupsToRemove.size(); i++){
-			for(int j = 0; j < (sizeof(allPlayers)/sizeof(Player*)); j++){
-				//loop through players, checking if this is their node and that they don't already have an item. If able, assign them the item
-				if(allPlayers[j]->GetPhysicsNodePtr() == boxCollisions[i] && allPlayers[j]->getHeldItem() == NULL){
-					allPlayers[j]->setHeldItem(powerupsToRemove[i]);
-					powerupsToRemove[i]->setPickedUp(true);
-					//TODO remove from game world
-				}
-			}
-		}
-
-		bool trapRemoved = false;
-		//loop through trap collisions, check if players collided with anoher player's traps
-		for(int i = 0; i < trapsToRemove.size(); i++){
-			for(int j = 0; j < (sizeof(allPlayers)/sizeof(Player*)); j++){
-				trapRemoved = false;
-				if(allPlayers[j]->GetPhysicsNodePtr() == trapCollisions[i] && allPlayers[j] != trapsToRemove[i]->getOwner()){
-					//player hit enemy trap! Reduce health and slow speed!
-					std::cout <<"\n Trap hit!";
-					allPlayers[j]->modifyHP(-34);
-					//TODO slow player speed temporarily
-					allPlayers[j]->setAffliction(trapsToRemove[i]->getItemEffectType());
-					//TODO remove from game world
-
-					//remove it from the vector of laid traps and delete
-					for(int k= 0; k < laidTraps.size(); k++){
-						if(laidTraps[k] == trapsToRemove[i]) {							
-							laidTraps.erase(laidTraps.begin() + k);		
-							delete trapsToRemove[i];
-							trapRemoved = true;
-							break;
-						}
-					}
-
-					if(trapRemoved)	break;
-
-				}
-			}
-		}
-		powerupsToRemove.clear();
-		boxCollisions.clear();
-		trapsToRemove.clear();
-		trapCollisions.clear();
 	}// end physics while loop
 
 	
-	//Update current objective if needed!
-	if(!gameOver && currentObjective->checkIfObjectiveCompleted(allPlayers, (sizeof(allPlayers)/sizeof(Player*)) ) ){
-
-		//The objective says we're finished. Add current objective to completed vector
-		objectivesCompleted.push_back(currentObjective);
-
-		//create new objective if old one is finished and the game isn't over	
-		if(objectivesCompleted.size() < (unsigned int)numObjectives){
-
-			//select game mode randomly
-			//0 = point to point race
-			//1 = assassination event
-			int mode = rand() %2;
-
-			if(mode == P2P){				
-				currentObjective = new ObjectivePointToPoint(allPlayers, sizeof(allPlayers)/sizeof(Player*));	
-				objectiveLastLocation = currentObjective->getTargetLoc();
-				std::cout << "\nIT'S A RACE! Get to the start line!";
-
-			}else{
-				currentObjective = new ObjectiveAssassination(allPlayers, sizeof(allPlayers)/sizeof(Player*));
-				objectiveLastLocation = currentObjective->getTargetLoc();
-				std::cout << "\nASSASSINATION!\nTarget player: " << static_cast<ObjectiveAssassination*>(currentObjective)->getTarget()->getColour();
-			}
-		}else{
-			gameOver = true;
-			std::cout << "\n Game Over!";
-		}
-	}// end current objective
-
-	//point to point race exclusive logic
-	if(!gameOver && currentObjective->getObjectiveType() == P2P ){
-		if(!vector3Equal(objectiveLastLocation,currentObjective->getTargetLoc())){
-			std::cout << "\nAll players are ready. RACE!";
-			//for when P2P points change objective location
-			objectiveLastLocation = currentObjective->getTargetLoc();
-			std::cout << "\nNew objective location! " << "X: " << objectiveLastLocation.getX() << " Y: " << objectiveLastLocation.getY() << " Z: " << objectiveLastLocation.getZ();
-		}
-	}
 	
-	//Update AI and human positions
-	while (mAIAccumulator >= AI_TIMESTEP) {
-		mAIAccumulator -= AI_TIMESTEP;
-		updatePlayerPositions(AI_TIMESTEP);
-	}
+
 }//end update world
 
 
