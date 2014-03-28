@@ -23,15 +23,6 @@ GameLogic::GameLogic(Renderer* passedRenderer){
 	objectiveLastLocation = currentObjective->getTargetLoc();
 	std::cout << "Race event created!" << std::endl;
 
-
-	//testing object creation....*****************************
-	Item* item	= new Trap();		
-	//set item's position 
-	item->GetPhysicsNode().SetPosition(Vector3(0,100,100));
-	//item->setItemID(ServerInterface::AddGameEntity(WEAPONS_CRATE, item->GetPhysicsNode().GetPosition()));
-	gamePowerUps.push_back(item);
-	renderer->AddItemBox(item);
-	//renderer->RemoveItemBox(item);
 }
 
 void GameLogic::updateWorld(float dt){
