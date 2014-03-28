@@ -26,6 +26,7 @@ SceneNode *root;
 Camera* camera1;
 Camera* camera2;
 
+
 void start_button()		{
 	
 	
@@ -85,7 +86,7 @@ void cross_button1() {
 	switch(state)
 	{
 	case GAME_MAIN:
-		renderer.AddSphere(camera1);
+		renderer.AddItemBox(camera1);
 		break;
 	case GAME_PAUSED:
 		done=true;
@@ -106,7 +107,7 @@ void cross_button2() {
 	switch(state)
 	{
 	case GAME_MAIN:
-		renderer.AddSphere(camera2);
+		renderer.AddItemBox(camera2);
 		break;
 	case GAME_PAUSED:
 		done=true;
@@ -124,6 +125,7 @@ void cross_button2() {
 }
 
 void square_button() {
+
 	switch(state)
 	{
 	case GAME_MAIN:
@@ -133,16 +135,18 @@ void square_button() {
 		state = GAME_MAIN;
 		break;
 		default: break;
+
 		std::cout << "Pressed square button!" << std::endl;
 	}
 }
 
 void circle_button()
 {
+	std::cout << "Pressed circle button!" << std::endl;
 	switch(state)
 	{
 	case GAME_MAIN:
-		
+
 		break;
 	case GAME_PAUSED: 
 		renderer.ResetPlayers();
@@ -151,13 +155,11 @@ void circle_button()
 	default:
 		break;
 	}
-		std::cout << "Pressed circle button!" << std::endl;
+		
 }
 
 void triangle_button() {
 
-	
-	
 	//done = true;
 	switch(state)
 	{
@@ -216,9 +218,6 @@ int main(void)	{
 
 	renderer.SetCamera2(camera2);	//Set the current renderer camera
 
-	renderer.SetupPlayers();
-
-
 	Timer gameTime;
 	GameLogic* logic = new GameLogic(&renderer);
 
@@ -235,7 +234,6 @@ int main(void)	{
 				
 					renderer.DrawLoading();
 					root = new SceneNode();
-
 					renderer.SetRootNode(root); //Set our new SceneNode as the root for our Renderer
 					renderer.SetupGeometry();
 					renderer.SetupPlayers();

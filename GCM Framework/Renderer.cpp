@@ -49,6 +49,8 @@ Renderer::Renderer(void)	{
 	halfScreenRatio = (float)(screenWidth / 2) / (float)screenHeight;
 	projMatrix	= Matrix4::perspective(0.7853982, screenRatio, 1.0f, 20000.0f);	//CHANGED TO THIS!!
 
+
+	worldObjects.clear();	//WHY GAWD, WHYYYY?
 }
 
 Renderer::~Renderer(void)	{
@@ -64,6 +66,10 @@ If possible it will get moved out of the renderer at some point.
 */
 void Renderer::UpdateScene(float msec) {
 
+	for(int i = 0; i < players.size(); i++){
+		players.at(i)->GetPhysicsNode().UpdatePosition(msec);
+	}
+
 	for(std::vector<PhysicsNode*>::iterator i = worldObjects.begin(); i != worldObjects.end(); ++i) {
 		(*i)->UpdatePosition(msec);
 	}
@@ -72,21 +78,31 @@ void Renderer::UpdateScene(float msec) {
 
 //We should also move this!!!
 void Renderer::CollisionTests() {
-
-	/*players will be the only objects that move, so just need to check if they collide with other objects
+	CollisionData* cData = new CollisionData();
+	//players will really be the only objects that move about, so need to check if they collide with other objects
 	for(int i = 0; i < players.size(); i++){
-		//check against all world objects
-		for(int j = 0; j < worldObjects.size(); j++{
-			if(physics.SphereSphereCollision(players[i]->GetPhysicsNode(), worldObjects[j]){
-				CollisionData cData;
-				physics.AddCollisionImpulse(
-			}
+		//check against terrain
+		if(physics.TerrainCollision( players.at(i)->GetPhysicsNode(), cData)){
+			PhysicsNode *temp = new PhysicsNode();
+			physics.AddCollisionImpulse(players.at(i)->GetPhysicsNode(), (*temp), cData->m_point, cData->m_normal, cData->m_penetration);
+			delete temp;
 		}
 		//check against item boxes
+		for(int j = 0; j < itemBoxes.size(); j++){
+			if(physics.SphereSphereCollision(players.at(i)->GetPhysicsNode(),itemBoxes.at(j)->GetPhysicsNode(), cData)){	
+				physics.AddCollisionImpulse(players.at(i)->GetPhysicsNode(),itemBoxes.at(j)->GetPhysicsNode(), cData->m_point, cData->m_normal, cData->m_penetration);
+			}
+		}
 		//check against players (except THIS player)
+		for(int j = 0; j < players.size(); j++){
+			if(j == i) continue;
+			if(physics.SphereSphereCollision(players.at(i)->GetPhysicsNode(),players.at(j)->GetPhysicsNode(), cData)){	
+				physics.AddCollisionImpulse(players.at(i)->GetPhysicsNode(),players.at(j)->GetPhysicsNode(), cData->m_point, cData->m_normal, cData->m_penetration);
+			}
+		}
+	}
 
-	}*/
-
+	//all other objects need to check terrain
 	for(int i=0;i<worldObjects.size();i++)
 	{
 		CollisionData* cData = new CollisionData();
@@ -103,27 +119,6 @@ void Renderer::CollisionTests() {
 			physics.AddCollisionImpulse(*worldObjects.at(i), (*temp), cData->m_point, cData->m_normal, cData->m_penetration);
 			delete temp;
 		}
-		
-		/*if there is another node after this, check for collisions with it and following nodes
-		if(i < worldObjects.size()-1){			
-			for(int j = i+1; j<worldObjects.size(); j++){
-				if(physics.SphereSphereCollision(*worldObjects.at(i),*worldObjects.at(j), cData)){
-					std::cout << "SPHERE SPHERE" << std::endl;
-					physics.AddCollisionImpulse(*worldObjects.at(i), *worldObjects.at(j), cData->m_point, cData->m_normal, cData->m_penetration);
-				}
-			}
-		}*/
-
-		/*is this node is a player, check for collisions with item boxes
-		if(worldObjects.at(i)->getIsPlayer()){
-			for(int j = 0; j < itemBoxes.size(); j++){
-				if(physics.SphereSphereCollision(*worldObjects.at(i),itemBoxes.at(j)->GetPhysicsNode(), cData)){
-					std::cout << "ITEM BOX COLLISION" << std::endl;
-					//TODO item box logic
-				}
-			}
-		}*/
-
 		delete cData;
 	}
 
@@ -170,10 +165,8 @@ void Renderer::RenderScene(float msec) {
 	RenderArrow(player2Trans);
 
 	projMatrix	= Matrix4::perspective(0.7853982, screenRatio, 1.0f, 20000.0f);
-
-	SwapBuffers();
-
 	
+	SwapBuffers();	
 }
 
 void Renderer::DrawText(const std::string &text, const Vector3 &position, const float size, const bool perspective)
@@ -304,8 +297,8 @@ void Renderer::DrawScene()
 	
 	currentVert->UpdateShaderMatrices(modelMatrix, viewMatrix, projMatrix);
 	
-	currentFrag->SetParameter("lightPosition1", (float*)&playerOne->GetPosition());//.getX());
-	currentFrag->SetParameter("lightPosition2", (float*)&playerTwo->GetPosition());//.getX());
+	currentFrag->SetParameter("lightPosition1", (float*)&players.at(0)->GetPhysicsNode().GetPosition());//.getX());
+	currentFrag->SetParameter("lightPosition2", (float*)&players.at(1)->GetPhysicsNode().GetPosition());//.getX());
 	currentFrag->SetParameter("cameraPos", (float*)&currentCamera->GetPosition());
 	currentFrag->SetParameter("lightRadius", &testRadius);
 	currentFrag->SetParameter("lightColour", (float*)&testColour);
@@ -333,8 +326,7 @@ void Renderer::DrawLoading(int i)
 	SetTextureSampler(currentFrag->GetParameter("texture"),bkgd);
 	
 	tempQuad->Draw(*currentVert, *currentFrag);
-	
-	
+
 	DrawText("LOADING...", Vector3(screenWidth/2, screenHeight/1.9, 0), 75.0f);
 
 	std::stringstream ss;
@@ -352,37 +344,44 @@ void Renderer::DrawLoading(int i)
 
 void Renderer::SetupPlayers() {
 
-	playerOne = new PhysicsNode(15.0f);
-	playerOne->SetMesh(sphereOne);
-	playerOne->SetPosition(Vector3(2000, 500, 2000));
-	playerOne->GravityOff();
-	camera1->SetPhysicsNode(playerOne);
-	worldObjects.push_back(playerOne);
-	root->AddChild(*playerOne);
+	std::cout << "num objects when adding player "<< worldObjects.size() << std::endl;
 	
+	Player* bob = new Player(1);
+	bob->GetPhysicsNode().SetMesh(sphereOne);
+	bob->GetPhysicsNode().SetPosition(Vector3(2000, 500, 2000));
+	bob->GetPhysicsNode().setCollidable(true);
+	bob->GetPhysicsNode().GravityOff();
+	players.push_back(bob);
+	camera1->SetPhysicsNode(bob->GetPhysicsNodePtr());
+	root->AddChild(bob->GetPhysicsNode());
 
-	playerTwo = new PhysicsNode(15.0f);
-	playerTwo->SetMesh(sphereOne);
-	playerTwo->SetPosition(Vector3(2096, 500, 2000));
-	playerTwo->GravityOff();
-	camera2->SetPhysicsNode(playerTwo);
-	worldObjects.push_back(playerTwo);
-	root->AddChild(*playerTwo);
-	
+	Player* meryll = new Player(2);
+	meryll->GetPhysicsNode().SetMesh(sphereTwo);
+	meryll->GetPhysicsNode().SetPosition(Vector3(2200, 500, 2000));
+	meryll->GetPhysicsNode().setCollidable(true);
+	meryll->GetPhysicsNode().GravityOff();
+	players.push_back(meryll);
+	camera2->SetPhysicsNode(meryll->GetPhysicsNodePtr());
+	root->AddChild(meryll->GetPhysicsNode());
+
+	std::cout << "Finished creating players" << std::endl;
 }
 
 //Something nice and basic to put the players back at the start.
 void Renderer::ResetPlayers() {
+
+	
+	/*
 	playerOne->SetPosition(Vector3(0, 1000, 0));
 	playerOne->SetLinearVelocity(Vector3(0,0,0));
 
 	playerTwo->SetPosition(Vector3(500, 1000, 0));
-	playerTwo->SetLinearVelocity(Vector3(0,0,0));
+	playerTwo->SetLinearVelocity(Vector3(0,0,0));*/
 }
 
 void Renderer::ActivatePlayers() {
-	playerOne->GravityOn();
-	playerTwo->GravityOn();
+	players.at(0)->GetPhysicsNode().GravityOn();
+	players.at(1)->GetPhysicsNode().GravityOn();
 	playersActive = true;
 }
 
@@ -397,11 +396,24 @@ void Renderer::AddSphere(Camera* c) {
 
 void Renderer::AddItemBox(Item* item){
 	itemBoxes.push_back(item);
-	item->GetPhysicsNode().SetMesh(sphereOne);
-	item->GetPhysicsNode().SetPosition(Vector3(1000, 1000, 0));
-	item->GetPhysicsNode().GravityOff();
-	item->GetPhysicsNode().setRadius(25.f);
+	item->GetPhysicsNode().SetMesh(android);
+	item->GetPhysicsNode().setRadius(25.0f);
 	root->AddChild(item->GetPhysicsNode());
+	worldObjects.push_back(item->GetPhysicsNodePtr());
+	std::cout << "Added item box. Number of children in scene root node: "<< root->getNumChildren() << std::endl;
+}
+
+void Renderer::AddItemBox(Camera* c){
+	Trap* item	= new Trap();		
+	//set item's position 
+	item->GetPhysicsNode().SetPosition(c->GetPosition());
+	//item->setItemID(ServerInterface::AddGameEntity(WEAPONS_CRATE, item->GetPhysicsNode().GetPosition()));
+	itemBoxes.push_back(item);
+	item->GetPhysicsNode().SetMesh(android);
+	item->GetPhysicsNode().setRadius(25.0f);
+	root->AddChild(item->GetPhysicsNode());
+	worldObjects.push_back(item->GetPhysicsNodePtr());
+	std::cout << "Added item box. Number of children in scene root node: "<< root->getNumChildren() << std::endl;
 }
 
 void Renderer::RemoveItemBox(Item* item){
@@ -510,16 +522,20 @@ void Renderer::SetupGeometry()
 	percent+=10;//60
 	DrawLoading(percent);
 
+	//Android mesh
+	std::cout << "Loading meshes in renderer" << std::endl;
+	android = new OBJMesh(SYS_APP_HOME "/android.obj");
+
 	//Sphere One
 	std::cout << "Loading sphere ONE in renderer" << std::endl;
 		sphereOne = new OBJMesh(SYS_APP_HOME "/sphere.obj");
 	std::cout << "Renderer sphere ONE load success!" << std::endl;
 	sphereOne->SetDefaultTexture(*GCMRenderer::LoadGTF("/rainbow.gtf"));
 
+
 	//SphereTwo
-	std::cout << "Loading sphere TWO in renderer" << std::endl;
-		sphereTwo = new OBJMesh(SYS_APP_HOME "/sphere.obj");
-	std::cout << "Renderer sphere TWO load success!" << std::endl;
+	
+	sphereTwo = new OBJMesh(SYS_APP_HOME "/sphere.obj");
 	sphereTwo->SetDefaultTexture(*GCMRenderer::LoadGTF("/FT_Logo2.gtf"));
 	
 	std::cout << "Loading arrow in renderer" << std::endl;
@@ -548,7 +564,7 @@ void Renderer::drawWinner(int i)
 		
 
 		tempQuad->Draw(*currentVert, *currentFrag);
-		//SwapBuffers();
+
 
 		break;
 	case 2:
@@ -566,11 +582,12 @@ void Renderer::drawWinner(int i)
 		
 
 		tempQuad->Draw(*currentVert, *currentFrag);
-		//SwapBuffers();
+
 		break;
 	default:
 		break;
 	}
+
 	SetViewport();
 	
 	DrawText("GAME OVER", Vector3(screenWidth/20, screenHeight/8, 0), 200.0f);

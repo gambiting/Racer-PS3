@@ -8,7 +8,6 @@
 #include <vectormath/cpp/vectormath_aos.h>
 using namespace Vectormath::Aos;
 #define GRAVITY -0.00048f
-//#define DAMPING_FACTOR		0.97005f
 #define DAMPING_FACTOR		0.97005f
 #define ANGULAR_DAMPING_FACTOR 0.99999f
 
@@ -27,8 +26,10 @@ public:
 		SetTransform( Matrix4::translation(m_position) * Matrix4::scale(scale) );
 	}
 
-	void			SetOrientation(Quat orient)			{ 
-		m_orientation = orient;
+
+	void			SetOrientation()			{ 
+		//std::cout << "Rot: (" << m_position.getX() << ", " << m_position.getY() << ", " << m_position.getZ() << ")" << std::endl;
+
 		SetTransform(  Matrix4::translation(m_position)* Matrix4::scale(scale) * Matrix4::rotationZYX(m_rot)) ; 
 	}
 	void			SetLinearVelocity(Vector3 vel)		{ m_linearVelocity = vel; }
@@ -60,6 +61,9 @@ public:
 	bool			isInAir()							{ return inAir; }
 	void			SetInAir(bool a)					{ inAir = a; }
 
+	bool			isCollidable()						{ return collidable;}
+	void			setCollidable(bool b)				{ collidable = b; }
+
 	void			AddForce(Vector3 f, Vector3 d)		{
 															m_force = f;
 															//distance = d;
@@ -74,6 +78,7 @@ public:
 protected:
 
 	bool ignoringGravity;
+	bool collidable;
 
 	Vector3		scale;
 	Vector3		gravity;

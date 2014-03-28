@@ -40,7 +40,7 @@ void Camera::Update(float msec) {
 
 	Input::GetJoypadMovement(y,p,pad);
 
-	//yaw += y * ypSensitivity;
+	yaw += y * ypSensitivity;
 	pitch -= p * invertPitch ? -(p*ypSensitivity) : (p*ypSensitivity);
 	
 	pitch = min(pitch,90.0f);

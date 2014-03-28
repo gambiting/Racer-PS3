@@ -2,15 +2,23 @@
 
 PhysicsNode::PhysicsNode(void)	{
 
-	ignoringGravity = false;
+	float r = 15.0f;
+	radius = r;
+	scale = Vector3(r,r,r);
 	m_position = Vector3(0,0,0);
+	VectorToZero(m_rot);
+
+	ignoringGravity = false;
+
 	target			= NULL;
 	collidedWith	= NULL;
+
 	float inertia = (2 * 10.f * pow(50.f, 2)) / 5;
-	radius			= 50.0f;
+
 	m_linearVelocity	= Vector3(0.0f, 0.0f, 0.0f);
 	m_angularVelocity	= Vector3(0.0f, 0.0f, 0.0f);
-	m_invMass			= 0.0f;
+	m_invMass			= 1.0f / r;
+
 	m_invInertia		= Matrix4(
 		Vector4(1/inertia,0.0f,0.0f,0.0f),
 		Vector4(0.0f,1/inertia,0.0f,0.0f),
@@ -20,9 +28,11 @@ PhysicsNode::PhysicsNode(void)	{
 	gravity			= Vector3(0.0f, GRAVITY, 0.0f);
 	inAir = true;
 	atRest = false;
+
 	VectorToZero(m_force);
 	VectorToZero(m_rot);
 	m_orientation.identity();
+
 }
 
 PhysicsNode::PhysicsNode(float r) {
@@ -83,6 +93,7 @@ PhysicsNode::PhysicsNode(float r, Vector3 p) {
 	m_orientation.identity();
 	VectorToZero(m_rot);
 	VectorToZero(m_force);
+
 	m_rot = Vector3(0,0,0);
 
 
@@ -136,10 +147,7 @@ void PhysicsNode::UpdatePosition(float msec) {
 	Vector3 angularAcceleration = (m_invInertia * m_torque).getXYZ();
 	m_angularVelocity = m_angularVelocity + angularAcceleration * msec;
 	m_angularVelocity = m_angularVelocity * DAMPING_FACTOR;
-	/*
-	m_orientation = m_orientation + QuatByVector3(m_orientation, (m_angularVelocity * msec * 0.5f));
-	m_orientation = normalize(m_orientation);
-	*/
+
 	m_rot.setX(m_rot.getX() + m_angularVelocity.getX());
 	m_rot.setY(m_rot.getY() + m_angularVelocity.getY());
 	m_rot.setZ(m_rot.getZ() + m_angularVelocity.getZ());
@@ -150,7 +158,7 @@ void PhysicsNode::UpdatePosition(float msec) {
 	/* No Fun Allowed */
 
 	SetPosition(m_position);
-	SetOrientation(m_orientation);
+	//SetOrientation();
 	VectorToZero(m_force);
 	VectorToZero(m_torque);
 

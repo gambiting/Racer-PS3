@@ -26,6 +26,7 @@ _-_-_-_-_-_-_-""  ""
 #include "timer.h"
 #include "PhysicsNode.h"
 #include "Item.h"
+#include "ItemTrap.h"
 #include "Player.h"
 #include "HeightMap.h"
 
@@ -46,6 +47,7 @@ public:
 
 	//add and remove item boxes from the game world
 	void AddItemBox(Item* item);
+	void AddItemBox(Camera* c);
 	void RemoveItemBox(Item* item);
 
 	void CollisionTests();
@@ -89,22 +91,22 @@ protected:
 
 	Mesh* quad;
 
-	PhysicsNode* playerOne;
-	PhysicsNode* playerTwo;
-
 	Mesh* arrow;
 	Matrix4 player1Trans;
 	Matrix4 player2Trans;
 
 	Mesh* sphereOne;
 	Mesh* sphereTwo;
-	Mesh* sphereThree;
+	Mesh* android;
 
 	std::vector<PhysicsNode*> worldObjects;
 	std::vector<Item*> itemBoxes;
 	std::vector<Player*> players;
 
 	PhysicsSystem physics;
+
+	PhysicsNode* playerOne;
+	PhysicsNode* playerTwo;
 
 	bool playersActive;
 	float halfScreenRatio;
