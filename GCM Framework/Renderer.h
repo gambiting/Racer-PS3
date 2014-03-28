@@ -61,6 +61,7 @@ public:
 	void calcArrowOrientation(Vector3 objective, int playerID);
 	void addPoint(int i);
 	void DrawTrophy();
+	void setTrophyPosition(Vector3 a) {trophyPosition = a;}
 
 protected:
 	void DrawText(const std::string &text, const Vector3 &position, const float size, const bool perspective=false);
@@ -70,6 +71,8 @@ protected:
 	Font* basicFont;
 	CellGcmTexture* FontTex;
 	CellGcmTexture* cubeMap;
+
+	Vector3 trophyPosition;
 
 	float testRadius;
 
