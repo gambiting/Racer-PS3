@@ -548,7 +548,7 @@ void Renderer::drawWinner(int i)
 		
 
 		tempQuad->Draw(*currentVert, *currentFrag);
-		SwapBuffers();
+		//SwapBuffers();
 
 		break;
 	case 2:
@@ -566,9 +566,18 @@ void Renderer::drawWinner(int i)
 		
 
 		tempQuad->Draw(*currentVert, *currentFrag);
-		SwapBuffers();
+		//SwapBuffers();
 		break;
 	default:
 		break;
 	}
+	SetViewport();
+	
+	DrawText("GAME OVER", Vector3(screenWidth/20, screenHeight/8, 0), 200.0f);
+	DrawText("Press X to Quit", Vector3(screenWidth*0.2, screenHeight*0.8, 0), 75.0f);
+	DrawText("Press START to Play Again", Vector3(screenWidth/50, screenHeight*0.9, 0), 75.0f);
+	projMatrix	= Matrix4::perspective(0.7853982, screenRatio, 1.0f, 20000.0f);
+
+	SwapBuffers();
+
 }
