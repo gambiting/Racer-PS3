@@ -11,6 +11,7 @@ Renderer::Renderer(void)	{
 	tempQuad = Mesh::GenerateQuad();
 	//tempTex = GCMRenderer::LoadGTF("/sand.gtf");
 	//tempQuad->SetDefaultTexture(*tempTex);
+
 	trophyPosition = Vector3(0,0,0);
 	AndroidRoot = new SceneNode();
 
@@ -98,6 +99,12 @@ void Renderer::CollisionTests() {
 				if(physics.SphereSphereCollision(players.at(i)->GetPhysicsNode(),coins.at(j)->GetPhysicsNode(), cData)){	
 					std::cout << "Attempting to delete.";
 					Coin* temp = coins.at(j);
+					
+					if(i == 0)
+						camera1->AddPoint();
+					else if(i == 1)
+						camera2->AddPoint();
+
 					RemoveCoin(temp);
 					delete temp; //delete the coin to stop memory leaks!!
 					break;
@@ -121,8 +128,6 @@ void Renderer::CollisionTests() {
 
 		if(physics.TerrainCollision( *worldObjects.at(i), cData))
 		{
-			worldObjects.at(i)->SetInAir(false);
-
 			PhysicsNode *temp = new PhysicsNode();
 			physics.AddCollisionImpulse(*worldObjects.at(i), (*temp), cData->m_point, cData->m_normal, cData->m_penetration);
 			delete temp;
@@ -407,6 +412,7 @@ void Renderer::ActivatePlayers() {
 	players.at(0)->GetPhysicsNode().GravityOn();
 	players.at(1)->GetPhysicsNode().GravityOn();
 	playersActive = true;
+	setTimer();
 }
 
 void Renderer::AddSphere(Camera* c) {
@@ -638,7 +644,7 @@ void Renderer::drawWinner(int i)
 //return the objective loc closest to the given player
 Vector3 Renderer::getClosestCoin(int playerNum){
 	Vector3 pLoc;
-	if(playerNum = 1)
+	if(playerNum == 1)
 		pLoc = players.at(0)->GetPhysicsNode().GetPosition();
 	else
 		pLoc = players.at(1)->GetPhysicsNode().GetPosition();

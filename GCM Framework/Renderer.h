@@ -23,7 +23,7 @@ _-_-_-_-_-_-_-""  ""
 #include "Mesh.h"
 #include "OBJMesh.h"
 #include "TextMesh.h"
-#include "timer.h"
+#include <time.h>   
 #include "PhysicsNode.h"
 #include "Item.h"
 #include "Coin.h"
@@ -64,7 +64,9 @@ public:
 	void calcArrowOrientation(Vector3 objective, int playerID);
 	void addPoint(int i);
 	PhysicsNode* MakeTrophy();
-	
+
+	void setTimer() { timeStarted = time(NULL); }
+	int  secsSinceStarted() { return difftime(time(NULL),timeStarted);}
 
 protected:
 	void DrawText(const std::string &text, const Vector3 &position, const float size, const bool perspective=false);
@@ -126,5 +128,6 @@ protected:
 
 	SceneNode* AndroidRoot;
 
-	
+	time_t timeStarted;	
+
 };

@@ -14,7 +14,6 @@ bool PhysicsSystem::TerrainCollision(const PhysicsNode &p0,  CollisionData *d) c
 	//	std::cout << "null node" << std::endl;
 	//}
 
-
 	Vector3 position = p0.GetPosition();
 	Vector3 velocity = p0.GetLinearVelocity();
 

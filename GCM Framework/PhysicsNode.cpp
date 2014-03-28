@@ -26,7 +26,6 @@ PhysicsNode::PhysicsNode(void)	{
 		Vector4(0.0f,0.0f,0.0f,1.0f));
 
 	gravity			= Vector3(0.0f, GRAVITY, 0.0f);
-	inAir = true;
 	atRest = false;
 
 	VectorToZero(m_force);
@@ -58,7 +57,6 @@ PhysicsNode::PhysicsNode(float r) {
 		Vector4(0.0f,0.0f,0.0f,1.0f));
 
 	gravity			= Vector3(0.0f, GRAVITY, 0.0f);
-	inAir = true;
 	atRest = false;
 
 	m_orientation.identity();
@@ -87,7 +85,6 @@ PhysicsNode::PhysicsNode(float r, Vector3 p) {
 		Vector4(0.0f,0.0f,0.0f,1.0f));
 
 	gravity			= Vector3(0.0f, GRAVITY, 0.0f);
-	inAir = true;
 	atRest = false;
 
 	m_orientation.identity();
@@ -178,4 +175,8 @@ Quat PhysicsNode::QuatByVector3(const Quat &q, const Vector3 &v) {
 	ans.setZ(  (q.getW() * v.getZ()) + (q.getX() * v.getY()) - (q.getY() * v.getX()) );
 
 	return ans;
+}
+
+bool PhysicsNode::isInAir() {
+	
 }
