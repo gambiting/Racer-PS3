@@ -44,8 +44,11 @@ void start_button()		{
 	case GAME_MENU:
 		state=GAME_MAIN;
 	case GAME_OVER:
+		
+		camera1->SetScore(0);
+		camera2->SetScore(0);
 		renderer.ResetPlayers();
-		state=GAME_MAIN;
+		state=GAME_MENU;
 		break;
 	default: break;
 	}
@@ -75,6 +78,7 @@ void select_button2()		{
 		camera2->SetPitch(0.0f);
 		camera2->SetYaw(0.0f);
 		break;*/
+		//camera2->AddPoint();
 	default:
 		break;
 	}
@@ -264,7 +268,7 @@ int main(void)	{
 					if (!renderer.PlayersActive()) {
 						renderer.ActivatePlayers();
 					}
-					break;
+					
 					if(camera1->GetScore() >= 5)
 					{
 						renderer.drawWinner(1);
@@ -275,6 +279,7 @@ int main(void)	{
 						renderer.drawWinner(2);
 						state=GAME_OVER;
 					}
+					break;
 				
 			case GAME_PAUSED: break;
 			case GAME_MENU:

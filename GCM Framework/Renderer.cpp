@@ -693,8 +693,10 @@ void Renderer::drawScore(int i)
 	switch(i)
 	{
 	case 1:
+		score = camera1->GetScore();
 		break;
 	case 2:
+		score = camera2->GetScore();
 		break;
 	default:
 		break;
@@ -746,6 +748,6 @@ PhysicsNode* Renderer::MakeTrophy()
 	trophy->Draw(*currentVert, *currentFrag);*/
 	PhysicsNode* p = new PhysicsNode();
 	p->SetMesh(trophy);
-	root->AddChild(p);
+	root->AddChild(*p);
 	return p;
 }

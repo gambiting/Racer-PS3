@@ -57,6 +57,7 @@ public:
 	PhysicsNode*	GetPhysicsNode()				{ return this->player; }
 	void AddPoint()	{PlayerScore++;}
 	int GetScore()	{return PlayerScore;}
+	void SetScore(int i) {PlayerScore=i;}
 
 protected:
 	JoyPadNum	pad;
