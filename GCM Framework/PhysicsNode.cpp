@@ -123,7 +123,7 @@ void PhysicsNode::UpdatePosition(float msec) {
 		
 		if (totalV > 0.005f) {
 			//atRest = true;
-		}
+		} 
 
 	}
 
@@ -141,9 +141,6 @@ void PhysicsNode::UpdatePosition(float msec) {
 	}
 
 	/*	 Angle Fun    */
-	//float inertia = 2 * m_invMass * (radius * radius);
-	//Matrix4 inertiaMat = Matrix4::rotation(inertia, Vector3(1,1,1));
-
 	Vector3 angularAcceleration = (m_invInertia * m_torque).getXYZ();
 	m_angularVelocity = m_angularVelocity + angularAcceleration * msec;
 	m_angularVelocity = m_angularVelocity * DAMPING_FACTOR;
@@ -158,7 +155,7 @@ void PhysicsNode::UpdatePosition(float msec) {
 	/* No Fun Allowed */
 
 	SetPosition(m_position);
-	//SetOrientation();
+	SetOrientation();
 	VectorToZero(m_force);
 	VectorToZero(m_torque);
 
