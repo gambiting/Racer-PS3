@@ -94,6 +94,7 @@ protected:
 	FragmentShader* basicFrag;
 
 	FragmentShader* loadFrag;
+	FragmentShader* impFrag;
 
 	Mesh* tempQuad;
 	CellGcmTexture* tempTex;
@@ -122,6 +123,8 @@ protected:
 
 	bool playersActive;
 	float halfScreenRatio;
+
+	SceneNode* AndroidRoot;
 
 	
 };

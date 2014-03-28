@@ -12,6 +12,7 @@ Renderer::Renderer(void)	{
 	//tempTex = GCMRenderer::LoadGTF("/sand.gtf");
 	//tempQuad->SetDefaultTexture(*tempTex);
 	trophyPosition = Vector3(0,0,0);
+	AndroidRoot = new SceneNode();
 
 	testColour = Vector4(1.0,1.0,1.0,1.0);
 	printf("SkyBox Shader\n");
@@ -25,6 +26,7 @@ Renderer::Renderer(void)	{
 	basicFrag		= new FragmentShader("/Shaders/fragment.fpo");
 	printf("LOADFRAG SHADER\n");
 	loadFrag		= new FragmentShader("/Shaders/fragmentLoad.fpo");
+	impFrag		= new FragmentShader("/Shaders/fragmentImp.fpo");
 	
 
 	this->SetCurrentShader(*lightVert,*lightFrag);
@@ -73,6 +75,7 @@ void Renderer::UpdateScene(float msec) {
 	for(std::vector<PhysicsNode*>::iterator i = worldObjects.begin(); i != worldObjects.end(); ++i) {
 		(*i)->UpdatePosition(msec);
 	}
+	AndroidRoot->Update(msec);
 
 }
 
@@ -323,6 +326,10 @@ void Renderer::DrawScene()
 	if(root) {
 		DrawNode(root);
 	}
+	this->SetCurrentShader(*basicVert,*impFrag);
+	if(AndroidRoot) {
+		DrawNode(AndroidRoot);
+	}
 		
 }
 
@@ -416,7 +423,7 @@ void Renderer::AddCoin(Coin* coin){
 	coins.push_back(coin);
 	coin->GetPhysicsNode().SetMesh(android);
 	coin->GetPhysicsNode().setRadius(25.0f);
-	root->AddChild(coin->GetPhysicsNode());
+	AndroidRoot->AddChild(coin->GetPhysicsNode());
 	worldObjects.push_back(coin->GetPhysicsNodePtr());
 	//std::cout << "Added coin. Number of children in scene root node: "<< root->getNumChildren() << std::endl;
 }
@@ -429,7 +436,7 @@ void Renderer::AddCoin(int x, int z){
 	coins.push_back(coin);
 	coin->GetPhysicsNode().SetMesh(android);
 	coin->GetPhysicsNode().setRadius(25.0f);
-	root->AddChild(coin->GetPhysicsNode());
+	AndroidRoot->AddChild(coin->GetPhysicsNode());
 	worldObjects.push_back(coin->GetPhysicsNodePtr());
 	//std::cout << "Added coin. Number of children in scene root node: "<< root->getNumChildren() << std::endl;
 }
@@ -444,7 +451,7 @@ void Renderer::RemoveCoin(Coin* coin){
 				if(worldObjects[i] == coin->GetPhysicsNodePtr()){
 					worldObjects.erase(worldObjects.begin() + i);
 					std::cout << "Coin removed from world" << std::endl;
-					root->MurderChildGruesomely(coin->GetPhysicsNode());
+					AndroidRoot->MurderChildGruesomely(coin->GetPhysicsNode());
 					return;
 				}
 			}			

@@ -22,7 +22,7 @@ _-_-_-_-_-_-_-""  ""
 
 #include "SceneNode.h"
 #include "Camera.h"
-
+#include "Coin.h"
 
 #include "Shader.h"
 
