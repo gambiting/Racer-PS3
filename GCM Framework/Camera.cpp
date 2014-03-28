@@ -53,7 +53,7 @@ void Camera::Update(float msec) {
 		yaw -= 360.0f;
 	}
 	if(Input::ButtonTriggered(INPUT_CROSS,pad)) {
-		if (player->GetLinearVelocity().getY() < 0.0f) {
+		if (player->GetLinearVelocity().getY() < 0.1f) {
 			player->AddForce(Vector3(0,0.3,0), Vector3(0,0,0));
 		}
 	}
