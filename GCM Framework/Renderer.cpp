@@ -12,7 +12,6 @@ Renderer::Renderer(void)	{
 	//tempTex = GCMRenderer::LoadGTF("/sand.gtf");
 	//tempQuad->SetDefaultTexture(*tempTex);
 
-
 	testColour = Vector4(1.0,1.0,1.0,1.0);
 	printf("SkyBox Shader\n");
 	skyVert			= new VertexShader("/Shaders/skyBoxVert.vpo");
@@ -119,8 +118,6 @@ void Renderer::CollisionTests() {
 
 		if(physics.TerrainCollision( *worldObjects.at(i), cData))
 		{
-			worldObjects.at(i)->SetInAir(false);
-
 			PhysicsNode *temp = new PhysicsNode();
 			physics.AddCollisionImpulse(*worldObjects.at(i), (*temp), cData->m_point, cData->m_normal, cData->m_penetration);
 			delete temp;

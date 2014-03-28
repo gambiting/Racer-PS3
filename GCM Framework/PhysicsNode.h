@@ -6,7 +6,9 @@
 
 #include <vector>
 #include <vectormath/cpp/vectormath_aos.h>
+
 using namespace Vectormath::Aos;
+
 #define GRAVITY -0.00048f
 #define DAMPING_FACTOR		0.97005f
 #define ANGULAR_DAMPING_FACTOR 0.99999f
@@ -58,8 +60,7 @@ public:
 	bool			getAtRest()							{return atRest;}
 	void			SetAtRest(bool b)					{atRest = b;}
 
-	bool			isInAir()							{ return inAir; }
-	void			SetInAir(bool a)					{ inAir = a; }
+	bool			isInAir();
 
 	bool			isCollidable()						{ return collidable;}
 	void			setCollidable(bool b)				{ collidable = b; }
@@ -102,9 +103,8 @@ protected:
 	
 	SceneNode*	target;
 	bool		atRest;
-	bool		inAir;
 
 	//for assassination game mode
 	PhysicsNode* collidedWith;
-
+	
 };
