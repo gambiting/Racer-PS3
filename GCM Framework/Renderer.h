@@ -26,7 +26,7 @@ _-_-_-_-_-_-_-""  ""
 #include "timer.h"
 #include "PhysicsNode.h"
 #include "Item.h"
-#include "ItemTrap.h"
+#include "Coin.h"
 #include "Player.h"
 #include "HeightMap.h"
 
@@ -46,9 +46,9 @@ public:
 	void AddSphere(Camera* c);
 
 	//add and remove item boxes from the game world
-	void AddItemBox(Item* item);
-	void AddItemBox(Camera* c);
-	void RemoveItemBox(Item* item);
+	void AddCoin(Coin* coin);
+	void AddCoin(Camera* c);
+	void RemoveCoin(Coin* coin);
 
 	void CollisionTests();
 	void RenderPausedScene();
@@ -101,7 +101,7 @@ protected:
 	Mesh* android;
 
 	std::vector<PhysicsNode*> worldObjects;
-	std::vector<Item*> itemBoxes;
+	std::vector<Coin*> coins;
 	std::vector<Player*> players;
 
 	PhysicsSystem physics;

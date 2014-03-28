@@ -88,12 +88,21 @@ void Renderer::CollisionTests() {
 			physics.AddCollisionImpulse(players.at(i)->GetPhysicsNode(), (*temp), cData->m_point, cData->m_normal, cData->m_penetration);
 			delete temp;
 		}
-		//check against item boxes
-		for(int j = 0; j < itemBoxes.size(); j++){
-			if(physics.SphereSphereCollision(players.at(i)->GetPhysicsNode(),itemBoxes.at(j)->GetPhysicsNode(), cData)){	
-				physics.AddCollisionImpulse(players.at(i)->GetPhysicsNode(),itemBoxes.at(j)->GetPhysicsNode(), cData->m_point, cData->m_normal, cData->m_penetration);
+		bool finished = false;
+		
+
+			//check against coins
+			for(int j = 0; j < coins.size(); j++){
+				if(physics.SphereSphereCollision(players.at(i)->GetPhysicsNode(),coins.at(j)->GetPhysicsNode(), cData)){	
+					std::cout << "Attempting to delete.";
+					Coin* temp = coins.at(j);
+					RemoveCoin(temp);
+					delete temp; //delete the coin to stop memory leaks!!
+					break;
+				}
+				if(j == coins.size()-1) finished = true; 
 			}
-		}
+		
 		//check against players (except THIS player)
 		for(int j = 0; j < players.size(); j++){
 			if(j == i) continue;
@@ -399,39 +408,45 @@ void Renderer::AddSphere(Camera* c) {
 	worldObjects.push_back(newSphere);
 }
 
-void Renderer::AddItemBox(Item* item){
-	itemBoxes.push_back(item);
-	item->GetPhysicsNode().SetMesh(android);
-	item->GetPhysicsNode().setRadius(25.0f);
-	root->AddChild(item->GetPhysicsNode());
-	worldObjects.push_back(item->GetPhysicsNodePtr());
-	std::cout << "Added item box. Number of children in scene root node: "<< root->getNumChildren() << std::endl;
+void Renderer::AddCoin(Coin* coin){
+	coins.push_back(coin);
+	coin->GetPhysicsNode().SetMesh(android);
+	coin->GetPhysicsNode().setRadius(25.0f);
+	root->AddChild(coin->GetPhysicsNode());
+	worldObjects.push_back(coin->GetPhysicsNodePtr());
+	//std::cout << "Added coin. Number of children in scene root node: "<< root->getNumChildren() << std::endl;
 }
 
-void Renderer::AddItemBox(Camera* c){
-	Trap* item	= new Trap();		
+void Renderer::AddCoin(Camera* c){
+	Coin* coin	= new Coin();		
 	//set item's position 
-	item->GetPhysicsNode().SetPosition(c->GetPosition());
+	coin->GetPhysicsNode().SetPosition(c->GetPosition());//TODO
 	//item->setItemID(ServerInterface::AddGameEntity(WEAPONS_CRATE, item->GetPhysicsNode().GetPosition()));
-	itemBoxes.push_back(item);
-	item->GetPhysicsNode().SetMesh(android);
-	item->GetPhysicsNode().setRadius(25.0f);
-	root->AddChild(item->GetPhysicsNode());
-	worldObjects.push_back(item->GetPhysicsNodePtr());
-	std::cout << "Added item box. Number of children in scene root node: "<< root->getNumChildren() << std::endl;
+	coins.push_back(coin);
+	coin->GetPhysicsNode().SetMesh(android);
+	coin->GetPhysicsNode().setRadius(25.0f);
+	root->AddChild(coin->GetPhysicsNode());
+	worldObjects.push_back(coin->GetPhysicsNodePtr());
+	//std::cout << "Added coin. Number of children in scene root node: "<< root->getNumChildren() << std::endl;
 }
 
-void Renderer::RemoveItemBox(Item* item){
-	//search through itembox vector for match, remove it if found
-	//This does NOT delete the item object, only stop it from rendering and being collidable
-	for(int j= 0; j < itemBoxes.size(); j++){
-		if(itemBoxes[j] == item) {
-			itemBoxes.erase(itemBoxes.begin() + j);
-			std::cout << "Item box removed from world" << std::endl;
-			return;
+void Renderer::RemoveCoin(Coin* coin){
+	//search through coins vector for match, remove it if found
+	//stopping it from rendering and being collidable
+	for(int j= 0; j < coins.size(); j++){
+		if(coins[j] == coin) {
+			coins.erase(coins.begin() + j);
+			for(int i= 0; i < worldObjects.size(); i++){
+				if(worldObjects[i] == coin->GetPhysicsNodePtr()){
+					worldObjects.erase(worldObjects.begin() + i);
+					std::cout << "Coin removed from world" << std::endl;
+					root->MurderChildGruesomely(coin->GetPhysicsNode());
+					return;
+				}
+			}			
 		}
 	}
-	std::cout << "Failed to remove item. Awkward..."<< std::endl;
+	std::cout << "Failed to remove coin. Awkward..."<< std::endl;
 }
 
 void Renderer::RenderPausedScene() {
