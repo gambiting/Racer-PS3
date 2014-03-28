@@ -87,7 +87,7 @@ void cross_button1() {
 	{
 	case GAME_MAIN:
 
-		renderer.AddCoin(camera1);
+		renderer.AddCoin(100,100);
 		break;
 	case GAME_PAUSED:
 		done=true;
@@ -109,7 +109,7 @@ void cross_button2() {
 	{
 	case GAME_MAIN:
 
-		renderer.AddCoin(camera2);
+		renderer.AddCoin(100,100);
 		break;
 	case GAME_PAUSED:
 		done=true;
@@ -138,7 +138,7 @@ void square_button() {
 		break;
 		default: break;
 
-		std::cout << "Pressed square button!" << std::endl;
+		//std::cout << "Pressed square button!" << std::endl;
 	}
 }
 
