@@ -6,6 +6,7 @@
 #include "ObjectiveAssassination.h"
 #include "ObjectivePointToPoint.h"
 #include "ItemTrap.h"
+#include "Coin.h"
 #include "Player.h"
 #include "Renderer.h"
 
@@ -49,6 +50,7 @@ private:
 
 	
 	/* ~~~~~~~~~~~~~~~~~~GAME POWERUPS */
+	//std::vector<Coin*> coins;
 	//max number of items in the world as boxes
 	int maxItems;
 	//a container of all powerups in play
