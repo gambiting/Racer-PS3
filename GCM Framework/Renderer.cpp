@@ -12,6 +12,8 @@ Renderer::Renderer(void)	{
 	//tempTex = GCMRenderer::LoadGTF("/sand.gtf");
 	//tempQuad->SetDefaultTexture(*tempTex);
 
+	trophyPosition = Vector3(0,0,0);
+
 	testColour = Vector4(1.0,1.0,1.0,1.0);
 	printf("SkyBox Shader\n");
 	skyVert			= new VertexShader("/Shaders/skyBoxVert.vpo");
@@ -94,6 +96,12 @@ void Renderer::CollisionTests() {
 				if(physics.SphereSphereCollision(players.at(i)->GetPhysicsNode(),coins.at(j)->GetPhysicsNode(), cData)){	
 					std::cout << "Attempting to delete.";
 					Coin* temp = coins.at(j);
+					
+					if(i == 0)
+						camera1->AddPoint();
+					else if(i == 1)
+						camera2->AddPoint();
+
 					RemoveCoin(temp);
 					delete temp; //delete the coin to stop memory leaks!!
 					break;
@@ -155,10 +163,13 @@ void Renderer::RenderScene(float msec) {
 	setCurrentCamera(camera1);
 	drawSkyBox();
 	DrawScene();
-
-	DrawSplitScreenText("Player 1", Vector3(0, screenHeight/9, 0), 26.0f);
+		
+	DrawSplitScreenText("Player 1", Vector3(0, screenHeight/20, 0), 26.0f);
+	drawScore(1);
+	
 	RenderArrow(player1Trans);
 	DrawSplitScreenText(fpsText, Vector3(0, screenHeight/1.1 + 50, 0), 26.0f);
+	
 
 	projMatrix	= Matrix4::perspective(0.7853982, screenRatio, 1.0f, 20000.0f);
 
@@ -168,10 +179,12 @@ void Renderer::RenderScene(float msec) {
 	setCurrentCamera(camera2);
 	drawSkyBox();
 	DrawScene();
-
-	DrawSplitScreenText("Player 2", Vector3(0, screenHeight/9, 0), 26.0f);
-
+		
+	DrawSplitScreenText("Player 2", Vector3(0, screenHeight/20, 0), 26.0f);
+	drawScore(2);
+	
 	RenderArrow(player2Trans);
+	
 
 	projMatrix	= Matrix4::perspective(0.7853982, screenRatio, 1.0f, 20000.0f);
 	
@@ -392,6 +405,7 @@ void Renderer::ActivatePlayers() {
 	players.at(0)->GetPhysicsNode().GravityOn();
 	players.at(1)->GetPhysicsNode().GravityOn();
 	playersActive = true;
+	setTimer();
 }
 
 void Renderer::AddSphere(Camera* c) {
@@ -561,7 +575,12 @@ void Renderer::SetupGeometry()
 	arrow->SetDefaultTexture(*GCMRenderer::LoadGTF("/rainbow.gtf"));
 	percent+=10;//80
 	DrawLoading(percent);
+
+	trophy = new OBJMesh(SYS_APP_HOME "/Groudon.obj");
+	trophy->SetDefaultTexture(*GCMRenderer::LoadGTF("/gold.gtf"));
 }
+
+	
 void Renderer::drawWinner(int i)
 {
 	switch(i)
@@ -618,7 +637,7 @@ void Renderer::drawWinner(int i)
 //return the objective loc closest to the given player
 Vector3 Renderer::getClosestCoin(int playerNum){
 	Vector3 pLoc;
-	if(playerNum = 1)
+	if(playerNum == 1)
 		pLoc = players.at(0)->GetPhysicsNode().GetPosition();
 	else
 		pLoc = players.at(1)->GetPhysicsNode().GetPosition();
@@ -701,4 +720,68 @@ void Renderer::calcArrowOrientation(Vector3 objective, int playerID)
 		break;
 	}
 
+}
+void Renderer::drawScore(int i)
+{
+	int score = 0;
+	switch(i)
+	{
+	case 1:
+		score = camera1->GetScore();
+		break;
+	case 2:
+		score = camera2->GetScore();
+		break;
+	default:
+		break;
+	}
+
+	std::stringstream ss;
+	ss<<score<<" Points";
+	std::string tmp = ss.str();
+	DrawSplitScreenText(tmp,  Vector3(screenWidth/50, screenHeight/10, 0), 50.0f);
+
+}
+void Renderer::addPoint(int i)
+{
+	switch(i)
+	{
+	case 1:
+		camera1->AddPoint();
+		break;
+	case 2:
+		camera2->AddPoint();
+		break;
+	default:
+		break;
+	}
+}
+PhysicsNode* Renderer::MakeTrophy()
+{
+	/*this->SetCurrentShader(*lightVert,*lightFrag);
+	modelMatrix = Matrix4::translation(trophyPosition);
+	if(currentCamera)
+	{
+		viewMatrix = currentCamera->BuildViewMatrix();
+	}
+	else
+	{
+		viewMatrix=Matrix4::identity();
+	}
+	projMatrix	= Matrix4::perspective(0.7853982, halfScreenRatio, 1.0f, 20000.0f);
+	currentVert->UpdateShaderMatrices(modelMatrix, viewMatrix, projMatrix);
+		
+	SetTextureSampler(currentFrag->GetParameter("texture"), trophy->GetDefaultTexture());
+		
+	currentFrag->SetParameter("lightPosition1", (float*)&players.at(0)->GetPhysicsNode().GetPosition());//.getX());
+	currentFrag->SetParameter("lightPosition2", (float*)&players.at(1)->GetPhysicsNode().GetPosition());//.getX());
+	currentFrag->SetParameter("cameraPos", (float*)&currentCamera->GetPosition());
+	currentFrag->SetParameter("lightRadius", &testRadius);
+	currentFrag->SetParameter("lightColour", (float*)&testColour);
+
+	trophy->Draw(*currentVert, *currentFrag);*/
+	PhysicsNode* p = new PhysicsNode();
+	p->SetMesh(trophy);
+	root->AddChild(*p);
+	return p;
 }

@@ -23,7 +23,7 @@ _-_-_-_-_-_-_-""  ""
 #include "Mesh.h"
 #include "OBJMesh.h"
 #include "TextMesh.h"
-#include "timer.h"
+#include <time.h>   
 #include "PhysicsNode.h"
 #include "Item.h"
 #include "Coin.h"
@@ -62,14 +62,22 @@ public:
 	void drawMenu();
 	void drawWinner(int i);
 	void calcArrowOrientation(Vector3 objective, int playerID);
+	void addPoint(int i);
+	PhysicsNode* MakeTrophy();
+
+	void setTimer() { timeStarted = time(NULL); }
+	int  secsSinceStarted() { return difftime(time(NULL),timeStarted);}
 
 protected:
 	void DrawText(const std::string &text, const Vector3 &position, const float size, const bool perspective=false);
 	void DrawSplitScreenText(const std::string &text, const Vector3 &position, const float size, const bool perspective=false);
+	void drawScore(int i);
 	
 	Font* basicFont;
 	CellGcmTexture* FontTex;
 	CellGcmTexture* cubeMap;
+
+	Vector3 trophyPosition;
 
 	float testRadius;
 
@@ -102,6 +110,8 @@ protected:
 	Mesh* sphereOne;
 	Mesh* sphereTwo;
 	Mesh* android;
+	
+	Mesh* trophy;
 
 	std::vector<PhysicsNode*> worldObjects;
 	std::vector<Coin*> coins;
@@ -115,5 +125,5 @@ protected:
 	bool playersActive;
 	float halfScreenRatio;
 
-	
+	time_t timeStarted;	
 };
