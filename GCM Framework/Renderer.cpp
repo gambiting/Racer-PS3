@@ -49,6 +49,8 @@ Renderer::Renderer(void)	{
 	halfScreenRatio = (float)(screenWidth / 2) / (float)screenHeight;
 	projMatrix	= Matrix4::perspective(0.7853982, screenRatio, 1.0f, 20000.0f);	//CHANGED TO THIS!!
 
+
+	worldObjects.clear();	//WHY GAWD, WHYYYY?
 }
 
 Renderer::~Renderer(void)	{
@@ -63,8 +65,9 @@ Physics stuff, positions and whatnot, happen here.
 If possible it will get moved out of the renderer at some point.
 */
 void Renderer::UpdateScene(float msec) {
-	playerOne->UpdatePosition(msec);
-	playerTwo->UpdatePosition(msec);
+	for(int i = 0; i < players.size(); i++){
+		players.at(i)->GetPhysicsNode().UpdatePosition(msec);
+	}
 
 	for(std::vector<PhysicsNode*>::iterator i = worldObjects.begin(); i != worldObjects.end(); ++i) {
 		(*i)->UpdatePosition(msec);
@@ -74,60 +77,43 @@ void Renderer::UpdateScene(float msec) {
 
 //We should also move this!!!
 void Renderer::CollisionTests() {
-
-	/*players will be the only objects that move, so just need to check if they collide with other objects
+	CollisionData* cData = new CollisionData();
+	//players will really be the only objects that move about, so need to check if they collide with other objects
 	for(int i = 0; i < players.size(); i++){
-		//check against all world objects
-		for(int j = 0; j < worldObjects.size(); j++{
-			if(physics.SphereSphereCollision(players[i]->GetPhysicsNode(), worldObjects[j]){
-				CollisionData cData;
-				physics.AddCollisionImpulse(
-			}
+		//check against terrain
+		if(physics.TerrainCollision( players.at(i)->GetPhysicsNode(), cData)){
+			PhysicsNode *temp = new PhysicsNode();
+			physics.AddCollisionImpulse(players.at(i)->GetPhysicsNode(), (*temp), cData->m_point, cData->m_normal, cData->m_penetration);
+			delete temp;
 		}
 		//check against item boxes
+		for(int j = 0; j < itemBoxes.size(); j++){
+			if(physics.SphereSphereCollision(players.at(i)->GetPhysicsNode(),itemBoxes.at(j)->GetPhysicsNode(), cData)){	
+				physics.AddCollisionImpulse(players.at(i)->GetPhysicsNode(),itemBoxes.at(j)->GetPhysicsNode(), cData->m_point, cData->m_normal, cData->m_penetration);
+			}
+		}
 		//check against players (except THIS player)
+		for(int j = 0; j < players.size(); j++){
+			if(j == i) continue;
+			if(physics.SphereSphereCollision(players.at(i)->GetPhysicsNode(),players.at(j)->GetPhysicsNode(), cData)){	
+				physics.AddCollisionImpulse(players.at(i)->GetPhysicsNode(),players.at(j)->GetPhysicsNode(), cData->m_point, cData->m_normal, cData->m_penetration);
+			}
+		}
+		
 
-	}*/
+	}
 
+	//all other objects need to check terrain
 	for(int i=0;i<worldObjects.size();i++)
 	{
-		CollisionData* cData = new CollisionData();
-
-		if(physics.TerrainCollision( *worldObjects.at(i), cData))
-		{
-			/*std::cout << "normal: " << cData->m_normal.getX() << ", " <<
-				cData->m_normal.getY() << ", " <<
-				cData->m_normal.	getZ() << std::endl;*/
-
-			worldObjects.at(i)->SetInAir(false);
-
+		//check against terrain
+		if(physics.TerrainCollision( *worldObjects.at(i), cData)){
 			PhysicsNode *temp = new PhysicsNode();
 			physics.AddCollisionImpulse(*worldObjects.at(i), (*temp), cData->m_point, cData->m_normal, cData->m_penetration);
 			delete temp;
 		}
-
-		//if there is another node after this, check for collisions with it and following nodes
-		if(i < worldObjects.size()-1 && worldObjects.at(i)->isCollidable()){			
-			for(int j = i+1; j<worldObjects.size(); j++){
-				if(worldObjects.at(j)->isCollidable() && physics.SphereSphereCollision(*worldObjects.at(i),*worldObjects.at(j), cData)){
-					std::cout << "World objects length: "<< worldObjects.size() << std::endl;
-					//physics.AddCollisionImpulse(*worldObjects.at(i), *worldObjects.at(j), cData->m_point, cData->m_normal, cData->m_penetration);
-				}
-			}
-		}
-
-		/*is this node is a player, check for collisions with item boxes
-		if(worldObjects.at(i)->getIsPlayer()){
-			for(int j = 0; j < itemBoxes.size(); j++){
-				if(physics.SphereSphereCollision(*worldObjects.at(i),itemBoxes.at(j)->GetPhysicsNode(), cData)){
-					std::cout << "ITEM BOX COLLISION" << std::endl;
-					//TODO item box logic
-				}
-			}
-		}*/
-
-		delete cData;
 	}
+	delete cData;
 
 }
 
@@ -304,8 +290,8 @@ void Renderer::DrawScene()
 	
 	currentVert->UpdateShaderMatrices(modelMatrix, viewMatrix, projMatrix);
 	
-	currentFrag->SetParameter("lightPosition1", (float*)&playerOne->GetPosition());//.getX());
-	currentFrag->SetParameter("lightPosition2", (float*)&playerTwo->GetPosition());//.getX());
+	currentFrag->SetParameter("lightPosition1", (float*)&players.at(0)->GetPhysicsNode().GetPosition());//.getX());
+	currentFrag->SetParameter("lightPosition2", (float*)&players.at(1)->GetPhysicsNode().GetPosition());//.getX());
 	currentFrag->SetParameter("cameraPos", (float*)&currentCamera->GetPosition());
 	currentFrag->SetParameter("lightRadius", &testRadius);
 	currentFrag->SetParameter("lightColour", (float*)&testColour);
@@ -352,42 +338,44 @@ void Renderer::DrawLoading(int i)
 
 
 void Renderer::SetupPlayers() {
+	std::cout << "num objects when adding player "<< worldObjects.size() << std::endl;
+	
+	Player* bob = new Player(1);
+	bob->GetPhysicsNode().SetMesh(sphereOne);
+	bob->GetPhysicsNode().SetPosition(Vector3(2000, 500, 2000));
+	bob->GetPhysicsNode().setCollidable(true);
+	bob->GetPhysicsNode().GravityOff();
+	players.push_back(bob);
+	camera1->SetPhysicsNode(bob->GetPhysicsNodePtr());
 
-	playerOne = new PhysicsNode(15.0f);
-	playerOne->SetMesh(sphereOne);
-	playerOne->SetPosition(Vector3(2000, 500, 2000));
-	playerOne->GravityOff();
-	playerOne->setCollidable(true);
-	camera1->SetPhysicsNode(playerOne);
-	worldObjects.push_back(playerOne);
-	root->AddChild(*playerOne);
+	root->AddChild(bob->GetPhysicsNode());
 	
 
-	playerTwo = new PhysicsNode(15.0f);
-	playerTwo->SetMesh(sphereTwo);
-	playerTwo->SetPosition(Vector3(2096, 500, 2096));
-	playerTwo->GravityOff();
-	camera2->SetPhysicsNode(playerTwo);
-	playerOne->setCollidable(true);
-	worldObjects.push_back(playerTwo);
-	root->AddChild(*playerTwo);
-	
+	Player* meryl = new Player(2);
+	meryl->GetPhysicsNode().SetMesh(sphereTwo);
+	meryl->GetPhysicsNode().SetPosition(Vector3(2200, 500, 2200));
+	meryl->GetPhysicsNode().setCollidable(true);
+	meryl->GetPhysicsNode().GravityOff();
+	players.push_back(meryl);
+	camera2->SetPhysicsNode(meryl->GetPhysicsNodePtr());
+
+	root->AddChild(meryl->GetPhysicsNode());
+	std::cout << "Finished creating players" << std::endl;
 }
 
 //Something nice and basic to put the players back at the start.
 void Renderer::ResetPlayers() {
-	//playerOne->GravityOff();
-	playerOne->SetPosition(Vector3(0, 1000, 0));
+	
+	/*playerOne->SetPosition(Vector3(0, 1000, 0));
 	playerOne->SetLinearVelocity(Vector3(0,0,0));
 	
-	//playerTwo->GravityOff();
 	playerTwo->SetPosition(Vector3(500, 1000, 0));
-	playerTwo->SetLinearVelocity(Vector3(0,0,0));
+	playerTwo->SetLinearVelocity(Vector3(0,0,0));*/
 }
 
 void Renderer::ActivatePlayers() {
-	playerOne->GravityOn();
-	playerTwo->GravityOn();
+	players.at(0)->GetPhysicsNode().GravityOn();
+	players.at(1)->GetPhysicsNode().GravityOn();
 	playersActive = true;
 }
 
@@ -409,10 +397,10 @@ void Renderer::AddItemBox(Item* item){
 	std::cout << "Added item box. Number of children in scene root node: "<< root->getNumChildren() << std::endl;
 }
 
-void Renderer::AddItemBox(){
+void Renderer::AddItemBox(Camera* c){
 	Trap* item	= new Trap();		
 	//set item's position 
-	item->GetPhysicsNode().SetPosition(camera1->GetPosition());
+	item->GetPhysicsNode().SetPosition(c->GetPosition());
 	//item->setItemID(ServerInterface::AddGameEntity(WEAPONS_CRATE, item->GetPhysicsNode().GetPosition()));
 	itemBoxes.push_back(item);
 	item->GetPhysicsNode().SetMesh(android);

@@ -78,7 +78,7 @@ void select_button2()		{
 void cross_button1() {
 	if(state!=GAME_PAUSED)
 	{
-		renderer.AddSphere(camera1);
+		renderer.AddItemBox(camera1);
 		std::cout << "Pressed X button!" << std::endl; 
 		//it's an X button, not cross. Sony should know this, crazy bastards.
 	}
@@ -91,7 +91,7 @@ void cross_button1() {
 void cross_button2() {
 	if(state!=GAME_PAUSED)
 	{
-		renderer.AddSphere(camera2);
+		renderer.AddItemBox(camera2);
 		std::cout << "Pressed X button!" << std::endl; 
 		//it's an X button, not cross. Sony should know this, crazy bastards.
 	}
@@ -196,9 +196,7 @@ int main(void)	{
 
 	renderer.SetCamera2(camera2);	//Set the current renderer camera
 
-	renderer.SetupPlayers();
-
-
+	
 	Timer gameTime;
 	GameLogic* logic = new GameLogic(&renderer);
 
@@ -215,7 +213,6 @@ int main(void)	{
 				
 					renderer.DrawLoading();
 					root = new SceneNode();
-
 					renderer.SetRootNode(root); //Set our new SceneNode as the root for our Renderer
 					renderer.SetupGeometry();
 					renderer.SetupPlayers();

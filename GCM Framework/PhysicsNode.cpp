@@ -2,7 +2,7 @@
 
 PhysicsNode::PhysicsNode(void)	{
 
-	float r = 25.0f;
+	float r = 15.0f;
 	radius = r;
 	scale = Vector3(r,r,r);
 	m_position = Vector3(0,0,0);

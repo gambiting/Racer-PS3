@@ -47,7 +47,7 @@ public:
 
 	//add and remove item boxes from the game world
 	void AddItemBox(Item* item);
-	void AddItemBox();
+	void AddItemBox(Camera* c);
 	void RemoveItemBox(Item* item);
 
 	void CollisionTests();
@@ -90,9 +90,6 @@ protected:
 	CellGcmTexture* bkgd;
 
 	Mesh* quad;
-
-	PhysicsNode* playerOne;
-	PhysicsNode* playerTwo;
 
 	Mesh* arrow;
 	Matrix4 player1Trans;
