@@ -105,6 +105,9 @@ protected:
 
 	PhysicsSystem physics;
 
+	PhysicsNode* playerOne;
+	PhysicsNode* playerTwo;
+
 	bool playersActive;
 	float halfScreenRatio;
 

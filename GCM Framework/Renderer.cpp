@@ -6,7 +6,7 @@ Renderer::Renderer(void)	{
 
 	halfScreenRatio = (float)((screenWidth/2)/ screenHeight);
 	player1Trans= Matrix4::rotationZYX(Vector3(DegToRad(15),DegToRad(-30),DegToRad(-10)));
-	player2Trans= Matrix4::rotationZYX(Vector3(0.0f,DegToRad(115),DegToRad(30)));
+	player2Trans= Matrix4::rotationZYX(Vector3(DegToRad(15),DegToRad(-30),DegToRad(-10)));
 
 	tempQuad = Mesh::GenerateQuad();
 	//tempTex = GCMRenderer::LoadGTF("/sand.gtf");
@@ -65,6 +65,7 @@ Physics stuff, positions and whatnot, happen here.
 If possible it will get moved out of the renderer at some point.
 */
 void Renderer::UpdateScene(float msec) {
+
 	for(int i = 0; i < players.size(); i++){
 		players.at(i)->GetPhysicsNode().UpdatePosition(msec);
 	}
@@ -99,21 +100,26 @@ void Renderer::CollisionTests() {
 				physics.AddCollisionImpulse(players.at(i)->GetPhysicsNode(),players.at(j)->GetPhysicsNode(), cData->m_point, cData->m_normal, cData->m_penetration);
 			}
 		}
-		
-
 	}
 
 	//all other objects need to check terrain
 	for(int i=0;i<worldObjects.size();i++)
 	{
-		//check against terrain
-		if(physics.TerrainCollision( *worldObjects.at(i), cData)){
+		CollisionData* cData = new CollisionData();
+
+		if(physics.TerrainCollision( *worldObjects.at(i), cData))
+		{
+			/*std::cout << "normal: " << cData->m_normal.getX() << ", " <<
+				cData->m_normal.getY() << ", " <<
+				cData->m_normal.	getZ() << std::endl;*/
+
+			worldObjects.at(i)->SetInAir(false);
 			PhysicsNode *temp = new PhysicsNode();
 			physics.AddCollisionImpulse(*worldObjects.at(i), (*temp), cData->m_point, cData->m_normal, cData->m_penetration);
 			delete temp;
 		}
+		delete cData;
 	}
-	delete cData;
 
 }
 
@@ -332,7 +338,6 @@ void Renderer::DrawLoading(int i)
 	projMatrix	= Matrix4::perspective(0.7853982, screenRatio, 1.0f, 20000.0f);
 
 	SwapBuffers();
-	//printf("LOADING DRAWN\n");
 
 }
 
@@ -347,28 +352,26 @@ void Renderer::SetupPlayers() {
 	bob->GetPhysicsNode().GravityOff();
 	players.push_back(bob);
 	camera1->SetPhysicsNode(bob->GetPhysicsNodePtr());
-
 	root->AddChild(bob->GetPhysicsNode());
-	
 
-	Player* meryl = new Player(2);
-	meryl->GetPhysicsNode().SetMesh(sphereTwo);
-	meryl->GetPhysicsNode().SetPosition(Vector3(2200, 500, 2200));
-	meryl->GetPhysicsNode().setCollidable(true);
-	meryl->GetPhysicsNode().GravityOff();
-	players.push_back(meryl);
-	camera2->SetPhysicsNode(meryl->GetPhysicsNodePtr());
+	Player* meryll = new Player(2);
+	meryll->GetPhysicsNode().SetMesh(sphereTwo);
+	meryll->GetPhysicsNode().SetPosition(Vector3(2200, 500, 2000));
+	meryll->GetPhysicsNode().setCollidable(true);
+	meryll->GetPhysicsNode().GravityOff();
+	players.push_back(meryll);
+	camera2->SetPhysicsNode(meryll->GetPhysicsNodePtr());
+	root->AddChild(meryll->GetPhysicsNode());
 
-	root->AddChild(meryl->GetPhysicsNode());
 	std::cout << "Finished creating players" << std::endl;
 }
 
 //Something nice and basic to put the players back at the start.
 void Renderer::ResetPlayers() {
 	
-	/*playerOne->SetPosition(Vector3(0, 1000, 0));
+	/*
+	playerOne->SetPosition(Vector3(0, 1000, 0));
 	playerOne->SetLinearVelocity(Vector3(0,0,0));
-	
 	playerTwo->SetPosition(Vector3(500, 1000, 0));
 	playerTwo->SetLinearVelocity(Vector3(0,0,0));*/
 }
@@ -421,7 +424,6 @@ void Renderer::RemoveItemBox(Item* item){
 		}
 	}
 	std::cout << "Failed to remove item. Awkward..."<< std::endl;
-	//firedSpheres.push_back(newSphere);
 }
 
 void Renderer::RenderPausedScene() {
@@ -521,9 +523,12 @@ void Renderer::SetupGeometry()
 	std::cout << "Loading meshes in renderer" << std::endl;
 	android = new OBJMesh(SYS_APP_HOME "/android.obj");
 
-	
-	sphereOne = new OBJMesh(SYS_APP_HOME "/sphere.obj");
-	sphereOne->SetDefaultTexture(*GCMRenderer::LoadGTF("/Textures/checkerboard.gtf"));
+	//Sphere One
+	std::cout << "Loading sphere ONE in renderer" << std::endl;
+		sphereOne = new OBJMesh(SYS_APP_HOME "/sphere.obj");
+	std::cout << "Renderer sphere ONE load success!" << std::endl;
+	sphereOne->SetDefaultTexture(*GCMRenderer::LoadGTF("/rainbow.gtf"));
+
 
 	//SphereTwo
 	
@@ -556,7 +561,9 @@ void Renderer::drawWinner(int i)
 		
 
 		tempQuad->Draw(*currentVert, *currentFrag);
+
 		SwapBuffers();
+
 
 		break;
 	case 2:
@@ -574,9 +581,22 @@ void Renderer::drawWinner(int i)
 		
 
 		tempQuad->Draw(*currentVert, *currentFrag);
+
 		SwapBuffers();
+
 		break;
 	default:
 		break;
 	}
+
+	SetViewport();
+	
+	DrawText("GAME OVER", Vector3(screenWidth/20, screenHeight/8, 0), 200.0f);
+	DrawText("Press X to Quit", Vector3(screenWidth*0.2, screenHeight*0.8, 0), 75.0f);
+	DrawText("Press START to Play Again", Vector3(screenWidth/50, screenHeight*0.9, 0), 75.0f);
+	projMatrix	= Matrix4::perspective(0.7853982, screenRatio, 1.0f, 20000.0f);
+
+	SwapBuffers();
+
+
 }

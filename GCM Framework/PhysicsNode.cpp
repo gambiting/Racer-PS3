@@ -6,6 +6,7 @@ PhysicsNode::PhysicsNode(void)	{
 	radius = r;
 	scale = Vector3(r,r,r);
 	m_position = Vector3(0,0,0);
+	VectorToZero(m_rot);
 
 	ignoringGravity = false;
 
@@ -15,6 +16,7 @@ PhysicsNode::PhysicsNode(void)	{
 	float inertia = (2 * 10.f * pow(50.f, 2)) / 5;
 
 	m_linearVelocity	= Vector3(0.0f, 0.0f, 0.0f);
+	m_angularVelocity	= Vector3(0.0f, 0.0f, 0.0f);
 	m_invMass			= 1.0f / r;
 	m_invInertia		= Matrix4(
 		Vector4(1/inertia,0.0f,0.0f,0.0f),
@@ -25,8 +27,9 @@ PhysicsNode::PhysicsNode(void)	{
 	gravity			= Vector3(0.0f, GRAVITY, 0.0f);
 	inAir = true;
 	atRest = false;
-	VectorToZero(m_force);
 
+	m_orientation.identity();
+	VectorToZero(m_force);	
 }
 
 PhysicsNode::PhysicsNode(float r) {
@@ -43,6 +46,7 @@ PhysicsNode::PhysicsNode(float r) {
 	float inertia = (2 * 10.f * pow(50.f, 2)) / 5;
 
 	m_linearVelocity	= Vector3(0.0f, 0.0f, 0.0f);
+	m_angularVelocity	= Vector3(0.0f, 0.0f, 0.0f);
 	m_invMass			= 1.0f / r;
 	m_invInertia		= Matrix4(
 		Vector4(1/inertia,0.0f,0.0f,0.0f),
@@ -54,6 +58,8 @@ PhysicsNode::PhysicsNode(float r) {
 	inAir = true;
 	atRest = false;
 
+	m_orientation.identity();
+	VectorToZero(m_rot);
 	VectorToZero(m_force);
 }
 
@@ -69,6 +75,7 @@ PhysicsNode::PhysicsNode(float r, Vector3 p) {
 	float inertia = (2 * 10.f * pow(50.f, 2)) / 5;
 
 	m_linearVelocity	= Vector3(0.0f, 0.0f, 0.0f);
+	m_angularVelocity	= Vector3(0.0f, 0.0f, 0.0f);
 	m_invMass			= 1.0f / r;
 	m_invInertia		= Matrix4(
 		Vector4(1/inertia,0.0f,0.0f,0.0f),
@@ -80,7 +87,10 @@ PhysicsNode::PhysicsNode(float r, Vector3 p) {
 	inAir = true;
 	atRest = false;
 
+	m_orientation.identity();
+	VectorToZero(m_rot);
 	VectorToZero(m_force);
+
 }
 
 PhysicsNode::~PhysicsNode(void) {
@@ -100,9 +110,7 @@ void PhysicsNode::UpdatePosition(float msec) {
 		}
 
 		m_linearVelocity = m_linearVelocity + acceleration * msec;
-		//if (!inAir) {
-			m_linearVelocity = m_linearVelocity * DAMPING_FACTOR;
-		//}
+		m_linearVelocity = m_linearVelocity * DAMPING_FACTOR;
 		m_position = m_position + m_linearVelocity * msec;
 
 		float totalV = m_linearVelocity.getX() + m_linearVelocity.getY() + m_linearVelocity.getZ();
@@ -126,10 +134,27 @@ void PhysicsNode::UpdatePosition(float msec) {
 		m_position.setZ(4096 - radius) ;
 	}
 
-	//std::cout << "X: " << m_position.getX() << ". Z: " << m_position.getZ() << std::endl;
+	/*	 Angle Fun    */
+	//float inertia = 2 * m_invMass * (radius * radius);
+	//Matrix4 inertiaMat = Matrix4::rotation(inertia, Vector3(1,1,1));
+
+	Vector3 angularAcceleration = (m_invInertia * m_torque).getXYZ();
+	m_angularVelocity = m_angularVelocity + angularAcceleration * msec;
+	m_angularVelocity = m_angularVelocity * DAMPING_FACTOR;
+
+	m_rot.setX(m_rot.getX() + m_angularVelocity.getX());
+	m_rot.setY(m_rot.getY() + m_angularVelocity.getY());
+	m_rot.setZ(m_rot.getZ() + m_angularVelocity.getZ());
+
+	if(m_rot.getX() > 360) m_rot.setX(m_rot.getX() - 360);
+	if(m_rot.getY() > 360) m_rot.setX(m_rot.getY() - 360);
+	if(m_rot.getZ() > 360) m_rot.setX(m_rot.getZ() - 360);
+	/* No Fun Allowed */
 
 	SetPosition(m_position);
+	//SetOrientation();
 	VectorToZero(m_force);
+	VectorToZero(m_torque);
 
 }
 
@@ -139,4 +164,15 @@ void PhysicsNode::GravityOn() {
 
 void PhysicsNode::GravityOff() {
 	ignoringGravity = true;
+}
+
+Quat PhysicsNode::QuatByVector3(const Quat &q, const Vector3 &v) {
+	Quat ans;
+
+	ans.setW( -(q.getX() * v.getX()) - (q.getY() * v.getY()) - (q.getZ() * v.getZ()) );
+	ans.setX(  (q.getW() * v.getX()) + (q.getY() * v.getZ()) - (q.getZ() * v.getY()) );
+	ans.setY(  (q.getW() * v.getY()) + (q.getZ() * v.getX()) - (q.getX() * v.getZ()) );
+	ans.setZ(  (q.getW() * v.getZ()) + (q.getX() * v.getY()) - (q.getY() * v.getX()) );
+
+	return ans;
 }

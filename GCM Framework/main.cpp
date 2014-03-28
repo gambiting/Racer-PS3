@@ -26,17 +26,22 @@ SceneNode *root;
 Camera* camera1;
 Camera* camera2;
 
-void start_button()		{
-
-
+void start_button()		{	
+	
 	switch(state)
 	{
-
+	
 	case GAME_MAIN:
 		state = GAME_PAUSED;
 		renderer.RenderPausedScene();
 		break;
 	case GAME_PAUSED:
+		state=GAME_MAIN;
+		break;
+	case GAME_MENU:
+		state=GAME_MAIN;
+	case GAME_OVER:
+		renderer.ResetPlayers();
 		state=GAME_MAIN;
 		break;
 	default: break;
@@ -55,10 +60,13 @@ void select_button1()		{
 	default:
 		break;
 	}
-
+		
 		std::cout << "Pressed select button!" << std::endl;
-
+	
 }
+
+
+
 void select_button2()		{
 	switch(state)
 	{
@@ -69,7 +77,10 @@ void select_button2()		{
 		break;*/
 	default:
 		break;
+		 
+		//it's an X button, not cross. Sony should know this, crazy bastards.
 	}
+
 
 		std::cout << "Pressed select button!" << std::endl;
 
@@ -112,7 +123,6 @@ void square_button() {
 		state = GAME_MAIN;
 		break;
 		default: break;
-		
 	}
 }
 
@@ -135,8 +145,6 @@ void circle_button()
 }
 
 void triangle_button() {
-
-
 
 	//done = true;
 	switch(state)
@@ -196,7 +204,6 @@ int main(void)	{
 
 	renderer.SetCamera2(camera2);	//Set the current renderer camera
 
-	
 	Timer gameTime;
 	GameLogic* logic = new GameLogic(&renderer);
 
@@ -225,7 +232,7 @@ int main(void)	{
 					renderer.DrawLoading(100);
 					
 
-					state=GAME_MAIN;
+					state=GAME_MENU;
 					break;
 				
 			case GAME_MAIN:
@@ -243,6 +250,9 @@ int main(void)	{
 					break;
 				
 			case GAME_PAUSED: break;
+			case GAME_MENU:
+				renderer.drawMenu();
+				break;
 
 			default: break;
 		}
