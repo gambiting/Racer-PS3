@@ -6,7 +6,7 @@ Renderer::Renderer(void)	{
 
 	halfScreenRatio = (float)((screenWidth/2)/ screenHeight);
 	player1Trans= Matrix4::rotationZYX(Vector3(DegToRad(15),DegToRad(-30),DegToRad(-10)));
-	player2Trans= Matrix4::rotationZYX(Vector3(0.0f,DegToRad(115),DegToRad(30)));
+	player2Trans= Matrix4::rotationZYX(Vector3(DegToRad(15),DegToRad(-30),DegToRad(-10)));
 
 	tempQuad = Mesh::GenerateQuad();
 	//tempTex = GCMRenderer::LoadGTF("/sand.gtf");
@@ -63,8 +63,6 @@ Physics stuff, positions and whatnot, happen here.
 If possible it will get moved out of the renderer at some point.
 */
 void Renderer::UpdateScene(float msec) {
-	playerOne->UpdatePosition(msec);
-	playerTwo->UpdatePosition(msec);
 
 	for(std::vector<PhysicsNode*>::iterator i = worldObjects.begin(); i != worldObjects.end(); ++i) {
 		(*i)->UpdatePosition(msec);
@@ -172,10 +170,7 @@ void Renderer::RenderScene(float msec) {
 	RenderArrow(player2Trans);
 
 	projMatrix	= Matrix4::perspective(0.7853982, screenRatio, 1.0f, 20000.0f);
-	/*if(root) {
-		DrawNode(root);
-	}*/
-	
+
 	SwapBuffers();
 
 	
@@ -367,7 +362,7 @@ void Renderer::SetupPlayers() {
 	
 
 	playerTwo = new PhysicsNode(15.0f);
-	playerTwo->SetMesh(sphereTwo);
+	playerTwo->SetMesh(sphereOne);
 	playerTwo->SetPosition(Vector3(2096, 500, 2000));
 	playerTwo->GravityOff();
 	camera2->SetPhysicsNode(playerTwo);
@@ -519,7 +514,7 @@ void Renderer::SetupGeometry()
 	std::cout << "Loading sphere ONE in renderer" << std::endl;
 		sphereOne = new OBJMesh(SYS_APP_HOME "/sphere.obj");
 	std::cout << "Renderer sphere ONE load success!" << std::endl;
-	sphereOne->SetDefaultTexture(*GCMRenderer::LoadGTF("/Textures/checkerboard.gtf"));
+	sphereOne->SetDefaultTexture(*GCMRenderer::LoadGTF("/rainbow.gtf"));
 
 	//SphereTwo
 	std::cout << "Loading sphere TWO in renderer" << std::endl;

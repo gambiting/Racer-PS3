@@ -2,11 +2,15 @@
 
 #include "Defines.h"
 #include "SceneNode.h"
+#include "common.h"
+
 #include <vector>
 #include <vectormath/cpp/vectormath_aos.h>
 using namespace Vectormath::Aos;
 #define GRAVITY -0.00048f
-#define DAMPING_FACTOR		0.97005f;
+//#define DAMPING_FACTOR		0.97005f
+#define DAMPING_FACTOR		0.97005f
+#define ANGULAR_DAMPING_FACTOR 0.99999f
 
 class PhysicsNode : public SceneNode {
 public:
@@ -25,7 +29,7 @@ public:
 
 	void			SetOrientation(Quat orient)			{ 
 		m_orientation = orient;
-		SetTransform( Matrix4::translation(m_position) * Matrix4::scale(scale) * Matrix4::rotation(m_orientation)); 
+		SetTransform(  Matrix4::translation(m_position)* Matrix4::scale(scale) * Matrix4::rotationZYX(m_rot)) ; 
 	}
 	void			SetLinearVelocity(Vector3 vel)		{ m_linearVelocity = vel; }
 	void			SetAngularVelocity(Vector3 ang)		{ m_angularVelocity = ang; }
@@ -41,7 +45,7 @@ public:
 	Vector3			GetLinearVelocity() const			{ return m_linearVelocity; }
 	Vector3			GetAngularVelocity() const			{ return m_angularVelocity; }
 	float			GetInverseMass() const				{ return m_invMass; }
-
+	Vector3			GetmRot() const						{ return m_rot;}
 	Quat			QuatByVector3(const Quat &b, const Vector3 &v);
 
 	//record a collision with a sphere for use by Objective logic
@@ -88,6 +92,8 @@ protected:
 	Vector3		m_torque;
 	Matrix4		m_invInertia;
 	Vector3		forwardVec;
+
+	Vector3		m_rot;
 	
 	SceneNode*	target;
 	bool		atRest;
@@ -95,4 +101,5 @@ protected:
 
 	//for assassination game mode
 	PhysicsNode* collidedWith;
+
 };

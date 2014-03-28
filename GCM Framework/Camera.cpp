@@ -58,17 +58,20 @@ void Camera::Update(float msec) {
 
 	if(Input::ButtonDown(INPUT_UP,pad)) {
 		player->AddForce(Vector3(0,0,-0.01), Vector3(0,0,0));
-		player->SetAngularVelocity(Vector3(0, 0, 0.1));
+		player->SetAngularVelocity(Vector3(-0.1, 0, 0));
 	}
 	if(Input::ButtonDown(INPUT_DOWN,pad)) {
 		player->AddForce(Vector3(0,0,0.01), Vector3(0,0,0));
+		player->SetAngularVelocity(Vector3(0.1, 0, 0));
 	}
 
 	if(Input::ButtonDown(INPUT_LEFT,pad)) {
 		player->AddForce(Vector3(-0.01,0,0), Vector3(0,0,0));
+		player->SetAngularVelocity(Vector3(0, 0, 0.1));
 	}
 	if(Input::ButtonDown(INPUT_RIGHT,pad)) {
 		player->AddForce(Vector3(0.01,0,0), Vector3(0,0,0));
+		player->SetAngularVelocity(Vector3(0, 0, -0.1));
 	}
 	if(Input::ButtonDown(INPUT_SELECT,pad)) {
 		invertPitch = !invertPitch;
