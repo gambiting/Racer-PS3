@@ -55,12 +55,15 @@ public:
 
 	void			SetPhysicsNode(PhysicsNode* n);
 	PhysicsNode*	GetPhysicsNode()				{ return this->player; }
+	void AddPoint()	{PlayerScore++;}
+	int GetScore()	{return PlayerScore;}
 
 protected:
 	JoyPadNum	pad;
 	float		yaw;
 	float		pitch;
 	Vector3		position;
+	int PlayerScore;
 
 	PhysicsNode* player;
 

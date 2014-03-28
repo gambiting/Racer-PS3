@@ -8,6 +8,7 @@ Camera::Camera(void)	{
 	pitch	= -10.0f;
 	pad		= JOYPAD_A;
 	position = Vector3(0,0,0);
+	PlayerScore = 0;
 
 	ypSensitivity = 0.3f;
 	invertPitch = true;

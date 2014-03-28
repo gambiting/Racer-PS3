@@ -19,6 +19,7 @@ SYS_PROCESS_PARAM(1001, 0x10000)
 
 bool done = false;
 int state = GAME_LOADING;
+int winner=0;
 
 Renderer renderer;
 SceneNode *root;
@@ -264,6 +265,16 @@ int main(void)	{
 						renderer.ActivatePlayers();
 					}
 					break;
+					if(camera1->GetScore() >= 5)
+					{
+						renderer.drawWinner(1);
+						state=GAME_OVER;
+					}
+					if(camera2->GetScore() >= 5)
+					{
+						renderer.drawWinner(2);
+						state=GAME_OVER;
+					}
 				
 			case GAME_PAUSED: break;
 			case GAME_MENU:
