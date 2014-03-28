@@ -19,6 +19,7 @@ SYS_PROCESS_PARAM(1001, 0x10000)
 
 bool done = false;
 int state = GAME_LOADING;
+int winner=0;
 
 Renderer renderer;
 SceneNode *root;
@@ -43,8 +44,11 @@ void start_button()		{
 	case GAME_MENU:
 		state=GAME_MAIN;
 	case GAME_OVER:
+		
+		camera1->SetScore(0);
+		camera2->SetScore(0);
 		renderer.ResetPlayers();
-		state=GAME_MAIN;
+		state=GAME_MENU;
 		break;
 	default: break;
 	}
@@ -74,6 +78,7 @@ void select_button2()		{
 		camera2->SetPitch(0.0f);
 		camera2->SetYaw(0.0f);
 		break;*/
+		//camera2->AddPoint();
 	default:
 		break;
 	}
@@ -262,6 +267,17 @@ int main(void)	{
 					renderer.CollisionTests();
 					if (!renderer.PlayersActive()) {
 						renderer.ActivatePlayers();
+					}
+					
+					if(camera1->GetScore() >= 5)
+					{
+						renderer.drawWinner(1);
+						state=GAME_OVER;
+					}
+					if(camera2->GetScore() >= 5)
+					{
+						renderer.drawWinner(2);
+						state=GAME_OVER;
 					}
 					break;
 				
