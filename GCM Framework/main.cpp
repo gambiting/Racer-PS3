@@ -86,6 +86,7 @@ void cross_button1() {
 	switch(state)
 	{
 	case GAME_MAIN:
+
 		renderer.AddItemBox(camera1);
 		break;
 	case GAME_PAUSED:
@@ -107,6 +108,7 @@ void cross_button2() {
 	switch(state)
 	{
 	case GAME_MAIN:
+
 		renderer.AddItemBox(camera2);
 		break;
 	case GAME_PAUSED:
