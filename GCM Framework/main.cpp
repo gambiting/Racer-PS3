@@ -148,7 +148,7 @@ void circle_button()
 	switch(state)
 	{
 	case GAME_MAIN:
-
+		renderer.AddSphere(camera1);
 		break;
 	case GAME_PAUSED: 
 		renderer.ResetPlayers();

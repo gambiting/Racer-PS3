@@ -130,14 +130,14 @@ void PhysicsNode::UpdatePosition(float msec) {
 	if (m_position.getX() < radius) {
 		m_position.setX(radius) ;
 	}
-	if (m_position.getX() > 4096 - radius) {
-		m_position.setX(4096 - radius) ;
+	if (m_position.getX() > 4096 - (radius * 2)) {
+		m_position.setX(4096 - (radius * 2)) ;
 	}
 	if (m_position.getZ() < radius) {
 		m_position.setZ(radius) ;
 	}
-	if (m_position.getZ() > 4096 - radius) {
-		m_position.setZ(4096 - radius) ;
+	if (m_position.getZ() > 4096 - (radius * 2)) {
+		m_position.setZ(4096 - (radius * 2)) ;
 	}
 
 	/*	 Angle Fun    */
