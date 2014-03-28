@@ -87,7 +87,7 @@ void cross_button1() {
 	{
 	case GAME_MAIN:
 
-		renderer.AddItemBox(camera1);
+		renderer.AddCoin(camera1);
 		break;
 	case GAME_PAUSED:
 		done=true;
@@ -109,7 +109,7 @@ void cross_button2() {
 	{
 	case GAME_MAIN:
 
-		renderer.AddItemBox(camera2);
+		renderer.AddCoin(camera2);
 		break;
 	case GAME_PAUSED:
 		done=true;
