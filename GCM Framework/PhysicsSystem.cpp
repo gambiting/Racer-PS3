@@ -153,18 +153,15 @@ void PhysicsSystem::AddCollisionImpulse(PhysicsNode &p0, PhysicsNode &p1, const 
 		float jn = -1*(1+e)*dot(dv, normal) / normDiv;
 		jn = jn + (penetration * 0.75f);
 
-
 		p0.SetLinearVelocity(p0.GetLinearVelocity() + (normal * p0.GetInverseMass() * jn));
-		//p0.SetAngularVelocity(p0.GetAngularVelocity() + (worldInvInertia0 * cross(r0, normal * jn)).getXYZ() );
+		//p0.SetAngularVelocity(p0.GetAngularVelocity() + (worldInvInertia0 * crosstemp3).getXYZ() );
 
-
-	
-		p1.SetLinearVelocity(p1.GetLinearVelocity() + (normal * p1.GetInverseMass() * jn));
-		//p1.SetAngularVelocity(p1.GetAngularVelocity() + (worldInvInertia1 * cross(r1, normal * jn)).getXYZ() );
+		p1.SetLinearVelocity(p1.GetLinearVelocity() - (normal * p1.GetInverseMass() * jn));
+		//p1.SetAngularVelocity(p1.GetAngularVelocity() - (worldInvInertia1 * crosstemp3).getXYZ() );
 	}
 
 	//Tangent impulse
-	/*{
+	{
 		Vector3 tangent = normalize(dv - (normal * dot(dv, normal)));
 		
 		float tangDiv = p0.GetInverseMass() + p1.GetInverseMass()
@@ -175,10 +172,10 @@ void PhysicsSystem::AddCollisionImpulse(PhysicsNode &p0, PhysicsNode &p1, const 
 		float jt = -1 * dot (dv, tangent) / tangDiv;
 
 		p0.SetLinearVelocity(p0.GetLinearVelocity() + (tangent * p0.GetInverseMass() * jt));
-		p0.SetAngularVelocity(p0.GetAngularVelocity() + (worldInvInertia0 * cross(r0, tangent * jt)).getXYZ());
+		//p0.SetAngularVelocity(p0.GetAngularVelocity() + (worldInvInertia0 * cross(r0, tangent * jt)).getXYZ());
 
-		p1.SetLinearVelocity(p1.GetLinearVelocity() + (tangent * p1.GetInverseMass() * jt));
-		p1.SetAngularVelocity(p1.GetAngularVelocity() + (worldInvInertia1 * cross(r1, tangent * jt)).getXYZ());
-	}*/
+		p1.SetLinearVelocity(p1.GetLinearVelocity() - (tangent * p1.GetInverseMass() * jt));
+		//p1.SetAngularVelocity(p1.GetAngularVelocity() - (worldInvInertia1 * cross(r1, tangent * jt)).getXYZ());
+	}
 
 }

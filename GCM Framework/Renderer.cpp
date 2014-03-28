@@ -78,6 +78,7 @@ void Renderer::UpdateScene(float msec) {
 
 //We should also move this!!!
 void Renderer::CollisionTests() {
+	
 	CollisionData* cData = new CollisionData();
 	//players will really be the only objects that move about, so need to check if they collide with other objects
 	for(int i = 0; i < players.size(); i++){
@@ -109,16 +110,19 @@ void Renderer::CollisionTests() {
 
 		if(physics.TerrainCollision( *worldObjects.at(i), cData))
 		{
-			/*std::cout << "normal: " << cData->m_normal.getX() << ", " <<
-				cData->m_normal.getY() << ", " <<
-				cData->m_normal.	getZ() << std::endl;*/
-
 			worldObjects.at(i)->SetInAir(false);
 
 			PhysicsNode *temp = new PhysicsNode();
 			physics.AddCollisionImpulse(*worldObjects.at(i), (*temp), cData->m_point, cData->m_normal, cData->m_penetration);
 			delete temp;
 		}
+		//For the ease of time and whatnot, just check against the 2 players.
+		for (int j = 0; j < players.size(); ++j) {
+			if (physics.SphereSphereCollision(*worldObjects.at(i), players.at(j)->GetPhysicsNode(), cData)) {
+				physics.AddCollisionImpulse(*worldObjects.at(i), players.at(j)->GetPhysicsNode(), cData->m_point, cData->m_normal, cData->m_penetration);
+			}
+		}
+
 		delete cData;
 	}
 
@@ -386,10 +390,11 @@ void Renderer::ActivatePlayers() {
 }
 
 void Renderer::AddSphere(Camera* c) {
-	PhysicsNode* newSphere = new PhysicsNode(25.0f);
+	PhysicsNode* newSphere = new PhysicsNode(15.0f);
 	newSphere->SetMesh(sphereOne);
 	newSphere->SetPosition(c->GetPosition());
 	newSphere->SetLinearVelocity(camera1->GetLookDirection()/2.0f);
+	newSphere->SetAngularVelocity(camera1->GetLookDirection() / 1000.0f);
 	root->AddChild(*newSphere);
 	worldObjects.push_back(newSphere);
 }
