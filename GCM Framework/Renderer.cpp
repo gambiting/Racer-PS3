@@ -87,7 +87,6 @@ void Renderer::CollisionTests() {
 			physics.AddCollisionImpulse(players.at(i)->GetPhysicsNode(), (*temp), cData->m_point, cData->m_normal, cData->m_penetration);
 			delete temp;
 		}
-		bool finished = false;
 		
 
 			//check against coins
@@ -99,7 +98,7 @@ void Renderer::CollisionTests() {
 					delete temp; //delete the coin to stop memory leaks!!
 					break;
 				}
-				if(j == coins.size()-1) finished = true; 
+				
 			}
 		
 		//check against players (except THIS player)
@@ -414,10 +413,10 @@ void Renderer::AddCoin(Coin* coin){
 	//std::cout << "Added coin. Number of children in scene root node: "<< root->getNumChildren() << std::endl;
 }
 
-void Renderer::AddCoin(Camera* c){
+void Renderer::AddCoin(int x, int z){
 	Coin* coin	= new Coin();		
 	//set item's position 
-	coin->GetPhysicsNode().SetPosition(c->GetPosition());//TODO
+	coin->GetPhysicsNode().SetPosition(Vector3(x, 1000, z));//TODO
 	//item->setItemID(ServerInterface::AddGameEntity(WEAPONS_CRATE, item->GetPhysicsNode().GetPosition()));
 	coins.push_back(coin);
 	coin->GetPhysicsNode().SetMesh(android);
@@ -614,6 +613,35 @@ void Renderer::drawWinner(int i)
 
 	SwapBuffers();
 
+}
+
+//return the objective loc closest to the given player
+Vector3 Renderer::getClosestCoin(int playerNum){
+	Vector3 pLoc;
+	if(playerNum = 1)
+		pLoc = players.at(0)->GetPhysicsNode().GetPosition();
+	else
+		pLoc = players.at(1)->GetPhysicsNode().GetPosition();
+
+	int best = 2000000;
+	Vector3 bestVec(0,0,0);
+
+	if(coins.size() == 0)
+		return Vector3(0,0,0);
+
+	for(int i = 0; i < coins.size(); i++){
+		Vector3 coinLoc = coins.at(i)->GetPhysicsNode().GetPosition();
+		Vector3 distanceVec(abs(pLoc.getX()- coinLoc.getX()),  
+						 abs(pLoc.getY()- coinLoc.getY()),
+						 abs(pLoc.getZ()- coinLoc.getZ()));
+		int trueDist = distanceVec.getX() + distanceVec.getY() + distanceVec.getZ();
+		if(trueDist < best){
+			best = trueDist;
+			bestVec = coinLoc;
+		}
+	}
+
+	return bestVec;
 }
 
 void Renderer::calcArrowOrientation(Vector3 objective, int playerID)

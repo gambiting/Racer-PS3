@@ -47,13 +47,16 @@ public:
 
 	//add and remove item boxes from the game world
 	void AddCoin(Coin* coin);
-	void AddCoin(Camera* c);
+	void AddCoin(int x, int z);
 	void RemoveCoin(Coin* coin);
+	int getNumCoins(){ return coins.size();}
 
 	void CollisionTests();
 	void RenderPausedScene();
 	void RenderArrow(Matrix4 transform);//TODO
 	void SetupGeometry();
+	
+	Vector3 getClosestCoin(int pNum);
 
 	bool PlayersActive() { return playersActive; }
 	void drawMenu();
