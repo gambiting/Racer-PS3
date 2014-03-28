@@ -146,10 +146,13 @@ void Renderer::RenderScene(float msec) {
 	setCurrentCamera(camera1);
 	drawSkyBox();
 	DrawScene();
-
-	DrawSplitScreenText("Player 1", Vector3(0, screenHeight/9, 0), 26.0f);
+	
+	DrawSplitScreenText("Player 1", Vector3(0, screenHeight/20, 0), 26.0f);
+	drawScore(1);
+	
 	RenderArrow(player1Trans);
 	DrawSplitScreenText(fpsText, Vector3(0, screenHeight/1.1 + 50, 0), 26.0f);
+	
 
 	projMatrix	= Matrix4::perspective(0.7853982, screenRatio, 1.0f, 20000.0f);
 
@@ -159,10 +162,12 @@ void Renderer::RenderScene(float msec) {
 	setCurrentCamera(camera2);
 	drawSkyBox();
 	DrawScene();
-
-	DrawSplitScreenText("Player 2", Vector3(0, screenHeight/9, 0), 26.0f);
-
+	
+	DrawSplitScreenText("Player 2", Vector3(0, screenHeight/20, 0), 26.0f);
+	drawScore(2);
+	
 	RenderArrow(player2Trans);
+	
 
 	projMatrix	= Matrix4::perspective(0.7853982, screenRatio, 1.0f, 20000.0f);
 	
@@ -545,7 +550,12 @@ void Renderer::SetupGeometry()
 	arrow->SetDefaultTexture(*GCMRenderer::LoadGTF("/rainbow.gtf"));
 	percent+=10;//80
 	DrawLoading(percent);
+
+	trophy = new OBJMesh(SYS_APP_HOME "/Groudon.obj");
+	trophy->SetDefaultTexture(*GCMRenderer::LoadGTF("/gold.gtf"));
 }
+
+	
 void Renderer::drawWinner(int i)
 {
 	switch(i)
@@ -655,5 +665,42 @@ void Renderer::calcArrowOrientation(Vector3 objective, int playerID)
 	default:
 		break;
 	}
+
+}
+void Renderer::drawScore(int i)
+{
+	int score = 0;
+	switch(i)
+	{
+	case 1:
+		break;
+	case 2:
+		break;
+	default:
+		break;
+	}
+
+	std::stringstream ss;
+	ss<<score<<" Points";
+	std::string tmp = ss.str();
+	DrawSplitScreenText(tmp,  Vector3(screenWidth/50, screenHeight/10, 0), 50.0f);
+
+}
+void Renderer::addPoint(int i)
+{
+	switch(i)
+	{
+	case 1:
+		camera1->AddPoint();
+		break;
+	case 2:
+		camera2->AddPoint();
+		break;
+	default:
+		break;
+	}
+}
+void Renderer::DrawTrophy()
+{
 
 }

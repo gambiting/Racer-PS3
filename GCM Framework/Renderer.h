@@ -59,10 +59,13 @@ public:
 	void drawMenu();
 	void drawWinner(int i);
 	void calcArrowOrientation(Vector3 objective, int playerID);
+	void addPoint(int i);
+	void DrawTrophy();
 
 protected:
 	void DrawText(const std::string &text, const Vector3 &position, const float size, const bool perspective=false);
 	void DrawSplitScreenText(const std::string &text, const Vector3 &position, const float size, const bool perspective=false);
+	void drawScore(int i);
 	
 	Font* basicFont;
 	CellGcmTexture* FontTex;
@@ -99,6 +102,8 @@ protected:
 	Mesh* sphereOne;
 	Mesh* sphereTwo;
 	Mesh* android;
+	
+	Mesh* trophy;
 
 	std::vector<PhysicsNode*> worldObjects;
 	std::vector<Item*> itemBoxes;
