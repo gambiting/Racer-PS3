@@ -60,8 +60,8 @@ public:
 	void drawWinner(int i);
 	void calcArrowOrientation(Vector3 objective, int playerID);
 	void addPoint(int i);
-	void DrawTrophy();
-	void setTrophyPosition(Vector3 a) {trophyPosition = a;}
+	PhysicsNode* MakeTrophy();
+	
 
 protected:
 	void DrawText(const std::string &text, const Vector3 &position, const float size, const bool perspective=false);

@@ -146,8 +146,7 @@ void Renderer::RenderScene(float msec) {
 	setCurrentCamera(camera1);
 	drawSkyBox();
 	DrawScene();
-	DrawTrophy();
-	
+		
 	DrawSplitScreenText("Player 1", Vector3(0, screenHeight/20, 0), 26.0f);
 	drawScore(1);
 	
@@ -163,8 +162,7 @@ void Renderer::RenderScene(float msec) {
 	setCurrentCamera(camera2);
 	drawSkyBox();
 	DrawScene();
-	DrawTrophy();
-	
+		
 	DrawSplitScreenText("Player 2", Vector3(0, screenHeight/20, 0), 26.0f);
 	drawScore(2);
 	
@@ -702,9 +700,9 @@ void Renderer::addPoint(int i)
 		break;
 	}
 }
-void Renderer::DrawTrophy()
+PhysicsNode* Renderer::MakeTrophy()
 {
-	this->SetCurrentShader(*lightVert,*lightFrag);
+	/*this->SetCurrentShader(*lightVert,*lightFrag);
 	modelMatrix = Matrix4::translation(trophyPosition);
 	if(currentCamera)
 	{
@@ -725,5 +723,9 @@ void Renderer::DrawTrophy()
 	currentFrag->SetParameter("lightRadius", &testRadius);
 	currentFrag->SetParameter("lightColour", (float*)&testColour);
 
-	trophy->Draw(*currentVert, *currentFrag);
+	trophy->Draw(*currentVert, *currentFrag);*/
+	PhysicsNode* p = new PhysicsNode();
+	p->SetMesh(trophy);
+	root->AddChild(p);
+	return p;
 }
