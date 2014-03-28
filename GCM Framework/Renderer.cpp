@@ -443,7 +443,7 @@ void Renderer::RenderArrow(Matrix4 transform)
 {
 	this->SetCurrentShader(*basicVert,*loadFrag);
 
-	modelMatrix = Matrix4::translation(Vector3(0,4.5, 0)) * transform;//scale(Vector3(100,100,100))* Matrix4::translation(Vector3((float) (screenWidth/4), -50, 0));//translation(Vector3(position.getX(),screenHeight-position.getY(), position.getZ())) * Matrix4::scale(Vector3(size,size,1));
+	modelMatrix = Matrix4::translation(Vector3(0,4.5, 0))/* Matrix4::rotationZYX(Vector3(DegToRad(25), 0, DegToRad(25)))*/ * transform;//scale(Vector3(100,100,100))* Matrix4::translation(Vector3((float) (screenWidth/4), -50, 0));//translation(Vector3(position.getX(),screenHeight-position.getY(), position.getZ())) * Matrix4::scale(Vector3(size,size,1));
 
 	viewMatrix=Matrix4::identity();
 	projMatrix = Matrix4::orthographic(-5.0f,5.0,-10.0, 10.0f,10.0f, -10.0f);
@@ -457,7 +457,8 @@ void Renderer::RenderArrow(Matrix4 transform)
 
 	arrow->Draw(*currentVert, *currentFrag);
 	projMatrix	= Matrix4::perspective(0.7853982, screenRatio, 1.0f, 20000.0f);
-
+	modelMatrix= Matrix4::identity();
+	
 }
 void Renderer::SetupGeometry()
 {
@@ -589,4 +590,61 @@ void Renderer::drawWinner(int i)
 
 	SwapBuffers();
 
+}
+
+void Renderer::calcArrowOrientation(Vector3 objective, int playerID)
+{
+	/*Vector3 worldNormal = Vector3(0,1,0);
+	Vector3 dist = (player - objective);
+	Vector3 r = cross(worldNormal, dist);
+	r = normalize(r);
+	Vector3 b = cross(r, worldNormal);
+	b = normalize(b);
+	Vector3 u = cross(b,r);
+
+	Matrix4 orientation = Matrix4(Vector4(r.getX(), r.getY(), r.getZ(), 0.0f),
+								  Vector4(u.getX(), u.getY(), u.getZ(), 0.0f), 
+								  Vector4(b.getX(), b.getY(), b.getZ(), 0.0f), 
+								  Vector4(-dot(r, player), -dot(u, player), -dot(b, player), 1.0f));*/
+
+	
+	switch(playerID)
+	{
+	case 1:
+		Vector3 player1 = camera1->GetPhysicsNode()->GetPosition();
+		//Matrix4 orientation1 = Matrix4::lookAt( Point3(player1), Point3(objective), Vector3(0,1,0));
+		Vector3 worldNormal = Vector3(0,1,0);
+		Vector3 dist = (objective - player1);
+		Vector3 b = dist;
+		b = normalize(b);
+		Vector3 r = cross(worldNormal, b);
+		r = normalize(r);
+		Vector3 u = cross(b,r);
+
+		Matrix4 orientation1 = Matrix4(Vector4(r.getX(), u.getX(), b.getX(), 0.0f),
+									  Vector4(r.getY(), u.getY(), b.getY(), 0.0f), 
+									  Vector4(r.getZ(), u.getZ(), b.getZ(), 0.0f), 
+									  Vector4(0,0,0,1.0f));//Vector4(-dot(r, player1), -dot(u, player1), -dot(b, player1), 1.0f));
+		player1Trans = orientation1;
+		break;
+	case 2:
+		Vector3 player2 = camera2->GetPhysicsNode()->GetPosition();
+		//Matrix4 orientation2 = Matrix4::lookAt( Point3(player2), Point3(objective), Vector3(0,1,0));
+		Vector3 worldNormal2 = Vector3(0,1,0);
+		Vector3 dist2 = (objective - player2);
+		Vector3 b2 = dist2;
+		b2 = normalize(b2);
+		Vector3 r2 = cross(worldNormal2, b2);
+		r2 = normalize(r2);
+		Vector3 u2 = cross(b2,r2);
+
+		Matrix4 orientation2 = Matrix4(Vector4(r2.getX(), u2.getX(), b2.getX(), 0.0f),
+									  Vector4(r2.getY(), u2.getY(), b2.getY(), 0.0f), 
+									  Vector4(r2.getZ(), u2.getZ(), b2.getZ(), 0.0f), 
+									  Vector4(0,0,0,1.0f));//Vector4(-dot(r, player1), -dot(u, player1), -dot(b, player1), 1.0f));
+		player2Trans = orientation2;
+		break;
+	default:
+		break;
+	}
 }

@@ -37,6 +37,10 @@ GameLogic::GameLogic(Renderer* passedRenderer){
 void GameLogic::updateWorld(float dt){
 
 	mPhysicsAccumulator += dt;
+
+	//Test Calls for Arrow Orientation Method 
+	renderer->calcArrowOrientation(Vector3(-10,0,-10), 1);
+	renderer->calcArrowOrientation(Vector3(-10,0,-10), 2);
 	
 	//update the physics system
 	while(mPhysicsAccumulator >= PHYSICS_TIMESTEP){

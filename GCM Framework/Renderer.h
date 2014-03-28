@@ -56,6 +56,7 @@ public:
 	bool PlayersActive() { return playersActive; }
 	void drawMenu();
 	void drawWinner(int i);
+	void calcArrowOrientation(Vector3 objective, int playerID);
 
 protected:
 	void DrawText(const std::string &text, const Vector3 &position, const float size, const bool perspective=false);
