@@ -95,6 +95,12 @@ void Renderer::CollisionTests() {
 				if(physics.SphereSphereCollision(players.at(i)->GetPhysicsNode(),coins.at(j)->GetPhysicsNode(), cData)){	
 					std::cout << "Attempting to delete.";
 					Coin* temp = coins.at(j);
+					
+					if(i == 0)
+						camera1->AddPoint();
+					else if(i == 1)
+						camera2->AddPoint();
+
 					RemoveCoin(temp);
 					delete temp; //delete the coin to stop memory leaks!!
 					break;
@@ -400,6 +406,7 @@ void Renderer::ActivatePlayers() {
 	players.at(0)->GetPhysicsNode().GravityOn();
 	players.at(1)->GetPhysicsNode().GravityOn();
 	playersActive = true;
+	setTimer();
 }
 
 void Renderer::AddSphere(Camera* c) {

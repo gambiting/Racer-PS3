@@ -269,16 +269,21 @@ int main(void)	{
 						renderer.ActivatePlayers();
 					}
 					
-					if(camera1->GetScore() >= 5)
+					std::cout << renderer.secsSinceStarted() << std::endl;
+					if(renderer.secsSinceStarted() > 60)
 					{
-						renderer.drawWinner(1);
-						state=GAME_OVER;
+						if(camera1->GetScore() > camera2->GetScore())
+						{
+							renderer.drawWinner(1);
+							state=GAME_OVER;
+						}
+						else if(camera1->GetScore() < camera2->GetScore())
+						{
+							renderer.drawWinner(2);
+							state=GAME_OVER;
+						}
 					}
-					if(camera2->GetScore() >= 5)
-					{
-						renderer.drawWinner(2);
-						state=GAME_OVER;
-					}
+			
 					break;
 				
 			case GAME_PAUSED: break;
